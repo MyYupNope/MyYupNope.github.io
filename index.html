@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Bootstrap Tables</title>
@@ -8,48 +8,182 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
+    <style>
+        .red {
+            background-color: #FF8A80;
+        }
+
+        .yellow {
+            background-color: #FFF9C4;
+        }
+
+        .green {
+            background-color: #B9F6CA;
+        }
+
+    </style>
+
 
 </head>
 
 <body>
     <div class="container">
 
-        <h1 style="text-align:center;color:green;">
-            GeeksforGeeks
+        <h1 style="text-align:center;">
+            TOOLKIT
         </h1>
 
         <!-- Bootstrap table and table-striped classes -->
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th scope="col">S. No.</td>
-                    <th scope="col">Name</td>
-                    <th scope="col">City</td>
-                    <th scope="col">Age</td>
-                </tr>
-            </thead>
+        <div class="table-responsive-lg small" >
 
-            <tbody>
-                <tr>
-                    <th scope="row">1</td>
-                    <td>Ajay</td>
-                    <td>Patna</td>
-                    <td>20</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</td>
-                    <td>Rahul</td>
-                    <td>Chandigarh</td>
-                    <td>17</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</td>
-                    <td>Parush</td>
-                    <td>Kolkata</td>
-                    <td>22</td>
-                </tr>
-            </tbody>
-        </table>
+            <table class="table table-striped table-bordered table-sm">
+                <colgroup>
+                    <col class="" />
+                    <col class="red" />
+                    <col class="yellow" span="2" />
+                    <col class="blue" span="10" />
+                </colgroup>
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">#</td>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Forms.jpg" alt="logos" width="50px" height="50px" class=" rounded " /></td>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Forms.jpg" alt="logos" width="50px" height="50px" class=" rounded " /></td>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/WeChat.jpg" alt="logos" width="50px" height="50px" class=" rounded " /></td>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/SMS.jpg" alt="logos" width="50px" height="50px" class=" rounded " /></td>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/SkypeForBusiness.png" alt="logos" width="50px" height="50px" class=" rounded " /></td>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos" width="50px" height="50px" class=" rounded " /></td>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Yammer.jpg" alt="logos" width="50px" height="50px" class=" rounded " /></td>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Outlook.jpg" alt="logos" width="50px" height="50px" class=" rounded " /></td>
+                    </tr>
+                    <tr class="text-center">
+                        <th scope="col" class="align-middle">#</td>
+                        <th scope="col" class="align-middle">WhatsApp<br />Baidu<br />Alibaba</td>
+                        <th scope="col" class="align-middle">Kaizala</td>
+                        <th scope="col" class="align-middle">WeChat<br />(China)</td>
+                        <th scope="col" class="align-middle">SMS</td>
+                        <th scope="col" class="align-middle">Skype for<br />Business</td>
+                        <th scope="col" class="align-middle">Teams</td>
+                        <th scope="col" class="align-middle">Yammer</td>
+                        <th scope="col" class="align-middle">Outlook</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr class="text-center">
+                        <th scope="row">Description</td>
+                        <td class="align-middle">Instant Messaging<br /> (Consumer Solutions)</td>
+                        <td class="align-middle">Instant Messaging</td>
+                        <td class="align-middle">Instant Messaging<br /> (China)</td>
+                        <td class="align-middle">Text Messaging </td>
+                        <td class="align-middle">Enterprise Instant Messaging & Presence</td>
+                        <td class="align-middle">Enterprise Team Productivity & Collaboration Hub</td>
+                        <td class="align-middle">Enterprise Social Network</td>
+                        <td class="align-middle">Enterprise Personal Productivity</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Features</td>
+                        <td>
+        
+                                <p>J&J NOT approved solutions.<br />Their utilization is not compliant with J&J regulations.</p>
+  
+                        </td>
+                        <td>
+                            <p>J&J POC about to be launched and  assess solution adoption.</p>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Instant (text/audio/video) + informal + broadcast messaging</li>
+                                <li>Individual + Group communications</li>
+                                <li>Notifications, rich media + file sharing, audio + video on-demand calls</li>
+                                <li>Make/ split payments, send emojicons/ stickers, share user location</li>
+                                <li>Multi language support</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Instant (text/audio/video) + informal + broadcast messaging</li>
+                                <li>Individual + Group communications</li>
+                                <li>Notifications, rich media + file sharing, audio + video on-demand calls</li>
+                                <li>Make/ split payments, send emojicons/ stickers, share user location</li>
+                                <li>Multi language support</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Instant (text/audio/video) + informal + broadcast messaging</li>
+                                <li>Individual + Group communications</li>
+                                <li>Notifications, rich media + file sharing, audio + video on-demand calls</li>
+                                <li>Make/ split payments, send emojicons/ stickers, share user location</li>
+                                <li>Multi language support</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Instant (text/audio/video) + informal + broadcast messaging</li>
+                                <li>Individual + Group communications</li>
+                                <li>Notifications, rich media + file sharing, audio + video on-demand calls</li>
+                                <li>Make/ split payments, send emojicons/ stickers, share user location</li>
+                                <li>Multi language support</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Instant (text/audio/video) + informal + broadcast messaging</li>
+                                <li>Individual + Group communications</li>
+                                <li>Notifications, rich media + file sharing, audio + video on-demand calls</li>
+                                <li>Make/ split payments, send emojicons/ stickers, share user location</li>
+                                <li>Multi language support</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Instant (text/audio/video) + informal + broadcast messaging</li>
+                                <li>Individual + Group communications</li>
+                                <li>Notifications, rich media + file sharing, audio + video on-demand calls</li>
+                                <li>Make/ split payments, send emojicons/ stickers, share user location</li>
+                                <li>Multi language support</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Audience</td>
+                        <td>Parush</td>
+                        <td>Kolkata</td>
+                        <td>22</td>
+                        <td>3</td>
+                        <td>Parush</td>
+                        <td>Kolkata</td>
+                        <td>22</td>
+                        <td>Patna</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Support</td>
+                        <td>Parush</td>
+                        <td>Kolkata</td>
+                        <td>22</td>
+                        <td>3</td>
+                        <td>Parush</td>
+                        <td>Kolkata</td>
+                        <td>22</td>
+                        <td>Patna</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Requirements</td>
+                        <td>Parush</td>
+                        <td>Kolkata</td>
+                        <td>22</td>
+                        <td>3</td>
+                        <td>Parush</td>
+                        <td>Kolkata</td>
+                        <td>22</td>
+                        <td>Patna</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        
     </div>
 
 
