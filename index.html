@@ -26,6 +26,9 @@
         .grey {
             background-color: #F5F5F5;
         }
+        .table-bordered tr th, .table-bordered tr td {
+            border: 1px solid #777;
+        }
     </style>
 </head>
 
@@ -67,11 +70,11 @@
                     </tr>
                     <tr class="text-center">
                         <th scope="col" class="align-middle"><b>Tool</b></td>
-                        <th scope="col" class="align-middle">WhatsApp <br />Baidu <br />Alibaba</td>
+                        <th scope="col" class="align-middle">WhatsApp, Baidu, Alibaba</td>
                         <th scope="col" class="align-middle">Kaizala</td>
-                        <th scope="col" class="align-middle">WeChat <br />(China)</td>
+                        <th scope="col" class="align-middle">WeChat (China)</td>
                         <th scope="col" class="align-middle">SMS</td>
-                        <th scope="col" class="align-middle">Skype for <br />Business</td>
+                        <th scope="col" class="align-middle">Skype for Business</td>
                         <th scope="col" class="align-middle">Teams</td>
                         <th scope="col" class="align-middle">Yammer</td>
                         <th scope="col" class="align-middle">Outlook</td>
@@ -149,7 +152,7 @@
                                 <li>Notifications</li>
                                 <li>Focused/Other inbox</li>
                                 <li>Rich media + file sharing</li>
-                                <li>Covers wide range of use cases: communication rules/ procedures, provide status update, making inquiries/ recommendations.</li>
+                                <li>Covers wide range of use cases: communication rules/ procedures,<br /> provide status update, making inquiries/ recommendations.</li>
                             </ul>
                         </td>
                     </tr>
@@ -157,20 +160,53 @@
                         <th scope="row" class="text-center">Audience</td>
                         <td></td>
                         <td>TBD</td>
-                        <td>J&J Community (~200-1000 ppl) <br />Internal + External </td>
-                        <td>1 to 1 or 1 to a Few (~ 1-20 ppl) <br />External </td>
-                        <td> 1 to 1 or 1 to a Few + Your/A Team (~1-200 ppl) <br />Internal </td>
-                        <td> Your/A Team (~20-200 ppl) <br />Internal <br />Preconfigured private/public team’s membership </td>
-                        <td> Your/A Team + J&J Community (~20-1000 ppl) <br />Internal </td>
-                        <td> 1 to 1 or 1 to a Few + Your/A Team + J&J Community (~2-1000 ppl) <br />Internal + External </td>
+                        <td>
+                            <ul>
+                                <li>J&J Community (~200-1000 ppl)</li>
+                                <li>Internal + External</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>1 to 1 or 1 to a Few (~ 1-20 ppl)</li>
+                                <li>External</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>1 to 1 or 1 to a Few + Your/A Team (~1-200 ppl)</li>
+                                <li>Internal</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Your/A Team (~20-200 ppl)</li>
+                                <li>Internal</li>
+                                <li>Private preconfigured or public team’s membership</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Your/A Team + J&J Community (~20-1000 ppl)</li>
+                                <li>Internal</li>
+
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>1 to 1 or 1 to a Few + Your/A Team + J&J Community</li>
+                                <li>Internal + External</li>
+
+                            </ul>
+                        </td>
                     </tr>
                     <tr class="">
                         <th scope="row" class="text-center">Support</td>
                         <td></td>
                         <td>TBD</td>
-                        <td> No J&J support;Initiatives based supporters </td>
-                        <td> Mobile carrier support </td>
-                        <td> J&J Global Service Desk supported </td>
+                        <td>No J&J support, local project supporters </td>
+                        <td>Mobile carrier support</td>
+                        <td>J&J Global Service Desk supported </td>
                         <td>J&J Global Service Desk supported</td>
                         <td>J&J Global Service Desk supported</td>
                         <td>J&J Global Service Desk supported</td>
@@ -179,12 +215,43 @@
                         <th scope="row" class="text-center">Requirements</td>
                         <td></td>
                         <td>TBD</td>
-                        <td> Mobile carrier SIM/plan card or FB account<br />Vendor software dependency<br />Mobile only</td>
-                        <td> Requires mobile carrier SIM/plan + Airwatch (J&J Global Address List)<br />Multi vendor software compatibility<br />Mobile only<br /></td>
-                        <td> Requires O365 E3 license<br />Vendor software dependency<br />Multi-platform support (PC, mobile)</td>
-                        <td> Requires E3 or F1 license<br />Vendor software dependency<br />Multi-platform support (PC, mobile)</td>
-                        <td> Requires E3 or F1 license<br />Browser or vendor app based service<br />Multi-platform support (PC, mobile)</td>
-                        <td> Requires E3 or F1 license<br />Multi vendor software compatibility<br />Multi- platform support (PC, mobile) </td>
+                        <td> 
+                            <ul>
+                                <li>Mobile carrier SIM/plan card or FB account</li>
+                                <li>Vendor software dependency</li>
+                                <li>Mobile only</li>
+                            </ul>
+                        <td> 
+                            <ul>
+                                <li>Requires mobile carrier SIM/plan + Airwatch (J&J Global Address List)</li>
+                                <li>Multi vendor software compatibility</li>
+                                <li>Mobile only</li>
+                            </ul>
+                        <td> 
+                            <ul>
+                                <li>Requires O365 E3 license</li>
+                                <li>Vendor software dependency</li>
+                                <li>Multi-platform support (PC, mobile)</li>
+                            </ul>
+                        <td> 
+                        <ul>
+                            <li>Requires O365 E3 or F1 license</li>
+                            <li>Vendor software dependency</li>
+                            <li>Multi-platform support (PC, mobile)</li>
+                        </ul>
+
+                        <td> 
+                            <ul>
+                                <li>Requires O365 E3 or F1 license</li>
+                                <li>Browser or vendor app based service</li>
+                                <li>Multi-platform support (PC, mobile)</li>
+                            </ul>
+                        <td> 
+                        <ul>
+                            <li>Requires O365 E3 or F1 license</li>
+                            <li>Multi vendor software compatibility</li>
+                            <li>Multi- platform support (PC, mobile)</li>
+                        </ul>
                     </tr>
                 </tbody>
             </table>
