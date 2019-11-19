@@ -7,26 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        .red {
-            background-color: #FF8A80;
-        }
-
-        .yellow {
-            background-color: #FFFDE7;
-        }
-
-        .green {
-            background-color: #E8F5E9;
-        }
-
-        .blue {
-            background-color: #E3F2FD;
-        }
-
-        .grey {
-            background-color: #F5F5F5;
-        }
-        .table-bordered tr th, .table-bordered tr td {
+        .table-bordered tr th,
+        .table-bordered tr td {
             border: 1px solid #777;
         }
     </style>
@@ -37,221 +19,332 @@
         <h1 style="text-align:center;">Tools Comparison Table</h1>
         <div class="table-responsive-sm ">
             <table class="table table-striped table-bordered">
-                <caption>Files Hosting &amp; Sharing</caption>
+                <caption>
+                    <ol>
+                        <li><span class="small">J&amp;J NOT approved solutions. Their utilization is not compliant with J&amp;J regulations. Please evaluate approved solutions towards identifying the one(s) that best suit your requirements.</span></li>
+                        <li><span class="small">No longer provisioned for new starters, existing H: drives will be migrated to indivduals OneDrive during 2020.</span></li>
+                        <li><span class="small">SharePoint Online / OneDrive For Business + External Sharing expected to cover Box utilization. Current Box accounts data will be migrated to these solutions in 2020.
+                                New BOX accounts will only be approved for exceptional cases. </span></li>
+                        <li><span class="small">J&amp;J Strategy to migrate L: drive to cloud storage over next 1-3 years</span></li>
+                    </ol>
+
+                </caption>
                 <colgroup>
                     <col class="table-secondary" />
                     <col class="table-danger" />
-                    <col class="table-info" />
                     <col class="table-warning" />
+                    <col class="table-warning" />
+                    <col class="table-info" />
                     <col class="table-success" span="10" />
                 </colgroup>
                 <thead>
                     <tr class="text-center">
-                        <th scope="col" class="align-middle">J&amp;J Approval</td>
-                        <th scope="col" class="align-middle">Not Approved</td>
-                        <th scope="col" class="align-middle">Being Assessed</td>
-                        <th scope="col" class="align-middle">Limited Audiences</td>
-                        <th scope="col" class="align-middle">Approved</td>
-                        <th scope="col" class="align-middle">Approved</td>
-                        <th scope="col" class="align-middle">Approved</td>
-                        <th scope="col" class="align-middle">Approved</td>
-                        <th scope="col" class="align-middle">Approved</td>
+                        <th scope="col" class="align-middle">J&amp;J Status</th>
+                        <th scope="col" class="align-middle">Not Approved <span class="align-top">(1)</span> </th>
+                        <th scope="col" class="align-middle">Sunsetting <span class="align-top">(2)</span></th>
+                        <th scope="col" class="align-middle">Sunsetting <span class="align-top">(3)</span></th>
+                        <th scope="col" class="align-middle">Declining <span class="align-top">(4)</span></th>
+                        <th scope="col" class="align-middle">Individual</th>
+                        <th scope="col" class="align-middle">Individual + <br>External Sharing</th>
+                        <th scope="col" class="align-middle">Large Teams</th>
+                        <th scope="col" class="align-middle">Large Teams + <br>External Sharing</th>
+                        <th scope="col" class="align-middle">Projects/ Initiatives + Medium Teams</th>
+                        <th scope="col" class="align-middle">Sensitive Files</th>
                     </tr>
                     <tr class="text-center">
-                        <th scope="col" >Logo</td>
-                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/ConsumerBrands.jpg" alt="logos" height="75px" class=" rounded " /></td>
-                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Kaizala.jpg" alt="logos" height="75px" class=" rounded " /></td>
-                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/WeChat.jpg" alt="logos"  height="75px" class=" rounded " /></td>
-                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/SMS.jpg" alt="logos"  height="75px" class=" rounded " /></td>
-                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/SkypeForBusiness.png" alt="logos"  height="75px" class=" rounded " /></td>
-                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos"  height="75px" class=" rounded " /></td>
-                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Yammer.jpg" alt="logos"  height="75px" class=" rounded " /></td>
-                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Outlook.jpg" alt="logos"  height="75px" class=" rounded " /></td>
+                        <th scope="col">Logo</th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/FilesHS_ConsumerBrands.jpg" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/NetworkDrive.jpg" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Box.png" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/NetworkDrive.jpg" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/OneDriveForBusiness.jpg" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/OneDriveForBusiness_ES.jpg" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/SharePointOnline.png" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/SharePointOnline_ES.png" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos" height="75px" class=" rounded " /></th>
+                        <th scope="col" class="align-middle"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MBox.png" alt="logos" width="75px" class=" rounded " /></th>
                     </tr>
                     <tr class="text-center">
-                        <th scope="col" class="align-middle"><b>Tool</b></td>
-                        <th scope="col" class="align-middle">WhatsApp, Baidu, Alibaba</td>
-                        <th scope="col" class="align-middle">Kaizala</td>
-                        <th scope="col" class="align-middle">WeChat (China)</td>
-                        <th scope="col" class="align-middle">SMS</td>
-                        <th scope="col" class="align-middle">Skype for Business</td>
-                        <th scope="col" class="align-middle">Teams</td>
-                        <th scope="col" class="align-middle">Yammer</td>
-                        <th scope="col" class="align-middle">Outlook</td>
+                        <th scope="col" class="align-middle"><b>Tool</b></th>
+                        <th scope="col" class="align-middle">Dropbox, Onedrive, <br>Google Drive, iCloud Drive</th>
+                        <th scope="col" class="align-middle">H: Drive</th>
+                        <th scope="col" class="align-middle">Box</th>
+                        <th scope="col" class="align-middle">L: Drive</th>
+                        <th scope="col" class="align-middle">OneDrive for Business</th>
+                        <th scope="col" class="align-middle">OneDrive for Business <br>(External Sharing)</th>
+                        <th scope="col" class="align-middle">SharePoint Online</th>
+                        <th scope="col" class="align-middle">SharePoint Online <br>(External Sharing)</th>
+                        <th scope="col" class="align-middle">Teams</th>
+                        <th scope="col" class="align-middle">MBox</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="text-center">
-                        <th scope="row" class="text-center">Description</td>
-                        <td class="align-middle">Instant Messaging <br /> (Consumer Solutions)</td>
-                        <td class="align-middle">Instant Messaging</td>
-                        <td class="align-middle">Instant Messaging <br /> (China)</td>
-                        <td class="align-middle">Text Messaging </td>
-                        <td class="align-middle">Enterprise Instant Messaging & Presence</td>
-                        <td class="align-middle">Enterprise Team Productivity & Collaboration Hub</td>
-                        <td class="align-middle">Enterprise Social Network</td>
-                        <td class="align-middle">Enterprise Personal Productivity</td>
+                        <th scope="row" class="text-center">Description</th>
+                        <td class="align-middle">Commercial Cloud File Storage</td>
+                        <td class="align-middle">Enterprise On-Premise Personal File Storage</td>
+                        <td class="align-middle">External Cloud File Storage</td>
+                        <td class="align-middle">Enterprise On-Premise File Storage</td>
+                        <td class="align-middle">Enterprise Personal Cloud File Storage</td>
+                        <td class="align-middle">Enterprise Personal Cloud File Storage + External Sharing</td>
+                        <td class="align-middle">Enterprise Team Sites and Portals</td>
+                        <td class="align-middle">Enterprise Team Sites and Portals + External Sharing</td>
+                        <td class="align-middle">Enteprise Team Productivity &amp; Collaboration Hub</td>
+                        <td class="align-middle">Enterprise Sensitive File Sharing</td>
                     </tr>
+
                     <tr>
-                        <th scope="row" class="text-center">Features</td>
+                        <th scope="row" class="text-center">Capacity</th>
                         <td class="align-middle text-center">
-                            <p><b>J&amp;J NOT approved solutions.<br />Their utilization is not compliant with J&amp;J regulations.</b></p>
-                            <p>Please evaluate approved solutions and identify the one(s) that best suit your requirements</p>
+                            &nbsp;
                         </td>
                         <td class="align-middle text-center">
-                            <p><b>J&amp;J POC about to be launched and assess solution adoption.</b></p>
-                            <p> Assessment results will be published as an update to the toolkit </p>
+                            &nbsp;
                         </td>
                         <td class="align-top">
-                            <ul>
-                                <li>Instant (text/audio/video) + Informal + Broadcast messaging</li>
-                                <li>Individual + Group communications</li>
-                                <li>Notifications, rich media + file sharing, audio + video on-demand calls</li>
-                                <li>Make/ split payments, send emojicons/ stickers, share user location</li>
-                            </ul>
+                            &nbsp;
                         </td>
                         <td class="align-top">
-                            <ul>
-                                <li>Instant + Informal messaging *</li>
-                                <li>Individual only communications</li>
-                                <li>Notifications</li>
-                                <li>Messages limited to 160 chars</li>
-                            </ul><span class="">*SMS Broadcast: not in scope, marketing services to be used in these cases</span>
+                            <p>Hardware Dependent</p>
                         </td>
                         <td class="align-top">
-                            <ul>
-                                <li>Instant + Informal messaging, simultaneous chats</li>
-                                <li>Individual + Group communications</li>
-                                <li>Notifications + Presence</li>
-                                <li>Rich media + file sharing, on-demand audio + video calls, screen sharing</li>
-                            </ul>
+                            <p>E3: &lt; 1TB (15GB Max File Size) <br>
+                                F1: &lt; 2GB</p>
                         </td>
                         <td class="align-top">
-                            <ul>
-                                <li>Instant/Deffered + Informal messaging, simultaneous chats</li>
-                                <li>Individual + Group (Teams) communications</li>
-                                <li>Notifications + Presence</li>
-                                <li>Rich media + file sharing topic based conversations</li>
-                                <li>On-demand audio + video calls, screen-sharing </li>
-                                <li>Features extended through J&J approved add-ins (e.g. planner, sharepoint)</li>
-                            </ul>
+                            <p>E3: &lt; 1TB (15GB Max File Size) <br>
+                                F1: &lt; 2GB</p>
                         </td>
                         <td class="align-top">
-                            <ul>
-                                <li>Deferred + Informal + Broadcast messaging</li>
-                                <li>All Company + interest groups, community driven communications</li>
-                                <li>Notifications</li>
-                                <li>Rich media + file sharing topic based conversations</li>
-                                <li>Topic updates / polls / Q&A / announcements</li>
-                            </ul>
+                            <p>E3/F1: &lt; 750GB, extendable</p>
                         </td>
                         <td class="align-top">
-                            <ul>
-                                <li>Deferred + Informal + Broadcast messaging</li>
-                                <li>Individual + Group (contacts list, DLs) communications</li>
-                                <li>Notifications</li>
-                                <li>Focused/Other inbox</li>
-                                <li>Rich media + file sharing</li>
-                                <li>Covers wide range of use cases: communication rules/ procedures,<br /> provide status update, making inquiries/ recommendations.</li>
-                            </ul>
+                            <p>E3/F1: &lt; 750GB, extendable</p>
+                        </td>
+                        <td class="align-top">
+                            <p>E3/F1: &lt; 750GB, extendable</p>
+                        </td>
+                        <td class="align-top">
+                            <p>&lt; Unlimited</p>
                         </td>
                     </tr>
+
                     <tr>
-                        <th scope="row" class="text-center">Audience</td>
-                        <td></td>
-                        <td>TBD</td>
+                        <th scope="row" class="text-center">Audience</th>
+                        <td><span class="small">J&amp;J NOT approved solutions.</span></td>
+                        <td><span class="small">No longer provisioned for new starters, existing H: drives will be migrated to indivduals OneDrive during 2020.</span></td>
+                        <td><span class="small">SharePoint Online / OneDrive For Business + External Sharing expected to cover Box utilization. Current Box accounts data will be migrated to these solutions in 2020.
+                                New BOX accounts will only be approved for exceptional cases. </span></td>
                         <td>
                             <ul>
-                                <li>J&J Community (~200-1000 ppl)</li>
-                                <li>Internal + External</li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>1 to 1 or 1 to a Few (~ 1-20 ppl)</li>
-                                <li>External</li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>1 to 1 or 1 to a Few + Your/A Team (~1-200 ppl)</li>
+                                <li>1 to 1 or 1 to a Few + Your/A Team (~2-100 ppl)</li>
                                 <li>Internal</li>
                             </ul>
                         </td>
                         <td>
                             <ul>
-                                <li>Your/A Team (~20-200 ppl)</li>
+                                <li>Yourself + 1 to 1 or 1 to a Few (~1-10 ppl)</li>
                                 <li>Internal</li>
-                                <li>Private preconfigured or public team’s membership</li>
                             </ul>
                         </td>
                         <td>
                             <ul>
-                                <li>Your/A Team + J&J Community (~20-1000 ppl)</li>
+                                <li>External Partners (~2-1000 ppl)</li>
+                                <li>External first + Internal</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Your/A Team + J&amp;J Community (~20-1000 ppl)</li>
                                 <li>Internal</li>
 
                             </ul>
                         </td>
                         <td>
                             <ul>
-                                <li>1 to 1 or 1 to a Few + Your/A Team + J&J Community</li>
+                                <li>External Partners (~2-1000 ppl)</li>
+                                <li>External first + Internal</li>
+
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Your/A Team + J&amp;J Community (~20-1000 ppl)</li>
+                                <li>Internal</li>
+
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>Your/A Team + External Partners (~20-1000ppl)</li>
                                 <li>Internal + External</li>
 
                             </ul>
                         </td>
                     </tr>
+
                     <tr class="">
-                        <th scope="row" class="text-center">Support</td>
-                        <td></td>
-                        <td>TBD</td>
-                        <td>No J&J support, local project supporters </td>
-                        <td>Mobile carrier support</td>
-                        <td>J&J Global Service Desk supported </td>
-                        <td>J&J Global Service Desk supported</td>
-                        <td>J&J Global Service Desk supported</td>
-                        <td>J&J Global Service Desk supported</td>
+                        <th scope="row" class="text-center">Requirements</th>
+                        <td><span class="small">Their utilization is not compliant with J&amp;J regulations. Please evaluate approved solutions towards identifying the one(s) that best suit your requirements.</span></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>
+                            <ul>
+                                <li>J&amp;J User Account + PC</li>
+                                <li>Permissions configurable via IT request </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>O365 License (F1/E3)</li>
+                                <li>Sharing configuarable by the user</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>O365 License (F1/E3)</li>
+                                <li>External sharing process approval</li>
+                                <li>Sharing configuarable by the user</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>O365 License (F1/E3)</li>
+                                <li>Sharing configuarable by the users/admins</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>O365 License (F1/E3)</li>
+                                <li>External sharing process approval</li>
+                                <li>Sharing configuarable by the users/admins</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>O365 License (F1/E3)</li>
+                                <li>Sharing configuarable by Team Owners</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>J&amp;J User Account </li>
+                                <li>Designed for short term sharing with external partners (volatile hosting)</li>
+                            </ul>
+                        </td>
+                    </tr>
+
+                    <tr class="">
+                        <th scope="row" class="text-center">Support</th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Supported by J&amp;J (via GSD)</td>
+                        <td>Supported by J&amp;J (via GSD) </td>
+                        <td>Supported by J&amp;J (via GSD)</td>
+                        <td>Supported by J&amp;J (via GSD)</td>
+                        <td>Supported by J&amp;J (via GSD)</td>
+                        <td>Supported by J&amp;J (via GSD)</td>
+                        <td>Supported by J&amp;J (via GSD)</td>
+                    </tr>
+
+                    <tr class="">
+                        <th scope="row" class="text-center">Cost</th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>O365 License (F1/E3), Internal Chargeback
+                        </td>
+                        <td>
+                            O365 License (F1/E3), Internal Chargeback
+                        </td>
+                        <td>O365 License (F1/E3), Internal Chargeback
+                        </td>
+                        <td>O365 License (F1/E3), Internal Chargeback
+                        </td>
+                        <td>O365 License (F1/E3), Internal Chargeback
+                        </td>
+                        <td>$200 - $1800 Per year
+                        </td>
                     </tr>
                     <tr class="">
-                        <th scope="row" class="text-center">Requirements</td>
-                        <td></td>
-                        <td>TBD</td>
-                        <td> 
-                            <ul>
-                                <li>Mobile carrier SIM/plan card or FB account</li>
-                                <li>Vendor software dependency</li>
-                                <li>Mobile only</li>
-                            </ul>
-                        <td> 
-                            <ul>
-                                <li>Requires mobile carrier SIM/plan + Airwatch (J&J Global Address List)</li>
-                                <li>Multi vendor software compatibility</li>
-                                <li>Mobile only</li>
-                            </ul>
-                        <td> 
-                            <ul>
-                                <li>Requires O365 E3 license</li>
-                                <li>Vendor software dependency</li>
-                                <li>Multi-platform support (PC, mobile)</li>
-                            </ul>
-                        <td> 
-                        <ul>
-                            <li>Requires O365 E3 or F1 license</li>
-                            <li>Vendor software dependency</li>
-                            <li>Multi-platform support (PC, mobile)</li>
-                        </ul>
-
-                        <td> 
-                            <ul>
-                                <li>Requires O365 E3 or F1 license</li>
-                                <li>Browser or vendor app based service</li>
-                                <li>Multi-platform support (PC, mobile)</li>
-                            </ul>
-                        <td> 
-                        <ul>
-                            <li>Requires O365 E3 or F1 license</li>
-                            <li>Multi vendor software compatibility</li>
-                            <li>Multi- platform support (PC, mobile)</li>
-                        </ul>
+                        <th scope="row" class="text-center small"><b>Backup (e.g. versioning) <br>and Recovery (e.g. recycle bin)</b></th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr class="">
+                        <th scope="row" class="text-center small "><b>PII Type 3, SOX, GxP,<br> PCI and HIPAA Compliant</b></th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&#10003;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&#10003;</td>
+                    </tr>
+                    <tr class="">
+                        <th scope="row" class="text-center small"><b>Desktop Apps (PC/Mac) + <br>Mobile Apps (Android/iOS) + <br>Web Apps</b></th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Desktop</td>
+                        <td>Desktop + Mobile + Web</td>
+                        <td>Desktop + Mobile + Web</td>
+                        <td>Mobile + Web </td>
+                        <td>Mobile + Web </td>
+                        <td>Desktop + Mobile + Web</td>
+                        <td>Web</td>
+                    </tr>
+                    <tr class="">
+                        <th scope="row" class="text-center small"><b>Offline Access Availability</b></th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr class="">
+                        <th scope="row" class="text-center small"><b>Subject to J&amp;J Data Retention Policies</b></th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&#10003;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr class="">
+                        <th scope="row" class="text-center small"><b>External Sharing</b></th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&#10003;</td>
+                        <td>&nbsp;</td>
+                        <td>&#10003;</td>
+                        <td>&nbsp;</td>
+                        <td>&#10003;</td>
                     </tr>
                 </tbody>
             </table>
