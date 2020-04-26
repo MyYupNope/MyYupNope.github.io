@@ -1,0 +1,71 @@
+.banner {
+    background-color: #CDB380;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+.banner h1 {
+  line-height: .9;
+}
+.banner h5 {
+  margin-top: 1rem;
+  font-weight: 500;
+  letter-spacing: .4rem;
+}
+
+.content-top, .content-bottom {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.quad_top_left, .quad_top_right, .quad_bottom_left, .quad_bottom_right {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  font-size: 4rem;
+}
+.quad_top_left {
+    background-color: #03172C;
+    color: white;
+}
+.quad_top_right {
+    background-color: #036955;
+    color: white;
+}
+.special {
+    height: 0.01rem;
+}
+.quad_extra {
+    z-index: 1000;
+    position: relative;
+    top: -3.5rem;
+}
+.quad_bottom_left {
+    background-color: #D5B66D;
+    color: white;
+}
+.quad_bottom_right {
+    background-color: #03383E;
+    color: white;
+}
+.msg {
+    background-color: #f3ead6;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.footer {
+    background-color: #222;
+    color: white;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+}
+.logotipo {
+    height: 0.01rem;
+    z-index: 1000;
+    position: relative;
+    top: -2rem;
+}
+
