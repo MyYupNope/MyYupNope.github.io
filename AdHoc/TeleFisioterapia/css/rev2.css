@@ -1,5 +1,5 @@
 .banner {
-    background-color: #E0F7FA;
+    background-color: #A3A3A3;
     margin-top: 1rem;
     margin-bottom: 1rem;
     padding-top: 1rem;
@@ -25,11 +25,11 @@
   font-size: 4rem;
 }
 .quad_top_left {
-    background-color: #46494C;
+    background-color: #293648;
     color: white;
 }
 .quad_top_right {
-    background-color: #C5C3C6;
+    background-color: #A1C0CE;
     color: white;
 }
 .special {
@@ -41,15 +41,15 @@
     top: -3.5rem;
 }
 .quad_bottom_left {
-    background-color: #1985A1;
+    background-color: #E9B074;
     color: white;
 }
 .quad_bottom_right {
-    background-color: #4C5C68;
+    background-color: #797373;
     color: white;
 }
 .msg {
-    background-color: #F5F5F5;
+    background-color: #E3E3E3;
     margin: 1rem;
     padding: 1rem;
 }
