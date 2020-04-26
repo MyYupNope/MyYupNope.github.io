@@ -21,13 +21,13 @@
 }
 
 .quad_top_left, .quad_top_right, .quad_bottom_left, .quad_bottom_right {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   font-size: 4rem;
 }
 .quad_top_left {
-    background-color: black;
-    color: white;
+  background-color: black;
+  color: white;
 }
 .quad_top_right {
     background-color: rgb(130, 209, 255);
@@ -53,6 +53,8 @@
     background-color: rgb(245, 245, 245);
     margin: 1rem;
     padding: 1rem;
+    animation-duration:3s;
+    animation-delay: 6s;
 }
 
 .footer {
