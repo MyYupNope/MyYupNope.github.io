@@ -50,13 +50,13 @@
         <div class="col-lg-8">
 
           <div class="row">
-            <div class="col quad_top_left text-center animated zoomInLeft delay-1s slow">
+            <div class="col quad_top_left text-center wow zoomInLeft" data-wow-duration="3s" data-wow-delay="1s">
               <span class="icon">
                 <i class="fas fa-desktop"></i>
               </span>
               <h6 class="text-left_">ACOMPANHAMENTO SEGUNDO A CONDIÇÃO CLÍNICA</h6>
             </div>
-            <div class="col quad_top_right  text-center animated zoomInRight delay-2s slow">
+            <div class="col quad_top_right  text-center wow zoomInRight"  data-wow-duration="3s" data-wow-delay="2s">
               <span class="icon">
                 <i class="fas fa-lock"></i>
               </span>
@@ -71,7 +71,7 @@
             <div class="col">
               &nbsp;
             </div>
-            <div class="col quad_extra animated jackInTheBox delay-5s slow">
+            <div class="col quad_extra wow jackInTheBox"  data-wow-duration="3s" data-wow-delay="5s">
               <span class="fa-stack fa-4x">
                 <i class="fas fa-circle fa-stack-2x fa-inverse"></i>
                 <i class="fas fa-user fa-stack-1x "></i>
@@ -86,13 +86,13 @@
           </div>
 
           <div class="row">
-            <div class="col quad_bottom_left text-center animated zoomInLeft delay-3s slow">
+            <div class="col quad_bottom_left text-center wow zoomInLeft"  data-wow-duration="3s" data-wow-delay="3s">
               <span class="icon">
                 <i class="fas fa-walking"></i>
               </span>
               <h6 class="text-left_">CRIAÇÃO DE PROGRAMAS INDIVIDUALIZADOS DE EXERCICIO</h6>
             </div>
-            <div class="col quad_bottom_right  text-center  animated zoomInRight delay-4s slow">
+            <div class="col quad_bottom_right  text-center wow zoomInRight" data-wow-duration="3s" data-wow-delay="4s">
               <span class="icon">
                 <i class="fas fa-comment"></i>
               </span>
@@ -105,13 +105,13 @@
         <div class="col">
 
           <div class="row">
-            <div class="col-sm msg animated fadeInRight slow">
+            <div class="col-sm msg wow fadeInRight"  data-wow-duration="3s" data-wow-delay="3s">
               <h6>QUEM SOMOS?</h6>
               <p>A HomeHealth surgiu em 2014 e desde então tem acompanhado dezenas de pacientes no seu domícilio...</p>
             </div>
           </div>
           <div class="row">
-            <div class="col msg animated fadeInRight slow">
+            <div class="col msg wow fadeInRight"  data-wow-duration="3s" data-wow-delay="4s">
               <h6>O QUE FAZEMOS?</h6>
               <p>Somos especialistas na criação de programas de reabilitação e exercício adaptados ás necessidades pessoais de cada paciente.</p>
             </div>
@@ -162,8 +162,14 @@
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-
+ <!-- WOW.js -->
+  <script src="https://cdn.boomcdn.com/libs/wow-js/1.3.0/wow.min.js"></script>
+  <!-- VanillaJS for ANim Launch -->
+  <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new WOW().init();
+    });
+  </script>
 
 </body>
 
