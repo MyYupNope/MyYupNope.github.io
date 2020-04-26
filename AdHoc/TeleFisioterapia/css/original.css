@@ -7,12 +7,12 @@
 }
 .banner h1 {
   line-height: .9;
-  letter-spacing: .15rem;
+
 }
 .banner h5 {
   margin-top: 1rem;
   font-weight: 500;
-  letter-spacing: .4rem;
+  letter-spacing: .2rem;
 }
 
 .content-top, .content-bottom {
