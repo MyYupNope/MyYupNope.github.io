@@ -13,6 +13,48 @@
       font-size: 1.25rem;
     }
 
+    .title p {
+      font-size: 6rem;
+      font-weight: 500;
+    }
+
+    .logo img {
+      height: 120px;
+    }
+
+    .desc,
+    .footer {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+
+    .desc .icon {
+      font-size: 6rem;
+    }
+
+    .desc .icon {
+      color: Dodgerblue;
+      margin-right: 2rem;
+    }
+
+    .desc p {
+      font-size: 2rem;
+      font-weight: 500;
+    }
+
+    .footer .icon {
+      font-size: 7rem;
+      color: darkred;
+      margin-right: 2rem;
+    }
+    .footer p {
+      font-size: 3rem;
+      font-weight: 700;
+    }
+    .footer li {
+      font-size: 2rem;
+    }
+
     .table-bordered tr th,
     .table-bordered tr td {
       border: 1px solid #aaa;
@@ -27,16 +69,18 @@
       font-weight: 600;
     }
 
-    table .title {
+    table .caption {
       font-size: 1.75rem;
       font-weight: 400;
       color: white;
       padding-top: 1rem;
       padding-bottom: 1rem;
     }
-    table .title img {
+
+    table .caption img {
       height: 40px;
     }
+
     table .description p {
       margin-top: 1rem;
     }
@@ -44,54 +88,65 @@
     .stronger {
       font-weight: 600;
     }
-
   </style>
 </head>
 
 <body>
   <div class="container-fluid">
 
-<div class="row">
-    <div class="col">
-<p class="h2 text-muted">TEAMS &amp; ZOOM</p>
+    <div class="row logo">
+      <div class="col text-right">
+        <img src=" https://lh3.googleusercontent.com/proxy/JzkBMwiJ-ZKqKmM1Ofo7g3nsEe_pzkaiIDrUNlzwDKglx68hZXPpFoyeMpg3o4IZXjEQ5OapJPS_ut8gIRV6lGiqR-WmAIIzb80iFrcxUgeuv3TqVhNP3GhA65elGwUKbDXJlVtoO9s" alt="logos" class="rounded">
+      </div>
+    </div>
 
+    <div class="row subtitle">
+      <div class="col">
+        <p class="h1 text-muted"><b>TEAMS &amp; ZOOM</b></p>
+      </div>
     </div>
-  </div>
 
-<div class="row">
-    <div class="col display-2">
-<b>Which platform to use</b>
+    <div class="row title">
+      <div class="col">
+        <p>Which platform to use</p>
+      </div>
     </div>
-  </div>
 
-<div class="row">
-    <div class="col-3 text-center">
-      One of three columns
+    <div class="row desc">
+      <div class="col-1">
+        &nbsp;
+      </div>
+      <div class="col-1 text-right">
+        <span class="icon">
+          <i class="fas fa-desktop"></i>
+        </span>
+      </div>
+      <div class="col-9">
+        <p>Microsoft Teams Meetings, Zoom Meeting and Zoom Webinars offer similar features and functionality but have key differences. Use the tables below to determine which platform will best serve your needs.
+        </p>
+      </div>
+      <div class="col-1">
+        &nbsp;
+      </div>
     </div>
-    <div class="col-9">
-      <p class="h1">Microsoft Teams Meetings, Zoom Meeting and Zoom Webinars offer similar features and functionality but have key differences. Use the tables below to determine  which platform will best serve your needs.
-</p>
-    </div>
-  </div>
 
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
-<!--                <colgroup>
-          <col class="" style="background-color: #E0E0E0;"/>
-          <col class="" style="background-color: #FFEBEE;"/>
-          <col class="" style="background-color: #E3F2FD;"/>
-          <col class="" style="background-color: #F3E5F5;"/>
-
+        <!--        <colgroup>
+          <col class="" style="background-color: #E0E0E0;" />
+          <col class="" style="background-color: #FFEBEE;" />
+          <col class="" style="background-color: #E3F2FD;" />
+          <col class="" style="background-color: #F3E5F5;" />
         </colgroup>-->
         <thead>
           <tr class="text-center">
             <th scope="col" class="align-middle" rowspan="2">Overview</th>
 
-            <th class="align-middle title" style="background-color: #D32F2F;"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Microsoft Teams</th>
+            <th class="align-middle caption" style="background-color: #D32F2F;"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Microsoft Teams</th>
 
-            <th class="align-middle title" style="background-color: #3F51B5;"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Meetings</th>
+            <th class="align-middle caption" style="background-color: #3F51B5;"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Meetings</th>
 
-            <th class="align-middle title" style="background-color: #9C27B0;"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Webinars</th>
+            <th class="align-middle caption" style="background-color: #9C27B0;"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Webinars</th>
           </tr>
           <tr class="text-center description">
             <th scope="col" class="align-middle">
@@ -290,7 +345,7 @@
           <tr class=" text-center stronger">
             <th scope="row" class="text-center">Polling</th>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
             </td>
             <td>
               <p>&#10003;</p>
@@ -303,7 +358,7 @@
           <tr class=" text-center stronger">
             <th scope="row" class="text-center">Whiteboard</th>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
             </td>
             <td>
               <p>&#10003;</p>
@@ -316,23 +371,23 @@
           <tr class=" text-center stronger">
             <th scope="row" class="text-center">Breakout rooms</th>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
             </td>
             <td>
               <p>&#10003;</p>
             </td>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
             </td>
           </tr>
 
           <tr class=" text-center stronger">
             <th scope="row" class="text-center">Q&amp;A</th>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
             </td>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
 
             </td>
             <td>
@@ -343,7 +398,7 @@
           <tr class=" text-center stronger">
             <th scope="row" class="text-center">Registration</th>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
             </td>
             <td>
               <p>&#10003;</p>
@@ -356,7 +411,7 @@
           <tr class=" text-center stronger">
             <th scope="row" class="text-center">Meeting password</th>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
             </td>
             <td>
               <p>&#10003;</p>
@@ -369,24 +424,47 @@
           <tr class=" text-center stronger">
             <th scope="row" class="text-center">Closed captioning</th>
             <td>
-              <h3>&nbsp;</p>
+              <p>&nbsp;</p>
             </td>
             <td>
-              <p>&#10003;*<br><span style="font-size: 1rem;"> * Requires a meeting participant to type the closed captions directly via Zoom or integration of a third party service.</span></h3>
+              <p>&#10003;*<br><span style="font-size: 1rem;"> * Requires a meeting participant to type the closed captions directly via Zoom or integration of a third party service.</span></p>
             </td>
             <td>
               <p>&#10003;</p>
             </td>
           </tr>
-
-
         </tbody>
       </table>
+    </div>
+
+    <div class="row footer">
+<!--      <div class="col-1">
+        &nbsp;
+      </div>-->
+      <div class="col-2 text-right">
+        <span class="icon">
+          <i class="fas fa-info-circle"></i>
+        </span>
+      </div>
+      <div class="col-10">
+        <p>Resources</p>
+        <ul>
+          <li><a href="https://apps.powerapps.com/play/3558ed66-c10f-4ddc-9563-985dcbad4432?tenantId=3ac94b33-9135-4821-9502-eafda6592a35" alt="link">Instructions on how to request a Zoom account</a><br>
+            <span class="small">Attendees DO NOT need a Zoom account to join meetings.</span></li>
+          <li><a href="https://jnj.sharepoint.com/teams/ITforme/Pages/virtual-meetings-overview.aspx" alt="link">ITforMe Virtual Meetings Quick Reference Guide</a>
+          </li>
+
+        </ul>
+      </div>
+<!--      <div class="col-1">
+        &nbsp;
+      </div>-->
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/7bacb0fb1c.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
