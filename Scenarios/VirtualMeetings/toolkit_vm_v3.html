@@ -8,27 +8,41 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
   <style>
+    /**
+    div {
+      border: 1px solid red;
+    }
+    /**/
+
     html {
       font-size: 62.5%;
     }
+
     body {
       font-size: 1.4rem;
     }
-    .logo img {
-      padding-top: 1rem;
+
+    .logo,
+    .desc, .footer
+      {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
     }
+
     .subtitle p {
       font-size: 2rem;
       font-weight: 500;
     }
+
     .title p {
       font-size: 5rem;
       font-weight: 500;
     }
-    .desc {
+
+/*    .desc {
       padding-top: 3rem;
       padding-bottom: 3rem;
-    }
+    }*/
 
     .desc .icon {
       font-size: 6rem;
@@ -46,10 +60,12 @@
     .teams {
       background-color: #D32F2F;
     }
-        .zoom_m {
+
+    .zoom_m {
       background-color: #0D47A1;
     }
-        .zoom_w {
+
+    .zoom_w {
       background-color: #9C27B0;
     }
 
@@ -87,18 +103,21 @@
       font-weight: 600;
     }
 
-    .footer {
+/*    .footer {
       padding-top: 3rem;
       padding-bottom: 3rem;
-    }
+    }*/
+
     .footer .icon {
       font-size: 7rem;
       color: darkred;
     }
+
     .footer p {
       font-size: 2.5rem;
       font-weight: 700;
     }
+
     .footer li {
       font-size: 1.5rem;
     }
@@ -140,9 +159,6 @@
         <p>Microsoft Teams Meetings, Zoom Meetings and Zoom Webinars offer similar features and functionality but have key differences. Use the tables below to determine which platform will best serve your needs.
         </p>
       </div>
-      <div class="col-1">
-        &nbsp;
-      </div>
     </div>
 
     <div class="table-responsive">
@@ -157,11 +173,11 @@
           <tr class="text-center">
             <th scope="col" class="align-middle bg-light" rowspan="2">Overview</th>
 
-            <th class="align-middle teams caption" ><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Microsoft Teams</th>
+            <th class="align-middle teams caption"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Microsoft Teams</th>
 
-            <th class="align-middle zoom_m caption" ><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Meetings</th>
+            <th class="align-middle zoom_m caption"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Meetings</th>
 
-            <th class="align-middle zoom_w caption" ><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Webinars</th>
+            <th class="align-middle zoom_w caption"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Webinars</th>
           </tr>
           <tr class="text-center description">
             <th scope="col" class="align-middle">
@@ -453,7 +469,7 @@
     </div>
 
     <div class="row footer">
-<!--      <div class="col-1">
+      <!--      <div class="col-1">
         &nbsp;
       </div>-->
       <div class="col-2 text-center">
@@ -471,7 +487,7 @@
 
         </ul>
       </div>
-<!--      <div class="col-1">
+      <!--      <div class="col-1">
         &nbsp;
       </div>-->
     </div>
