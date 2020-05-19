@@ -45,12 +45,14 @@
     }*/
 
     .desc .icon {
-      font-size: 6rem;
-    }
-
-    .desc .icon {
+      font-size: 7rem;
       color: Dodgerblue;
     }
+    .desc .icon svg {
+      vertical-align: text-top;
+    }
+      
+      
 
     .desc p {
       font-size: 2rem;
@@ -91,6 +93,11 @@
       padding-bottom: 1rem;
     }
 
+    table .caption a {
+      color: white;
+    }
+
+      
     table .caption img {
       height: 40px;
     }
@@ -103,14 +110,12 @@
       font-weight: 600;
     }
 
-/*    .footer {
-      padding-top: 3rem;
-      padding-bottom: 3rem;
-    }*/
-
     .footer .icon {
       font-size: 7rem;
       color: darkred;
+    }
+    .footer .icon svg {
+      vertical-align: text-top;
     }
 
     .footer p {
@@ -152,7 +157,10 @@
     <div class="row desc">
       <div class="col-2 text-center">
         <span class="icon">
-          <i class="fas fa-desktop"></i>
+            <svg class="bi bi-display" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.75 13.5c.167-.333.25-.833.25-1.5h4c0 .667.083 1.167.25 1.5H11a.5.5 0 010 1H5a.5.5 0 010-1h.75z"/>
+            <path fill-rule="evenodd" d="M13.991 3H2c-.325 0-.502.078-.602.145a.758.758 0 00-.254.302A1.46 1.46 0 001 4.01V10c0 .325.078.502.145.602.07.105.17.188.302.254a1.464 1.464 0 00.538.143L2.01 11H14c.325 0 .502-.078.602-.145a.758.758 0 00.254-.302 1.464 1.464 0 00.143-.538L15 9.99V4c0-.325-.078-.502-.145-.602a.757.757 0 00-.302-.254A1.46 1.46 0 0013.99 3zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z" clip-rule="evenodd"/>
+            </svg>
         </span>
       </div>
       <div class="col-10">
@@ -173,11 +181,41 @@
           <tr class="text-center">
             <th scope="col" class="align-middle bg-light" rowspan="2">Overview</th>
 
-            <th class="align-middle teams caption"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Microsoft Teams</th>
+            <th class="align-middle teams caption">
+                <a href="https://jnj.sharepoint.com/teams/ITforme/Pages/teams.aspx">
+                    <img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/MSTeams.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Microsoft Teams
+                    <svg class="bi bi-link-45deg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4.715 6.542L3.343 7.914a3 3 0 104.243 4.243l1.828-1.829A3 3 0 008.586 5.5L8 6.086a1.001 1.001 0 00-.154.199 2 2 0 01.861 3.337L6.88 11.45a2 2 0 11-2.83-2.83l.793-.792a4.018 4.018 0 01-.128-1.287z"/>
+  <path d="M5.712 6.96l.167-.167a1.99 1.99 0 01.896-.518 1.99 1.99 0 01.518-.896l.167-.167A3.004 3.004 0 006 5.499c-.22.46-.316.963-.288 1.46z"/>
+  <path d="M6.586 4.672A3 3 0 007.414 9.5l.775-.776a2 2 0 01-.896-3.346L9.12 3.55a2 2 0 012.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 00-4.243-4.243L6.586 4.672z"/>
+  <path d="M10 9.5a2.99 2.99 0 00.288-1.46l-.167.167a1.99 1.99 0 01-.896.518 1.99 1.99 0 01-.518.896l-.167.167A3.004 3.004 0 0010 9.501z"/>
+</svg>
+                </a>
+            </th>
 
-            <th class="align-middle zoom_m caption"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Meetings</th>
+            <th class="align-middle zoom_m caption">
+                <a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom.aspx">
+                <img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Meetings
+                    <svg class="bi bi-link-45deg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4.715 6.542L3.343 7.914a3 3 0 104.243 4.243l1.828-1.829A3 3 0 008.586 5.5L8 6.086a1.001 1.001 0 00-.154.199 2 2 0 01.861 3.337L6.88 11.45a2 2 0 11-2.83-2.83l.793-.792a4.018 4.018 0 01-.128-1.287z"/>
+  <path d="M5.712 6.96l.167-.167a1.99 1.99 0 01.896-.518 1.99 1.99 0 01.518-.896l.167-.167A3.004 3.004 0 006 5.499c-.22.46-.316.963-.288 1.46z"/>
+  <path d="M6.586 4.672A3 3 0 007.414 9.5l.775-.776a2 2 0 01-.896-3.346L9.12 3.55a2 2 0 012.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 00-4.243-4.243L6.586 4.672z"/>
+  <path d="M10 9.5a2.99 2.99 0 00.288-1.46l-.167.167a1.99 1.99 0 01-.896.518 1.99 1.99 0 01-.518.896l-.167.167A3.004 3.004 0 0010 9.501z"/>
+</svg>
+                </a>
+              </th>
 
-            <th class="align-middle zoom_w caption"><img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Webinars</th>
+            <th class="align-middle zoom_w caption">
+                <a href="https://jnj.sharepoint.com/teams/ITforme/Pages/quick-ref-guide-ZoomWebinars.aspx">
+                <img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Zoom.png" alt="logos" class=" rounded " />&nbsp;&nbsp;&nbsp;Zoom Webinars
+                    <svg class="bi bi-link-45deg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4.715 6.542L3.343 7.914a3 3 0 104.243 4.243l1.828-1.829A3 3 0 008.586 5.5L8 6.086a1.001 1.001 0 00-.154.199 2 2 0 01.861 3.337L6.88 11.45a2 2 0 11-2.83-2.83l.793-.792a4.018 4.018 0 01-.128-1.287z"/>
+  <path d="M5.712 6.96l.167-.167a1.99 1.99 0 01.896-.518 1.99 1.99 0 01.518-.896l.167-.167A3.004 3.004 0 006 5.499c-.22.46-.316.963-.288 1.46z"/>
+  <path d="M6.586 4.672A3 3 0 007.414 9.5l.775-.776a2 2 0 01-.896-3.346L9.12 3.55a2 2 0 012.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 00-4.243-4.243L6.586 4.672z"/>
+  <path d="M10 9.5a2.99 2.99 0 00.288-1.46l-.167.167a1.99 1.99 0 01-.896.518 1.99 1.99 0 01-.518.896l-.167.167A3.004 3.004 0 0010 9.501z"/>
+</svg>
+                </a>
+            </th>
           </tr>
           <tr class="text-center description">
             <th scope="col" class="align-middle">
@@ -252,13 +290,13 @@
             <td class="align-middle">
               <ul>
                 <li>No charge for end user</li>
-                <li>Only for Online Event Consulting – <a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom-Online-Event-Consulting.aspx" alt="">details here</a></li>
+                <li>Only for Online Event Consulting – <a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom-Online-Event-Consulting.aspx">details here</a></li>
               </ul>
             </td>
             <td class="align-middle">
               <ul>
                 <li>No charge for end user</li>
-                <li>Only for Online Event Consulting – <a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom-Online-Event-Consulting.aspx" alt="">details here</a></li>
+                <li>Only for Online Event Consulting – <a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom-Online-Event-Consulting.aspx">details here</a></li>
               </ul>
             </td>
           </tr>
@@ -316,14 +354,14 @@
             <td class="align-middle">
               <ul>
                 <li>Up to 1,000 participants</li>
-                <li><a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom-Online-Event-Consulting.aspx" alt="link">Online Event Consulting</a> recommended with 50+ participants</li>
+                <li><a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom-Online-Event-Consulting.aspx">Online Event Consulting</a> recommended with 50+ participants</li>
               </ul>
             </td>
             <td class="align-middle">
               <ul>
                 <li>Up to 1,000 attendees</li>
-                <li>Capacity can be increased to 10,000 attendees <a href="https://jnj.sharepoint.com/teams/ITforme/Lists/Zoom Webinar Capacity Increase/NewForm.aspx?Source=https%3A%2F%2Fjnj%2Esharepoint%2Ecom%2Fteams%2FITforme%2FLists%2FZoom%2520Webinar%2520Capacity%2520Increase%2FAllItems%2Easpx%23InplviewHashc2c5bda4%2Dfe47%2D4ffc%2Db6f1%2D2db59023fd4b%3DPaged%253DTRUE%2Dp%5FDate%5Fx0020%5Fof%5Fx0020%5Fthe%5Fx0020%5FWe%253D20200424%25252007%25253a00%25253a00%2Dp%5FID%253D37%2DFolderCTID%253D0x012001%2DSortField%253DDate%25255fx0020%25255fof%25255fx0020%25255fthe%25255fx0020%25255fWe%2DSortDir%253DAsc%2DPageFirstRow%253D31&RootFolder=" alt="link">here</a></li>
-                <li><a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom-Online-Event-Consulting.aspx" alt="link">Online Event Consulting</a> required</li>
+                <li>Capacity can be increased to 10,000 attendees <a href="https://jnj.sharepoint.com/teams/ITforme/Lists/Zoom Webinar Capacity Increase/NewForm.aspx?Source=https%3A%2F%2Fjnj%2Esharepoint%2Ecom%2Fteams%2FITforme%2FLists%2FZoom%2520Webinar%2520Capacity%2520Increase%2FAllItems%2Easpx%23InplviewHashc2c5bda4%2Dfe47%2D4ffc%2Db6f1%2D2db59023fd4b%3DPaged%253DTRUE%2Dp%5FDate%5Fx0020%5Fof%5Fx0020%5Fthe%5Fx0020%5FWe%253D20200424%25252007%25253a00%25253a00%2Dp%5FID%253D37%2DFolderCTID%253D0x012001%2DSortField%253DDate%25255fx0020%25255fof%25255fx0020%25255fthe%25255fx0020%25255fWe%2DSortDir%253DAsc%2DPageFirstRow%253D31&RootFolder=">here</a></li>
+                <li><a href="https://jnj.sharepoint.com/teams/ITforme/Pages/Zoom-Online-Event-Consulting.aspx" >Online Event Consulting</a> required</li>
               </ul>
             </td>
           </tr>
@@ -474,15 +512,17 @@
       </div>-->
       <div class="col-2 text-center">
         <span class="icon">
-          <i class="fas fa-info-circle"></i>
+            <svg class="bi bi-info-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+            </svg>
         </span>
       </div>
       <div class="col-10">
         <p>Resources</p>
         <ul>
-          <li><a href="https://apps.powerapps.com/play/3558ed66-c10f-4ddc-9563-985dcbad4432?tenantId=3ac94b33-9135-4821-9502-eafda6592a35" alt="link">Instructions on how to request a Zoom account</a><br>
+          <li><a href="https://apps.powerapps.com/play/3558ed66-c10f-4ddc-9563-985dcbad4432?tenantId=3ac94b33-9135-4821-9502-eafda6592a35">Instructions on how to request a Zoom account</a><br>
             <span class="small">Attendees DO NOT need a Zoom account to join meetings.</span></li>
-          <li><a href="https://jnj.sharepoint.com/teams/ITforme/Pages/virtual-meetings-overview.aspx" alt="link">ITforMe Virtual Meetings Quick Reference Guide</a>
+          <li><a href="https://jnj.sharepoint.com/teams/ITforme/Pages/virtual-meetings-overview.aspx">ITforMe Virtual Meetings Quick Reference Guide</a>
           </li>
 
         </ul>
@@ -495,7 +535,6 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  <script src="https://kit.fontawesome.com/7bacb0fb1c.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
