@@ -57,35 +57,17 @@
             font-weight: 500;
         }
 
-        .teams {
-            background-color: #D32F2F;
-        }
-
-        .zoom_m {
-            background-color: #0D47A1;
-        }
-
-        .zoom_w {
-            background-color: #9C27B0;
-        }
-
-        .sfb,
-        .webex,
-        .btevents {
-            color: black;
-        }
-
-        .table-bordered tr th,
-        .table-bordered tr td {
+        table .table-bordered tr th,
+        table .table-bordered tr td {
             border: 1px solid #aaa;
         }
 
-        .table td,
-        .table th {
+        table .table td,
+        table .table th {
             padding: .25rem;
         }
 
-        .table th {
+        table .table th {
             font-weight: 600;
         }
 
@@ -95,18 +77,35 @@
             padding-top: 1rem;
             padding-bottom: 1rem;
         }
-
         table .caption a {
             color: white;
         }
-
-
         table .caption img {
             height: 40px;
         }
+        table .teams {
+            background-color: #D32F2F;
+        }
 
+        table .zoom_m {
+            background-color: #0D47A1;
+        }
+
+        table .zoom_w {
+            background-color: #9C27B0;
+        }
+        table .sfb,
+        table .webex,
+        table .btevents {
+            color: black;
+        }
         table .description p {
             margin-top: 1rem;
+            font-weight: 600;
+        }
+        table .sunsetting {
+            color: #E91E63; 
+            font-weight: 700;
         }
 
         .stronger {
@@ -134,7 +133,7 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container-xl">
 
         <div class="row logo">
             <div class="col-8">
@@ -181,9 +180,9 @@
                     <col class="" />
                     <col class="" />
                     <col class="" />
-                    <col class="table-" />
-                    <col class="table-" />
-                    <col class="table-" />
+                    <col class="bg-light" />
+                    <col class="bg-light" />
+                    <col class="bg-light" />
                 </colgroup>
                 <thead>
                     <tr class="text-center">
@@ -225,15 +224,15 @@
                             </a>
                         </th>
 
-                        <th class="align-middle sfb caption table-active" width="10%">
+                        <th class="align-middle sfb caption" width="10%">
                             <img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/SkypeForBusiness.png" alt="logos" class=" rounded "><br>Skype For Business
                         </th>
 
-                        <th class="align-middle webex caption table-active" width="10%">
+                        <th class="align-middle webex caption" width="10%">
                             <img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/Webex.png" alt="logos" class=" rounded "><br>Cisco WebEx
                         </th>
 
-                        <th class="align-middle btevents caption table-active" width="10%">
+                        <th class="align-middle btevents caption" width="10%">
                             <img src="https://raw.githubusercontent.com/MyYupNope/MyYupNope.github.io/master/Logos/BTEvents.jpg" alt="logos" class=" rounded "><br>BT Events
                         </th>
                     </tr>
@@ -251,15 +250,15 @@
                         </th>
 
                         <th scope="col" class="align-top">
-                            <p><span style="color: green"><b>SUNSETTING TECHNOLOGY</b><br><br> </span>Skype For Business is a tool for collaborating where all participants can share video, audio, and computer screen while collaborating in one place. Everyone can see who is in attendance.</p>
+                            <p><span class="sunsetting">SUNSETTING TECHNOLOGY<br><br> </span>Skype For Business is a tool for collaborating where all participants can share video, audio, and computer screen while collaborating in one place. Everyone can see who is in attendance.</p>
                         </th>
 
                         <th scope="col" class="align-top">
-                            <p><span style="color: green"><b>SUNSETTING TECHNOLOGY</b><br><br> </span>WebEx (video) with BT MeetMe (audio) is an enhanced collaboration tool where all participants can share video, audio and screen. Everyone can see who is in attendance.</p>
+                            <p><span class="sunsetting">SUNSETTING TECHNOLOGY<br><br> </span>WebEx (video) with BT MeetMe (audio) is an enhanced collaboration tool where all participants can share video, audio and screen. Everyone can see who is in attendance.</p>
                         </th>
 
                         <th scope="col" class="align-top">
-                            <p><span style="color: green"><b>SUNSETTING TECHNOLOGY</b><br><br> </span>BT Events is a tool for events, where only the host and designated panelists can share video, audio and screen. Attendees can interact via Q&amp;A, chat and polling questions.</p>
+                            <p><span class="sunsetting">SUNSETTING TECHNOLOGY<br><br> </span>BT Events is a tool for events, where only the host and designated panelists can share video, audio and screen. Attendees can interact via Q&amp;A, chat and polling questions.</p>
                         </th>
                     </tr>
                     <tr class="text-left">
@@ -312,7 +311,6 @@
                             </ul>
                         </td>
                     </tr>
-
                     <tr class="text-left">
                         <th scope="row" class="text-center align-middle bg-light">Typical used by</th>
                         <td class="align-middle">
@@ -388,6 +386,7 @@
                         </td>
                     </tr>
                 </thead>
+            
                 <tbody>
                     <tr class="text-center table-secondary">
                         <th scope="row" class="text-center align-middle table-light" colspan="7">Features at a glance</th>
