@@ -83,7 +83,7 @@
 						<thead>
 							<tr class="text-center align-middle ">
 								<th scope="col" class="w-20 table-light" rowspan="2">Tier</th>
-								<th scope="col" class="w-20 table-secondary">Discover-It-Yourself></th>
+								<th scope="col" class="w-20 table-secondary">Discover-It-Yourself</th>
 								<th scope="col" class="w-20 table-light">Guided Implementation</th>
 								<th scope="col" class="w-20 table-secondary">Collaborative Delivery</th>
 								<th scope="col" class="w-20 table-light">Strategic Solution</th>
