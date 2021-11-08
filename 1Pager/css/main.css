@@ -2,7 +2,7 @@
 div,
 div .row,
 div .col {
-	border: 1px solid #CC0000;
+	border: 1px dotted #777;
 }
 /**/
 
@@ -92,17 +92,11 @@ div .col {
 #tier2,
 #tier3,
 #tier4,
-#demandintake {
+#requests {
 	padding-top: 4rem;
 	padding-bottom: 4rem;
 }
-#service .nav-link span {
-	padding: .25rem;
-	border-color: #00695C !important;
-}
-#tiered {
-	color: #00695C;
-}
+
 #tiered table a {
 	color: #00695C;
 }
@@ -114,12 +108,16 @@ div .col {
 	padding-bottom: 2rem;
 }
 #tiered h1,
+#requests h1 {
+	color: #00695C;
+	padding-top: 2rem;
+	padding-bottom: .25rem;
+}
 #tier1 h1,
 #tier2 h1,
 #tier3 h1,
-#tier4 h1,
-#demandintake h1 {
-	color: #00695C;
+#tier4 h1 {
+	color: #333;
 	padding-top: 2rem;
 	padding-bottom: .25rem;
 }
@@ -128,14 +126,14 @@ div .col {
 #tier2 p,
 #tier3 p,
 #tier4 p,
-#demandintake p {
-	color: #00695C;
+#requests p {
+/*	color: #00695C;*/
 	padding-bottom: 2rem;
 }
-#tier1 .image-desc .col-md,
-#tier2 .image-desc .col,
-#tier3 .image-desc .col,
-#tier4 .image-desc .col {
+#tier1 .image-desc,
+#tier2 .image-desc,
+#tier3 .image-desc,
+#tier4 .image-desc {
 		padding-top: 2rem;
 	padding-bottom: 2rem;
 }
@@ -143,14 +141,15 @@ div .col {
 
 
 
-#demandintake {
+#requests {
 	background-color: whitesmoke;
+
+}
+#requests h1,
+#requestsa {
 	color: #00695C;
 }
-#demandintake a {
-	color: #00695C;
-}
-#demandintake p {
+#requests p {
 	padding-top:.5rem;
 	padding-bottom:1rem;
 }
