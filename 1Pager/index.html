@@ -53,7 +53,7 @@
       </div>
       <div class="row">
       <div class="col">
-        <br><button type="submit" value="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" value="submit" class="btn btn-primary">Submit</button>
       </div>
       <div class="col">
         <div id="job_spin" class="spinner-border d-none" role="status">
@@ -98,7 +98,7 @@
         const received = await response.json();
         console.log(received);
 
-        const status = received.parse(received);
+        const status = JSON.parse(received);
         if (status.ok) { smile.classList.remove("d-block"); }
           else { tear.classList.remove("d-block"); }
         console.log(received);
