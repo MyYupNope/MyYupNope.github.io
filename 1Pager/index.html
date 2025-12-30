@@ -96,15 +96,18 @@
         spinner.classList.add("d-none");
 
         const received = await response.json();
+        console.log('Received > Display');
         console.log(received);
 
         const status = JSON.parse(received);
         if (status.ok) { 
           smile.classList.remove("d-none");
-          smile.classList.add("d-block"); }
+          smile.classList.add("d-block"); 
+        }
           else { 
             tear.classList.remove("d-none");
-            tear.classList.add("d-block"); }
+            tear.classList.add("d-block"); 
+          }
         console.log(received);
       } catch (e) {
         console.error(e);
