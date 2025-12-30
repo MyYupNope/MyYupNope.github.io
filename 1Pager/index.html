@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   </head>
-  <body class="bg-secondary">
+  <body class="bg-secondary text-light">
     <div class="container-fluid">
 
       <div class="row">
@@ -54,11 +54,14 @@
       <div class="row">
       <div class="col">
         <br><button type="submit" value="submit" class="btn btn-primary">Submit</button>
+                </div>
+                      <div class="col">
         <div id="job_spin" class="spinner-border text-primary d-none" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
-        <i class="bi bi-emoji-heart-eyes-fill d-none" id="job-smile"></i>
-        <i class="bi bi-emoji-tear-fill d-none" id="job-tear"></i>
+        <i class="bi bi-emoji-heart-eyes-fill d-none" id="job_smile"></i>
+        <i class="bi bi-emoji-tear-fill d-none" id="job_tear"></i>
+            </div>
       </div>
       </div>
       </form>
@@ -79,8 +82,8 @@
       try {
         spinner.classList.remove("d-none");
         spinner.classList.add("d-block");
-        smile.classList.remove("d-none");
-        tear.classList.remove("d-none");
+        smile.classList.remove("d-block");
+        tear.classList.remove("d-block");
 
 
         const response = await fetch("https://mollusk-pleased-lemming.ngrok-free.app/webhook-test/jappmotlet", {
