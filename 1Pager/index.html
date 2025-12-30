@@ -53,7 +53,7 @@
       <div class="row">
       <div class="col">
         <br><button type="submit" value="submit" class="btn btn-primary">Submit</button>
-        <div id="job_spin" class="spinner-border text-primary" role="status">
+        <div id="job_spin" class="spinner-border text-primary d-none" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
@@ -72,15 +72,14 @@
       const formData = new FormData(form);
 
       try {
-        spinner.classList.add("d-block");
+        spinner.classList.remove("d-none").add("d-block");
 
         const response = await fetch("https://mollusk-pleased-lemming.ngrok-free.app/webhook-test/jappmotlet", {
           method: "POST",
           // Set the FormData instance as the request body
           body: formData,
         });
-        spinner.classList.remove("d-block");
-        spinner.classList.add("d-none");
+        spinner.classList.remove("d-block").add("d-none");
         console.log(await response.json());
       } catch (e) {
         console.error(e);
