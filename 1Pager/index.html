@@ -99,8 +99,12 @@
         console.log(received);
 
         const status = JSON.parse(received);
-        if (status.ok) { smile.classList.remove("d-block"); }
-          else { tear.classList.remove("d-block"); }
+        if (status.ok) { 
+          smile.classList.remove("d-none");
+          smile.classList.add("d-block"); }
+          else { 
+            tear.classList.remove("d-none");
+            tear.classList.add("d-block"); }
         console.log(received);
       } catch (e) {
         console.error(e);
