@@ -1,321 +1,226 @@
 <!doctype html>
-<html lang="en">
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <title>Digital Acceleration>> Service</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <h1 class="text-3xl font-bold underline">
+      Hello world!
+    </h1>
 
-    <!-- Matomo -->
-    <!--script type="text/javascript" async="" defer="" src="https://etpanalytics.jnj.com/matomo.js"></script-->
+    <form>
+  <div class="space-y-12">
+    <div class="border-b border-white/10 pb-12">
+      <h2 class="text-base/7 font-semibold text-white">Profile</h2>
+      <p class="mt-1 text-sm/6 text-gray-400">This information will be displayed publicly so be careful what you share.</p>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/main.css">
-</head>
-
-<body>
-
-    <div id="service">
-        <nav class="navbar navbar-expand-md navbar-light bg-white fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="https://techtrends.jnj.com/medtech/quick-stop/das">
-                    <img src="images/Logo.jpg" alt="..." width="200">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav ">
-                        <li class="nav-item ">
-                            <a class="nav-link active" aria-current="page" href="#service">Service</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#tiers">Tiers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#roadmap">Roadmap</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#contacts">Contacts</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://techtrends.jnj.com/medtech/quick-stop/"><span class="border border-dark rounded-3">PQS&nbsp;></span></a>
-                        </li>
-                    </ul>
-                </div>
+      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+        <div class="sm:col-span-4">
+          <label for="username" class="block text-sm/6 font-medium text-white">Username</label>
+          <div class="mt-2">
+            <div class="flex items-center rounded-md bg-white/5 pl-3 outline-1 -outline-offset-1 outline-white/10 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-500">
+              <div class="shrink-0 text-base text-gray-400 select-none sm:text-sm/6">workcation.com/</div>
+              <input id="username" type="text" name="username" placeholder="janesmith" class="block min-w-0 grow bg-transparent py-1.5 pr-3 pl-1 text-base text-white placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
             </div>
-        </nav>
+          </div>
+        </div>
+
+        <div class="col-span-full">
+          <label for="about" class="block text-sm/6 font-medium text-white">About</label>
+          <div class="mt-2">
+            <textarea id="about" name="about" rows="3" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"></textarea>
+          </div>
+          <p class="mt-3 text-sm/6 text-gray-400">Write a few sentences about yourself.</p>
+        </div>
+
+        <div class="col-span-full">
+          <label for="photo" class="block text-sm/6 font-medium text-white">Photo</label>
+          <div class="mt-2 flex items-center gap-x-3">
+            <svg viewBox="0 0 24 24" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-12 text-gray-500">
+              <path d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+            <button type="button" class="rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20">Change</button>
+          </div>
+        </div>
+
+        <div class="col-span-full">
+          <label for="cover-photo" class="block text-sm/6 font-medium text-white">Cover photo</label>
+          <div class="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10">
+            <div class="text-center">
+              <svg viewBox="0 0 24 24" fill="currentColor" data-slot="icon" aria-hidden="true" class="mx-auto size-12 text-gray-600">
+                <path d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+              <div class="mt-4 flex text-sm/6 text-gray-400">
+                <label for="file-upload" class="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-400 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-500 hover:text-indigo-300">
+                  <span>Upload a file</span>
+                  <input id="file-upload" type="file" name="file-upload" class="sr-only" />
+                </label>
+                <p class="pl-1">or drag and drop</p>
+              </div>
+              <p class="text-xs/5 text-gray-400">PNG, JPG, GIF up to 10MB</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="banner" class="container-fluid">
-        <div class="row">
-            <div class="col text-center">
-                <h1 class="display-2">Digital <i>Acceleration>></i> Service
-                    <!--span class="badge rounded-pill bg-warning text-dark">Pilot</span-->
-                </h1>
-            </div>
+    <div class="border-b border-white/10 pb-12">
+      <h2 class="text-base/7 font-semibold text-white">Personal Information</h2>
+      <p class="mt-1 text-sm/6 text-gray-400">Use a permanent address where you can receive mail.</p>
+
+      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+        <div class="sm:col-span-3">
+          <label for="first-name" class="block text-sm/6 font-medium text-white">First name</label>
+          <div class="mt-2">
+            <input id="first-name" type="text" name="first-name" autocomplete="given-name" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          </div>
         </div>
 
-        <div class="row justify-content-center">
-            <div class="col-xl-5 d-flex justify-content-center align-items-center">
-
-                <img src="images/Hero_4_rb.png" alt="..." class="img-fluid img-thumbnail">
-
-                <!--<span class="embed-responsive embed-responsive-1by1">
-		  <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/Y_7gdql_j5c" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-		</span>-->
-            </div>
-            <div class="col-xl-6 text-center">
-                <p class=" lead align-middle">Advancing digital transformation in MedTech, acting as a catalyst on processes digitalization journey, promoting team's new ways of working and identifying new paths for improved performance.</p><br>
-                <p class="display-6 align-middle">The future in <b>NOW</b>, let's discover it <b>TOGETHER</b>!</p>
-                <br>
-                <p>Powered by: <img src="images/pp_toolset_rb.png" alt="..." width="50%" class="img-fluid"></p>
-            </div>
+        <div class="sm:col-span-3">
+          <label for="last-name" class="block text-sm/6 font-medium text-white">Last name</label>
+          <div class="mt-2">
+            <input id="last-name" type="text" name="last-name" autocomplete="family-name" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          </div>
         </div>
+
+        <div class="sm:col-span-4">
+          <label for="email" class="block text-sm/6 font-medium text-white">Email address</label>
+          <div class="mt-2">
+            <input id="email" type="email" name="email" autocomplete="email" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="country" class="block text-sm/6 font-medium text-white">Country</label>
+          <div class="mt-2 grid grid-cols-1">
+            <select id="country" name="country" autocomplete="country-name" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6">
+              <option>United States</option>
+              <option>Canada</option>
+              <option>Mexico</option>
+            </select>
+            <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-400 sm:size-4">
+              <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="col-span-full">
+          <label for="street-address" class="block text-sm/6 font-medium text-white">Street address</label>
+          <div class="mt-2">
+            <input id="street-address" type="text" name="street-address" autocomplete="street-address" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-2 sm:col-start-1">
+          <label for="city" class="block text-sm/6 font-medium text-white">City</label>
+          <div class="mt-2">
+            <input id="city" type="text" name="city" autocomplete="address-level2" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="region" class="block text-sm/6 font-medium text-white">State / Province</label>
+          <div class="mt-2">
+            <input id="region" type="text" name="region" autocomplete="address-level1" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="postal-code" class="block text-sm/6 font-medium text-white">ZIP / Postal code</label>
+          <div class="mt-2">
+            <input id="postal-code" type="text" name="postal-code" autocomplete="postal-code" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="tiers" class="container-fluid">
-        <div class="row">
-            <div class="col">
-                <h1 class="display-6">Tiered Offering</h1>
-                <p>In order to meet partners expectations and maximize team capacity, a tiered service is available that defines what the request type is, what is the expected participation and what enables it.</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="table-responsive">
-                    <table class="table align-top table-striped table-bordered">
-                        <thead>
-                            <tr class="text-center align-middle ">
-                                <th scope="col" class="w-20 table-light" rowspan="2">Tier</th>
-                                <th scope="col" class="w-20 table-secondary">Discover-It-Yourself</th>
-                                <th scope="col" class="w-20 table-light">Guided Implementation</th>
-                                <th scope="col" class="w-20 table-secondary">Collaborative Delivery</th>
-                                <th scope="col" class="w-20 table-light">Strategic Solution</th>
-                            </tr>
-                            <tr class="text-center">
-                                <th class="table-secondary">Tier 1</th>
-                                <th class="table-light">Tier 2</th>
-                                <th class="table-secondary">Tier 3</th>
-                                <th class="table-light">Tier 4</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="table-light text-center">Description</td>
-                                <td class="table-secondary">Business partner interested in discovering technologies that can be used to improve business processes</td>
-                                <td class="table-light">Business partner requiring support on specific phases of a solution implementation</td>
-                                <td class="table-secondary">Business partner requiring assistance from P&amp;C resources on solution delivery steps, having business funding as a requirement</td>
-                                <td class="table-light">P&amp;C assists partner on business requirements discussions with associated PL on JJT strategy alignment.<br> An agreement on the best course of action towards business requirements solution is to be identified, it can either be taken by PL/AS or DAS tiered service</td>
-                            </tr>
-                            <tr>
-                                <td class="table-light text-center">Activities</td>
-                                <td class="table-secondary">
-                                    <ul>
-                                        <li>Training and Technical Resources</li>
-                                        <li>Best Practices</li>
-                                        <li>Community Support (Yammer, Champions Groups, etc)</li>
-                                        <li>DAS Reporting</li>
-                                    </ul>
-                                </td>
-                                <td class="table-light">
-                                    <ul>
-                                        <li>Business Analysis Service (Light)</li>
-                                        <li>6H or less of SME Guidance</li>
-                                        <li>DAS Monitoring &amp; Reporting</li>
-                                    </ul>
-                                </td>
-                                <td class="table-secondary">
-                                    <ul>
-                                        <li>Dedicated P&amp;C Resources Assigned providing:
-                                            <ul>
-                                                <li>Project Management</li>
-                                                <li>Business Analysis</li>
-                                                <li>Solution Architecture</li>
-                                                <li>Solution Design, Build, Test</li>
-                                                <li>UAT &amp; Release</li>
-                                            </ul>
-                                        </li>
-                                        <li>DAS Monitoring &amp; Reporting</li>
-                                    </ul>
-                                </td>
-                                <td class="table-light">
-                                    <ul>
-                                        <li>Owned and supported by Product Lines with AS assistance </li>
-                                        <li>For P&amp;C to assist, another Tier must be selected</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-light text-center">Resources &amp; Costs</td>
-                                <td class="table-secondary">Existent P&amp;C Resources</td>
-                                <td class="table-light">Existent P&amp;C Resources</td>
-                                <td class="table-secondary">
-                                    <ul>
-                                        <li>P&amp;C contracted resources</li>
-                                        <li>Business funded
-                                            <ul>
-                                                <li>Min: 10k</li>
-                                                <li>Max: depends on the presented requirements</li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </td>
-                                <td class="table-light">
-                                    <ul>
-                                        <li>AS resources and funded by Business</li>
-                                        <li>For P&amp;C to assist, another Tier must be selected</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td rowspan="2" class="table-light text-center">Support Model</td>
-                                <td class="table-secondary">N/A</td>
-                                <td class="table-light">Solution owner based</td>
-                                <td class="table-secondary">Based on an agile and lean approach, to be defined and worked throughout the project phases, aligned with solution complexity and accommodating different purposes</td>
-                                <td class="table-light">
-                                    <ul>
-                                        <li>To be worked defined by PL team</li>
-                                        <li>For P&amp;C to assist, another Tier must be selected</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <div class="small">DAS relies on MS Power Platform for service delivery, support for associated solutions is also a shared responsibility between teams
-                                        <ul>
-                                            <li>TS/Microsoft for Infrastructure readiness</li>
-                                            <li>DAS Team for solution technical documentation and hypercare troubleshooting </li>
-                                            <li>Requestor and associated Team for solution guidance documentation and training</li>
-                                        </ul>
-                                    </div>
-                                </td>
+    <div class="border-b border-white/10 pb-12">
+      <h2 class="text-base/7 font-semibold text-white">Notifications</h2>
+      <p class="mt-1 text-sm/6 text-gray-400">We'll always let you know about important changes, but you pick what else you want to hear about.</p>
 
-                            </tr>
-                        </tbody>
-                    </table>
+      <div class="mt-10 space-y-10">
+        <fieldset>
+          <legend class="text-sm/6 font-semibold text-white">By email</legend>
+          <div class="mt-6 space-y-6">
+            <div class="flex gap-3">
+              <div class="flex h-6 shrink-0 items-center">
+                <div class="group grid size-4 grid-cols-1">
+                  <input id="comments" type="checkbox" name="comments" checked aria-describedby="comments-description" class="col-start-1 row-start-1 appearance-none rounded-sm border border-white/10 bg-white/5 checked:border-indigo-500 checked:bg-indigo-500 indeterminate:border-indigo-500 indeterminate:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:border-white/5 disabled:bg-white/10 disabled:checked:bg-white/10 forced-colors:appearance-auto" />
+                  <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-white/25">
+                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                    <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
+                  </svg>
                 </div>
+              </div>
+              <div class="text-sm/6">
+                <label for="comments" class="font-medium text-white">Comments</label>
+                <p id="comments-description" class="text-gray-400">Get notified when someones posts a comment on a posting.</p>
+              </div>
             </div>
-        </div>
+            <div class="flex gap-3">
+              <div class="flex h-6 shrink-0 items-center">
+                <div class="group grid size-4 grid-cols-1">
+                  <input id="candidates" type="checkbox" name="candidates" aria-describedby="candidates-description" class="col-start-1 row-start-1 appearance-none rounded-sm border border-white/10 bg-white/5 checked:border-indigo-500 checked:bg-indigo-500 indeterminate:border-indigo-500 indeterminate:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:border-white/5 disabled:bg-white/10 disabled:checked:bg-white/10 forced-colors:appearance-auto" />
+                  <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-white/25">
+                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                    <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
+                  </svg>
+                </div>
+              </div>
+              <div class="text-sm/6">
+                <label for="candidates" class="font-medium text-white">Candidates</label>
+                <p id="candidates-description" class="text-gray-400">Get notified when a candidate applies for a job.</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="flex h-6 shrink-0 items-center">
+                <div class="group grid size-4 grid-cols-1">
+                  <input id="offers" type="checkbox" name="offers" aria-describedby="offers-description" class="col-start-1 row-start-1 appearance-none rounded-sm border border-white/10 bg-white/5 checked:border-indigo-500 checked:bg-indigo-500 indeterminate:border-indigo-500 indeterminate:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:border-white/5 disabled:bg-white/10 disabled:checked:bg-white/10 forced-colors:appearance-auto" />
+                  <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-white/25">
+                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                    <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
+                  </svg>
+                </div>
+              </div>
+              <div class="text-sm/6">
+                <label for="offers" class="font-medium text-white">Offers</label>
+                <p id="offers-description" class="text-gray-400">Get notified when a candidate accepts or rejects an offer.</p>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="text-sm/6 font-semibold text-white">Push notifications</legend>
+          <p class="mt-1 text-sm/6 text-gray-400">These are delivered via SMS to your mobile phone.</p>
+          <div class="mt-6 space-y-6">
+            <div class="flex items-center gap-x-3">
+              <input id="push-everything" type="radio" name="push-notifications" checked class="relative size-4 appearance-none rounded-full border border-white/10 bg-white/5 before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-500 checked:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:border-white/5 disabled:bg-white/10 disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="push-everything" class="block text-sm/6 font-medium text-white">Everything</label>
+            </div>
+            <div class="flex items-center gap-x-3">
+              <input id="push-email" type="radio" name="push-notifications" class="relative size-4 appearance-none rounded-full border border-white/10 bg-white/5 before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-500 checked:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:border-white/5 disabled:bg-white/10 disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="push-email" class="block text-sm/6 font-medium text-white">Same as email</label>
+            </div>
+            <div class="flex items-center gap-x-3">
+              <input id="push-nothing" type="radio" name="push-notifications" class="relative size-4 appearance-none rounded-full border border-white/10 bg-white/5 before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-500 checked:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:border-white/5 disabled:bg-white/10 disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="push-nothing" class="block text-sm/6 font-medium text-white">No push notifications</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
     </div>
+  </div>
 
-    <div id="roadmap" class="container-fluid">
-        <div class="row">
-            <div class="col">
-                <h1 class="display-6">Service Roadmap</h1>
-                <p>We started this journey a while back and we aim to grow in service. Right now we are in PILOT mode, taking a few requests from BTLs to validate our service model and have a taste of what full service can mean. Within a couple of months we are expecting to go gull service, when we will update the service roadmap.</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col d-flex justify-content-center align-items-center">
-                <img src="images/DAS_Roadmap.png" alt="roadmap" class="img-fluid img-thumbnail">
-            </div>
-        </div>
-    </div>
-
-    <div id="contacts" class="container-fluid">
-        <div class="row">
-            <div class="col">
-                <h1 class="display-6">Contacts</h1>
-                <p>In case you would like to discuss details about the service or a particular demand, find below the service contacts globally and by region.</p>
-            </div>
-        </div>
-        <div class="row justify-content-md-center text-center">
-            <div class="col-md-2 col-6">
-                <div class="card">
-                    <img src="images/ZD.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Zane Danes</h5>
-                        <p class="card-text text-muted">Global</p>
-                        <a href="mailto:ZDanes@ITS.JNJ.COM" class="btn btn-secondary">Email</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 col-6">
-                <div class="card">
-                    <img src="images/RM.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Rodrigo Matias</h5>
-                        <p class="card-text text-muted">LATAM</p>
-                        <a href="mailto:rmatias@its.jnj.com" class="btn btn-secondary">Email</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 col-6">
-                <div class="card">
-                    <img src="images/TW.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tim Wainwright</h5>
-                        <p class="card-text text-muted">NA</p>
-                        <a href="mailto:TWAINWRI@ITS.JNJ.com" class="btn btn-secondary">Email</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 col-6">
-                <div class="card">
-                    <img src="images/SN.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Sanjeev Nair</h5>
-                        <p class="card-text text-muted">ASPAC</p>
-                        <a href="mailto:SNair4@ITS.JNJ.COM" class="btn btn-secondary">Email</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 col-6">
-                <div class="card">
-                    <img src="images/PB.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Peter Bradshaw</h5>
-                        <p class="card-text text-muted">EMEA</p>
-                        <a href="mailto:pbradsha@ITS.JNJ.COM" class="btn btn-secondary">Email</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="footer" class="container-fluid">
-        <p class="text-center ">Made with <span style="color: #e25555;">&#9829;</span> by Med Tech IT Productivity &amp; Collaboration PL<br><br><span class="small">2021 © Johnson &amp; Johnson</span></p>
-    </div>
-
-    <!-- Optional JavaScript; choose one of the two! -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            console.log("JS ready");
-
-            console.log("Carousel ready");
-        });
-
-    </script>
-
-    <!-- Matomo -->
-    <!--script type="text/javascript">
-		var _paq = window._paq || [];
-		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-		_paq.push(['trackPageView']);
-		_paq.push(['enableLinkTracking']);
-		(function() {
-			var u = "https://etpanalytics.jnj.com/";
-			_paq.push(['setTrackerUrl', u + 'matomo.php']);
-			_paq.push(['setSiteId', '29']);
-			var d = document,
-				g = d.createElement('script'),
-				s = d.getElementsByTagName('script')[0];
-			g.type = 'text/javascript';
-			g.async = true;
-			g.defer = true;
-			g.src = u + 'matomo.js';
-			s.parentNode.insertBefore(g, s);
-		})();
-
-	</script-->
-    <!-- End Matomo -->
+  <div class="mt-6 flex items-center justify-end gap-x-6">
+    <button type="button" class="text-sm/6 font-semibold text-white">Cancel</button>
+    <button type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Save</button>
+  </div>
+</form>
 
 
-</body>
-
+  </body>
 </html>
