@@ -91,41 +91,16 @@ form.addEventListener("submit", (event) => {
 
 /**
  * Input Interaction Effects
- * Adds smooth animations on focus/blur
+ * Simple focus animations for Google Store style
  */
 const inputs = document.querySelectorAll('.form-input, .form-textarea');
 inputs.forEach(input => {
-    // Add focus animation
+    // Simple focus effect - no transform
     input.addEventListener('focus', function () {
-        this.parentElement.style.transform = 'translateY(-2px)';
+        // Focus styling handled by CSS
     });
 
     input.addEventListener('blur', function () {
-        this.parentElement.style.transform = 'translateY(0)';
+        // Blur styling handled by CSS
     });
-});
-
-/**
- * Parallax Effect
- * Subtle 3D tilt effect on mouse movement
- */
-document.addEventListener('mousemove', (e) => {
-    const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
-    const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
-
-    const glassCard = document.querySelector('.glass-card');
-    if (glassCard) {
-        glassCard.style.transform = `perspective(1000px) rotateY(${moveX}deg) rotateX(${-moveY}deg)`;
-    }
-});
-
-/**
- * Reset Card Position
- * Resets the parallax effect when mouse leaves the window
- */
-document.addEventListener('mouseleave', () => {
-    const glassCard = document.querySelector('.glass-card');
-    if (glassCard) {
-        glassCard.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
-    }
 });
