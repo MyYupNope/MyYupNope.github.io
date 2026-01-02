@@ -34,19 +34,31 @@ async function sendData() {
         const result = await response.json();
         console.log("Response:", result);
 
-        // Hide spinner and show success icon
+        // Hide spinner first
         spinner.classList.remove("active");
         spinner.classList.add("hidden");
-        smile.classList.remove("hidden");
-        smile.classList.add("active");
 
-        // Reset form after 2 seconds
-        setTimeout(() => {
-            form.reset();
-            smile.classList.remove("active");
-            smile.classList.add("hidden");
+        // Evaluate the response - check if "ok" is true
+        if (result.ok === true) {
+            // Show success icon
+            smile.classList.remove("hidden");
+            smile.classList.add("active");
+
+            // Reset form after 2 seconds
+            setTimeout(() => {
+                form.reset();
+                smile.classList.remove("active");
+                smile.classList.add("hidden");
+                submitBtn.disabled = false;
+            }, 2000);
+        } else {
+            // Handle unsuccessful response
             submitBtn.disabled = false;
-        }, 2000);
+
+            // Show error message with details if available
+            const errorMessage = result.message || result.error || "The submission was not successful. Please try again.";
+            alert(`Error: ${errorMessage}`);
+        }
 
     } catch (error) {
         console.error("Submission error:", error);
