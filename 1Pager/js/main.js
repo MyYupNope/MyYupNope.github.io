@@ -32,7 +32,7 @@ async function sendData() {
         });
 
         const result = await response.json();
-        console.log("Response:", result);
+        console.log("Result:", result);
 
         // Hide spinner first
         spinner.classList.remove("active");
