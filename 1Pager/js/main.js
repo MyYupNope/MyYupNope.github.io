@@ -8,6 +8,7 @@ const form = document.querySelector("#job_opening");
 const submitBtn = document.querySelector("#submit_btn");
 const spinner = document.querySelector("#job_spin");
 const smile = document.querySelector("#job_smile");
+const failure = document.querySelector("#job_failure");
 
 /**
  * Form Submission Handler
@@ -19,6 +20,8 @@ async function sendData() {
 
     try {
         // Hide success icon and show spinner
+        failure.classList.remove("active");
+        failure.classList.add("hidden");
         smile.classList.remove("active");
         smile.classList.add("hidden");
         spinner.classList.remove("hidden");
@@ -44,26 +47,33 @@ async function sendData() {
             smile.classList.remove("hidden");
             smile.classList.add("active");
 
-            // Reset form after 2 seconds
+            // Reset form after 30 seconds
             setTimeout(() => {
                 form.reset();
                 smile.classList.remove("active");
                 smile.classList.add("hidden");
                 submitBtn.disabled = false;
-            }, 60000);
+            }, 30000);
         } else {
-            // Handle unsuccessful response
-            submitBtn.disabled = false;
+            setTimeout(() => {
+                form.reset();
+                // Handle unsuccessful response
+                failure.classList.remove("hidden");
+                failure.classList.add("active");
+                submitBtn.disabled = false;
 
-            // Show error message with details if available
-            const errorMessage = result.message || result.error || "The submission was not successful. Please try again.";
-            alert(`Error: ${errorMessage}`);
+                // Show error message with details if available
+                const errorMessage = result.message || result.error || "The submission was not successful. Please try again.";
+                alert(`Error: ${errorMessage}`);
+            }, 30000);
         }
 
     } catch (error) {
         console.error("Submission error:", error);
 
         // Hide spinner on error
+        failure.classList.remove("hidden");
+        failure.classList.add("active");
         spinner.classList.remove("active");
         spinner.classList.add("hidden");
         submitBtn.disabled = false;
