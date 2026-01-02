@@ -50,7 +50,7 @@ async function sendData() {
                 smile.classList.remove("active");
                 smile.classList.add("hidden");
                 submitBtn.disabled = false;
-            }, 2000);
+            }, 60000);
         } else {
             // Handle unsuccessful response
             submitBtn.disabled = false;
