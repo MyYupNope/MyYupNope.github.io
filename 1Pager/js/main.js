@@ -14,51 +14,51 @@ const smile = document.querySelector("#job_smile");
  * Sends form data to the webhook endpoint
  */
 async function sendData() {
-  // Create FormData from form
-  const formData = new FormData(form);
+    // Create FormData from form
+    const formData = new FormData(form);
 
-  try {
-    // Hide success icon and show spinner
-    smile.classList.remove("active");
-    smile.classList.add("hidden");
-    spinner.classList.remove("hidden");
-    spinner.classList.add("active");
-    submitBtn.disabled = true;
+    try {
+        // Hide success icon and show spinner
+        smile.classList.remove("active");
+        smile.classList.add("hidden");
+        spinner.classList.remove("hidden");
+        spinner.classList.add("active");
+        submitBtn.disabled = true;
 
-    // Send POST request
-    const response = await fetch("https://mollusk-pleased-lemming.ngrok-free.app/webhook-test/jappmotlet", {
-      method: "POST",
-      body: formData,
-    });
+        // Send POST request
+        const response = await fetch("https://mollusk-pleased-lemming.ngrok-free.app/webhook/jappmotlet", {
+            method: "POST",
+            body: formData,
+        });
 
-    const result = await response.json();
-    console.log("Response:", result);
+        const result = await response.json();
+        console.log("Response:", result);
 
-    // Hide spinner and show success icon
-    spinner.classList.remove("active");
-    spinner.classList.add("hidden");
-    smile.classList.remove("hidden");
-    smile.classList.add("active");
+        // Hide spinner and show success icon
+        spinner.classList.remove("active");
+        spinner.classList.add("hidden");
+        smile.classList.remove("hidden");
+        smile.classList.add("active");
 
-    // Reset form after 2 seconds
-    setTimeout(() => {
-      form.reset();
-      smile.classList.remove("active");
-      smile.classList.add("hidden");
-      submitBtn.disabled = false;
-    }, 2000);
+        // Reset form after 2 seconds
+        setTimeout(() => {
+            form.reset();
+            smile.classList.remove("active");
+            smile.classList.add("hidden");
+            submitBtn.disabled = false;
+        }, 2000);
 
-  } catch (error) {
-    console.error("Submission error:", error);
+    } catch (error) {
+        console.error("Submission error:", error);
 
-    // Hide spinner on error
-    spinner.classList.remove("active");
-    spinner.classList.add("hidden");
-    submitBtn.disabled = false;
+        // Hide spinner on error
+        spinner.classList.remove("active");
+        spinner.classList.add("hidden");
+        submitBtn.disabled = false;
 
-    // Show error feedback (you can customize this)
-    alert("There was an error submitting your application. Please try again.");
-  }
+        // Show error feedback (you can customize this)
+        alert("There was an error submitting your application. Please try again.");
+    }
 }
 
 /**
@@ -66,15 +66,15 @@ async function sendData() {
  * Prevents default form submission and handles with custom function
  */
 form.addEventListener("submit", (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  // Basic HTML5 validation check
-  if (form.checkValidity()) {
-    sendData();
-  } else {
-    // Trigger browser's built-in validation UI
-    form.reportValidity();
-  }
+    // Basic HTML5 validation check
+    if (form.checkValidity()) {
+        sendData();
+    } else {
+        // Trigger browser's built-in validation UI
+        form.reportValidity();
+    }
 });
 
 /**
@@ -83,14 +83,14 @@ form.addEventListener("submit", (event) => {
  */
 const inputs = document.querySelectorAll('.form-input, .form-textarea');
 inputs.forEach(input => {
-  // Add focus animation
-  input.addEventListener('focus', function () {
-    this.parentElement.style.transform = 'translateY(-2px)';
-  });
+    // Add focus animation
+    input.addEventListener('focus', function () {
+        this.parentElement.style.transform = 'translateY(-2px)';
+    });
 
-  input.addEventListener('blur', function () {
-    this.parentElement.style.transform = 'translateY(0)';
-  });
+    input.addEventListener('blur', function () {
+        this.parentElement.style.transform = 'translateY(0)';
+    });
 });
 
 /**
@@ -98,13 +98,13 @@ inputs.forEach(input => {
  * Subtle 3D tilt effect on mouse movement
  */
 document.addEventListener('mousemove', (e) => {
-  const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
-  const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+    const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+    const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
 
-  const glassCard = document.querySelector('.glass-card');
-  if (glassCard) {
-    glassCard.style.transform = `perspective(1000px) rotateY(${moveX}deg) rotateX(${-moveY}deg)`;
-  }
+    const glassCard = document.querySelector('.glass-card');
+    if (glassCard) {
+        glassCard.style.transform = `perspective(1000px) rotateY(${moveX}deg) rotateX(${-moveY}deg)`;
+    }
 });
 
 /**
@@ -112,8 +112,8 @@ document.addEventListener('mousemove', (e) => {
  * Resets the parallax effect when mouse leaves the window
  */
 document.addEventListener('mouseleave', () => {
-  const glassCard = document.querySelector('.glass-card');
-  if (glassCard) {
-    glassCard.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
-  }
+    const glassCard = document.querySelector('.glass-card');
+    if (glassCard) {
+        glassCard.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+    }
 });
