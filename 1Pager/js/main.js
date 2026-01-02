@@ -8,7 +8,7 @@ const form = document.querySelector("#job_opening");
 const submitBtn = document.querySelector("#submit_btn");
 const spinner = document.querySelector("#job_spin");
 const smile = document.querySelector("#job_smile");
-const failure = document.querySelector("#job_failure");
+const sad = document.querySelector("#job_sad");
 
 /**
  * Form Submission Handler
@@ -20,8 +20,8 @@ async function sendData() {
 
     try {
         // Hide success icon and show spinner
-        failure.classList.remove("active");
-        failure.classList.add("hidden");
+        sad.classList.remove("active");
+        sad.classList.add("hidden");
         smile.classList.remove("active");
         smile.classList.add("hidden");
         spinner.classList.remove("hidden");
@@ -58,8 +58,8 @@ async function sendData() {
             setTimeout(() => {
                 form.reset();
                 // Handle unsuccessful response
-                failure.classList.remove("hidden");
-                failure.classList.add("active");
+                sad.classList.remove("hidden");
+                sad.classList.add("active");
                 submitBtn.disabled = false;
 
                 // Show error message with details if available
@@ -72,8 +72,8 @@ async function sendData() {
         console.error("Submission error:", error);
 
         // Hide spinner on error
-        failure.classList.remove("hidden");
-        failure.classList.add("active");
+        sad.classList.remove("hidden");
+        sad.classList.add("active");
         spinner.classList.remove("active");
         spinner.classList.add("hidden");
         submitBtn.disabled = false;
