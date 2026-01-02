@@ -29,7 +29,7 @@ async function sendData() {
         submitBtn.disabled = true;
 
         // Send POST request
-        const response = await fetch("https://mollusk-pleased-lemming.ngrok-free.app/webhook-test/jappmotlet", {
+        const response = await fetch("https://mollusk-pleased-lemming.ngrok-free.app/webhook/jappmotlet", {
             method: "POST",
             body: formData,
         });
