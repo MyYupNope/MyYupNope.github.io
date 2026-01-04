@@ -19,7 +19,7 @@ async function sendData() {
     const formData = new FormData(form);
 
     try {
-        // Hide success icon and show spinner
+        // Hide success/error icons and show spinner
         sad.classList.remove("active");
         sad.classList.add("hidden");
         smile.classList.remove("active");
