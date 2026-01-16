@@ -20,41 +20,108 @@
   <meta property="og:image" content="images/image.jpg">
   <meta property="og:type" content="website">
 
-  <!-- Preconnect to Google Fonts -->
+  <!-- Performance Optimization: Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+  <!-- Critical Path CSS -->
+  <style>
+    :root {
+      --color-primary: #1a73e8;
+      --color-surface: #ffffff;
+      --spacing-lg: 2rem;
+      --radius-lg: 24px;
+      --shadow-md: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+    }
+
+    body {
+      margin: 0;
+      font-family: Roboto, -apple-system, sans-serif;
+    }
+
+    main {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-lg);
+      background: #f8f9fa;
+    }
+
+    .container {
+      max-width: 720px;
+      width: 100%;
+    }
+
+    .hero-card {
+      margin-bottom: 2rem;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      background: var(--color-surface);
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-  <!-- Custom Stylesheet (overrides Bootstrap) -->
+  <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="css/main.css">
 </head>
 
-<body>
+<body class="loading">
+  <!-- Loading Overlay -->
+  <div id="loading_overlay" class="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
   <main>
     <div class="container">
 
-      <!-- Hero Card: Image on Left, Quote on Right -->
-      <div class="card hero-card mb-4 d-none d-lg-block">
+      <!-- Hero Card: Image on Left/Top, Quote on Right/Bottom -->
+      <div class="card hero-card mb-4">
         <div class="row g-0">
-          <div class="col-md-4">
-            <img src="images/image.jpg" class="img-fluid hero-image" alt="Inspiration" loading="lazy">
+          <div class="col-md-5">
+            <picture>
+              <source srcset="images/image.jpg" type="image/jpeg">
+              <img src="images/image.jpg" class="img-fluid hero-image" alt="Job Applications Assistant" loading="eager">
+            </picture>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-7">
             <div class="card-body hero-quote-content">
-              <h1>
-                Job Applications Assistant
-              </h1>
+              <h1>Job Applications Assistant</h1>
+              <p class="text-secondary">Streamline your application process with our premium tools.</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Application Form Card -->
-      <div class="card">
+      <div class="card main-form-card">
         <div class="card-body">
           <form id="job_opening" novalidate>
 
@@ -63,6 +130,7 @@
               <input type="url" class="form-control" id="job_url" name="job_url" placeholder="Job URL" required
                 autocomplete="url">
               <label for="job_url">Job URL</label>
+              <div class="invalid-feedback">Please provide a valid job URL.</div>
             </div>
 
             <!-- Company Name & Job Title Row -->
@@ -72,6 +140,7 @@
                   <input type="text" class="form-control" id="company_name" name="company_name"
                     placeholder="Company Name" required autocomplete="organization">
                   <label for="company_name">Company Name</label>
+                  <div class="invalid-feedback">Company name is required.</div>
                 </div>
               </div>
 
@@ -80,6 +149,7 @@
                   <input type="text" class="form-control" id="job_title" name="job_title" placeholder="Job Title"
                     required autocomplete="organization-title">
                   <label for="job_title">Job Title</label>
+                  <div class="invalid-feedback">Job title is required.</div>
                 </div>
               </div>
             </div>
@@ -89,6 +159,7 @@
               <textarea class="form-control" id="job_description" name="job_description" placeholder="Job Description"
                 style="height: 120px" required></textarea>
               <label for="job_description">Job Description</label>
+              <div class="invalid-feedback">Please provide a job description.</div>
             </div>
 
             <!-- Hiring Team -->
@@ -96,6 +167,7 @@
               <input type="text" class="form-control" id="hiring_team" name="hiring_team" placeholder="Hiring Team"
                 required>
               <label for="hiring_team">Hiring Team</label>
+              <div class="invalid-feedback">Hiring team information is required.</div>
             </div>
 
             <!-- Company Description -->
@@ -103,17 +175,18 @@
               <textarea class="form-control" id="company_description" name="company_description"
                 placeholder="Company Description" style="height: 120px" required></textarea>
               <label for="company_description">Company Description</label>
+              <div class="invalid-feedback">Company description is required.</div>
             </div>
 
             <!-- Submit Button & Status Indicators -->
-            <div class="d-flex align-items-center gap-3 mt-4">
-              <button type="submit" class="btn btn-primary" id="submit_btn">
+            <div class="d-flex align-items-center flex-wrap gap-3 mt-4">
+              <button type="submit" class="btn btn-primary px-5 py-3" id="submit_btn">
                 <span>Submit Application</span>
               </button>
 
               <!-- Loading Spinner -->
               <div class="spinner-border text-primary hidden" id="job_spin" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Submitting...</span>
               </div>
 
               <!-- Success Icon -->
@@ -145,8 +218,8 @@
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
 
-  <!-- Main JavaScript -->
-  <script src="js/main.js"></script>
+  <!-- Main JavaScript (Modular) -->
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

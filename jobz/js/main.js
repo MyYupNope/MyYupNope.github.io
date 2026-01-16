@@ -1,116 +1,180 @@
 /**
- * Job Application Form - Main JavaScript
- * Handles form submission, animations, and interactive effects
+ * Job Application Form - Main JavaScript (Modular)
+ * Handles form submission, validation, auto-save, and interactive effects
  */
 
-// DOM Elements
-const form = document.querySelector("#job_opening");
-const submitBtn = document.querySelector("#submit_btn");
-const spinner = document.querySelector("#job_spin");
-const smile = document.querySelector("#job_smile");
-const sad = document.querySelector("#job_sad");
+import CONFIG from './config.js';
+import { toast } from './toast.js';
 
-/**
- * Form Submission Handler
- * Sends form data to the webhook endpoint
- */
-async function sendData() {
-    // Create FormData from form
-    const formData = new FormData(form);
+class App {
+    constructor() {
+        this.initDoms();
+        this.initEventListeners();
+        this.loadDraft();
+        this.handleInitialLoading();
+    }
 
-    try {
-        // Hide success/error icons and show spinner
-        sad.classList.remove("active");
-        sad.classList.add("hidden");
-        smile.classList.remove("active");
-        smile.classList.add("hidden");
-        spinner.classList.remove("hidden");
-        spinner.classList.add("active");
-        submitBtn.disabled = true;
+    initDoms() {
+        this.form = document.querySelector("#job_opening");
+        this.submitBtn = document.querySelector("#submit_btn");
+        this.spinner = document.querySelector("#job_spin");
+        this.smile = document.querySelector("#job_smile");
+        this.sad = document.querySelector("#job_sad");
+        this.inputs = this.form.querySelectorAll('input, textarea');
+        this.loadingOverlay = document.getElementById('loading_overlay');
+    }
 
-        // Send POST request
-        const response = await fetch("https://mollusk-pleased-lemming.ngrok-free.app/webhook/jappmotlet", {
-            method: "POST",
-            body: formData,
+    initEventListeners() {
+        this.form.addEventListener("submit", (e) => this.handleSubmit(e));
+
+        // Auto-save on input
+        this.inputs.forEach(input => {
+            input.addEventListener('input', () => this.saveDraft());
+
+            // Real-time validation
+            input.addEventListener('blur', () => this.validateField(input));
         });
 
-        const result = await response.json();
-        console.log("Result:", result);
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                if (document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT') {
+                    this.form.requestSubmit();
+                }
+            }
+        });
+    }
 
-        // Hide spinner first
-        spinner.classList.remove("active");
-        spinner.classList.add("hidden");
+    handleInitialLoading() {
+        const hideLoading = () => {
+            document.body.classList.add('loaded');
+            if (this.loadingOverlay) {
+                this.loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    this.loadingOverlay.classList.add('hidden');
+                }, 300);
+            }
+        };
 
-        // Evaluate the response - check if "ok" is true
-        if (result.ok === true) {
-            // Show success icon
-            smile.classList.remove("hidden");
-            smile.classList.add("active");
-
-            // Reset form after 30 seconds
-            setTimeout(() => {
-                form.reset();
-                smile.classList.remove("active");
-                smile.classList.add("hidden");
-                submitBtn.disabled = false;
-            }, 30000);
+        // If load event already fired (standard for deferred modules on small files)
+        if (document.readyState === 'complete') {
+            hideLoading();
         } else {
-            setTimeout(() => {
-                form.reset();
-                // Handle unsuccessful response
-                sad.classList.remove("hidden");
-                sad.classList.add("active");
-                submitBtn.disabled = false;
+            window.addEventListener('load', hideLoading);
+        }
+    }
 
-                // Show error message with details if available
-                const errorMessage = result.message || result.error || "The submission was not successful. Please try again.";
-                alert(`Error: ${errorMessage}`);
-            }, 30000);
+    validateField(input) {
+        if (!input.checkValidity()) {
+            input.classList.add('is-invalid');
+        } else {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            setTimeout(() => input.classList.remove('is-valid'), 2000);
+        }
+    }
+
+    async handleSubmit(event) {
+        event.preventDefault();
+
+        if (!this.form.checkValidity()) {
+            this.form.classList.add('was-validated');
+            toast.show('Please fill in all required fields correctly.', 'warning');
+            return;
         }
 
-    } catch (error) {
-        console.error("Submission error:", error);
+        const formData = new FormData(this.form);
+        this.setLoadingState(true);
 
-        // Hide spinner on error
-        sad.classList.remove("hidden");
-        sad.classList.add("active");
-        spinner.classList.remove("active");
-        spinner.classList.add("hidden");
-        submitBtn.disabled = false;
+        // Immediate feedback requested by user
+        toast.show('Submitting your application... Please wait for feedback.', 'info', 10000);
 
-        // Show error feedback (you can customize this)
-        alert("There was an error submitting your application. Please try again.");
+        try {
+            const response = await fetch(CONFIG.API_ENDPOINT, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Server returned ${response.status}: ${errorText}`);
+            }
+
+            const result = await response.json();
+
+            if (result.ok === true) {
+                this.handleSuccess();
+            } else {
+                this.handleError(result.message || 'The submission was not successful. Please try again.');
+            }
+        } catch (error) {
+            console.error("Submission error details:", error);
+            this.handleError("Submission error: " + error.message);
+        } finally {
+            this.setLoadingState(false);
+        }
+    }
+
+    setLoadingState(isLoading) {
+        this.submitBtn.disabled = isLoading;
+        if (isLoading) {
+            this.spinner.classList.remove("hidden");
+            this.spinner.classList.add("active");
+            this.smile.classList.add("hidden");
+            this.sad.classList.add("hidden");
+        } else {
+            this.spinner.classList.remove("active");
+            this.spinner.classList.add("hidden");
+        }
+    }
+
+    handleSuccess() {
+        this.smile.classList.remove("hidden");
+        this.smile.classList.add("active");
+        toast.show('Application submitted successfully!', 'success');
+
+        // Clear draft after successful submission
+        localStorage.removeItem('job_app_draft');
+
+        setTimeout(() => {
+            this.form.reset();
+            this.form.classList.remove('was-validated');
+            this.smile.classList.remove("active");
+            this.smile.classList.add("hidden");
+            this.submitBtn.disabled = false;
+        }, CONFIG.SUBMISSION_RESET_TIMEOUT);
+    }
+
+    handleError(message) {
+        this.sad.classList.remove("hidden");
+        this.sad.classList.add("active");
+        toast.show(`Error: ${message}`, 'error');
+        this.submitBtn.disabled = false;
+    }
+
+    saveDraft() {
+        const data = {};
+        this.inputs.forEach(input => {
+            data[input.name] = input.value;
+        });
+        localStorage.setItem('job_app_draft', JSON.stringify(data));
+    }
+
+    loadDraft() {
+        const draft = localStorage.getItem('job_app_draft');
+        if (draft) {
+            const data = JSON.parse(draft);
+            this.inputs.forEach(input => {
+                if (data[input.name]) {
+                    input.value = data[input.name];
+                }
+            });
+            toast.show('Restored your progress from draft.', 'info', 3000);
+        }
     }
 }
 
-/**
- * Form Submit Event Listener
- * Prevents default form submission and handles with custom function
- */
-form.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    // Basic HTML5 validation check
-    if (form.checkValidity()) {
-        sendData();
-    } else {
-        // Trigger browser's built-in validation UI
-        form.reportValidity();
-    }
-});
-
-/**
- * Input Interaction Effects
- * Simple focus animations for Google Store style
- */
-const inputs = document.querySelectorAll('.form-input, .form-textarea');
-inputs.forEach(input => {
-    // Simple focus effect - no transform
-    input.addEventListener('focus', function () {
-        // Focus styling handled by CSS
-    });
-
-    input.addEventListener('blur', function () {
-        // Blur styling handled by CSS
-    });
+// Initialize App
+document.addEventListener('DOMContentLoaded', () => {
+    window.app = new App();
 });
