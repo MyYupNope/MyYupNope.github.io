@@ -4,7 +4,8 @@
  */
 const CONFIG = {
     // API Endpoints
-    API_ENDPOINT: "https://mollusk-pleased-lemming.ngrok-free.app/webhook/jappmotlet",
+    //API_ENDPOINT: "https://mollusk-pleased-lemming.ngrok-free.app/webhook/jappmotlet",
+    API_ENDPOINT: "https://newdawn.tail74eef3.ts.net/webhook/jappmotlet",
     
     // Form Settings
     SUBMISSION_RESET_TIMEOUT: 30000, // 30 seconds
