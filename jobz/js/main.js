@@ -18,8 +18,6 @@ class App {
         this.form = document.querySelector("#job_opening");
         this.submitBtn = document.querySelector("#submit_btn");
         this.spinner = document.querySelector("#job_spin");
-        this.smile = document.querySelector("#job_smile");
-        this.sad = document.querySelector("#job_sad");
         this.inputs = this.form.querySelectorAll('input, textarea');
         this.loadingOverlay = document.getElementById('loading_overlay');
     }
@@ -120,8 +118,6 @@ class App {
         if (isLoading) {
             this.spinner.classList.remove("hidden");
             this.spinner.classList.add("active");
-            this.smile.classList.add("hidden");
-            this.sad.classList.add("hidden");
         } else {
             this.spinner.classList.remove("active");
             this.spinner.classList.add("hidden");
@@ -129,8 +125,6 @@ class App {
     }
 
     handleSuccess() {
-        this.smile.classList.remove("hidden");
-        this.smile.classList.add("active");
         toast.show('Application submitted successfully!', 'success');
 
         // Clear draft after successful submission
@@ -139,15 +133,11 @@ class App {
         setTimeout(() => {
             this.form.reset();
             this.form.classList.remove('was-validated');
-            this.smile.classList.remove("active");
-            this.smile.classList.add("hidden");
             this.submitBtn.disabled = false;
         }, CONFIG.SUBMISSION_RESET_TIMEOUT);
     }
 
     handleError(message) {
-        this.sad.classList.remove("hidden");
-        this.sad.classList.add("active");
         toast.show(`Error: ${message}`, 'error');
         this.submitBtn.disabled = false;
     }
