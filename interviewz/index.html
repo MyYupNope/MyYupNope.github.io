@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TalentTracker — Premium dashboard to track, filter, and manage job applications with real-time Google Sheets sync.">
+  <title>TalentTracker | Premium Job Application Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <div class="logo-text">
+          <h1>Job Applications Assistant</h1>
+          <span class="sub-logo-text">Streamline your application process with our premium tools.</span>
+        </div>
+      </div>
+      <div class="sync-status" id="syncStatus">
+        <span class="status-dot pulsing"></span>
+        <span class="status-text">Fetching Live Spreadsheet...</span>
+      </div>
+    </header>
+
+    <!-- Stats Dashboard Grid -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon companies">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="9" x2="15" y1="22" y2="22"/><line x1="9" x2="15" y1="18" y2="18"/><line x1="9" x2="15" y1="14" y2="14"/><line x1="9" x2="15" y1="10" y2="10"/><line x1="9" x2="15" y1="6" y2="6"/></svg>
+        </div>
+        <div class="stat-data">
+          <h3 id="statCompanies">-</h3>
+          <p>Active Companies</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon jobs">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12h.01"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M22 13a18.15 18.15 0 0 1-20 0"/><rect width="20" height="12" x="2" y="9" rx="2"/></svg>
+        </div>
+        <div class="stat-data">
+          <h3 id="statJobs">-</h3>
+          <p>Unique Job Roles</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon interviews">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="stat-data">
+          <h3 id="statInterviews">-</h3>
+          <p>Active Interviews</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success-rate">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div class="stat-data">
+          <h3 id="statApplied">-</h3>
+          <p>Total Submissions</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Workspace Layout -->
+    <main class="main-layout">
+      <!-- Horizontal Filters Bar -->
+      <section class="filters-bar">
+        <div class="filters-container">
+          <!-- Filter 1: Company Search-Select -->
+          <div class="filter-group">
+            <label for="companyTrigger">Company Name</label>
+            <div class="custom-select" id="companySelectContainer">
+              <button type="button" class="select-trigger" id="companyTrigger" aria-expanded="false" aria-haspopup="listbox">
+                <span class="trigger-text">All Companies</span>
+                <span class="trigger-arrow">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </span>
+              </button>
+              <div class="select-dropdown" id="companyDropdown">
+                <div class="select-search-wrapper">
+                  <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="select-search" id="companySearch" placeholder="Search companies..." autocomplete="off">
+                </div>
+                <ul class="select-options" id="companyOptions" role="listbox" aria-label="Company options">
+                  <li class="option loading" role="option">Loading options...</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter 2: Job Title Search-Select -->
+          <div class="filter-group">
+            <label for="jobTrigger">Job Title</label>
+            <div class="custom-select" id="jobSelectContainer">
+              <button type="button" class="select-trigger" id="jobTrigger" aria-expanded="false" aria-haspopup="listbox">
+                <span class="trigger-text">All Job Titles</span>
+                <span class="trigger-arrow">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </span>
+              </button>
+              <div class="select-dropdown" id="jobDropdown">
+                <div class="select-search-wrapper">
+                  <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="select-search" id="jobSearch" placeholder="Search job titles..." autocomplete="off">
+                </div>
+                <ul class="select-options" id="jobOptions" role="listbox" aria-label="Job title options">
+                  <li class="option loading" role="option">Loading options...</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter 3: Application Status Search-Select -->
+          <div class="filter-group">
+            <label for="statusTrigger">Application Status</label>
+            <div class="custom-select" id="statusSelectContainer">
+              <button type="button" class="select-trigger" id="statusTrigger" aria-expanded="false" aria-haspopup="listbox">
+                <span class="trigger-text">All Statuses</span>
+                <span class="trigger-arrow">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </span>
+              </button>
+              <div class="select-dropdown" id="statusDropdown">
+                <div class="select-search-wrapper">
+                  <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="select-search" id="statusSearch" placeholder="Search statuses..." autocomplete="off">
+                </div>
+                <ul class="select-options" id="statusOptions" role="listbox" aria-label="Status options">
+                  <li class="option loading" role="option">Loading options...</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter Action (Reset) -->
+          <div class="filter-group action-group">
+            <label class="action-label">&nbsp;</label>
+            <button class="btn-reset" id="btnResetFilters" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              Reset Filters
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-bar-footer">
+          <p class="filter-tip">Note: Retired and Rejected applications are filtered out automatically.</p>
+        </div>
+      </section>
+
+      <!-- Registry Results Table -->
+      <section class="results-section">
+        <div class="results-header">
+          <h2>Application Registry <span class="badge" id="resultsCount">0</span></h2>
+          <div class="results-sort">
+            <label for="sortSelect" class="sort-label">Sort:</label>
+            <select id="sortSelect" class="sort-dropdown-select">
+              <option value="date-desc">Create Date (Newest)</option>
+              <option value="date-asc">Create Date (Oldest)</option>
+              <option value="job-asc">Job Title (A-Z)</option>
+              <option value="job-desc">Job Title (Z-A)</option>
+              <option value="company-asc">Company (A-Z)</option>
+              <option value="company-desc">Company (Z-A)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="registry-table-container">
+          <table class="registry-table">
+            <thead>
+              <tr>
+                <th class="sortable-header" data-sort-field="job">Job Title <span class="sort-icon"></span></th>
+                <th class="sortable-header" data-sort-field="company">Company <span class="sort-icon"></span></th>
+                <th>Status</th>
+                <th class="sortable-header" data-sort-field="date">Applied Date <span class="sort-icon"></span></th>
+                <th>Suitability Score</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="registryTableBody">
+              <!-- Skeletons shown during load -->
+              <tr class="table-skeleton">
+                <td colspan="6"><div class="skeleton-bar"></div></td>
+              </tr>
+              <tr class="table-skeleton">
+                <td colspan="6"><div class="skeleton-bar"></div></td>
+              </tr>
+              <tr class="table-skeleton">
+                <td colspan="6"><div class="skeleton-bar"></div></td>
+              </tr>
+              <tr class="table-skeleton">
+                <td colspan="6"><div class="skeleton-bar"></div></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-pagination">
+            <span class="pagination-info" id="paginationInfo">Showing 0 - 0 of 0 rows</span>
+            <div class="pagination-controls">
+              <button id="btnPrevPage" class="btn-pagination" disabled aria-label="Previous page">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button id="btnNextPage" class="btn-pagination" disabled aria-label="Next page">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Results view -->
+        <div class="no-results hidden" id="noResults">
+          <div class="no-results-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="m12 8-4 4 4 4"/></svg>
+          </div>
+          <h3>No applications found</h3>
+          <p>Try resetting or modifying your filters to broaden your search.</p>
+        </div>
+      </section>
+
+      <!-- Analytics Graph Section -->
+      <section class="analytics-section hidden">
+        <div class="analytics-header">
+          <h2>Application Analytics</h2>
+          <div class="analytics-info">
+            <span>Timeline &amp; Distributions</span>
+          </div>
+        </div>
+        <div class="analytics-chart-card">
+          <div class="chart-container">
+            <canvas id="analyticsChart"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Detail Drawer Panel -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="details-drawer" id="detailsDrawer">
+    <div class="drawer-header">
+      <div class="drawer-header-left">
+        <!-- Section A: Job Title, Company Name -->
+        <span class="status-badge" id="drawerStatusBadge">-</span>
+        <h2 id="drawerJobTitle">Job Title</h2>
+        <h3 id="drawerCompanyName">Company Name</h3>
+      </div>
+      <button class="btn-close-drawer" id="btnCloseDrawer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <!-- Section B: Application Status -->
+      <div class="drawer-section accordion-item active" id="sectionB_Status">
+        <button class="accordion-header" type="button">
+          <h4>Application Status</h4>
+          <span class="accordion-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-content-inner">
+            <div class="info-group">
+              <div class="info-row">
+                <span class="info-label">Applied Date</span>
+                <span class="info-value" id="drawerDate">-</span>
+              </div>
+              <div class="info-row-block" id="sectionComments">
+                <span class="info-label">Comments</span>
+                <div class="comments-box" id="drawerComments">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section C: Job Details -->
+      <div class="drawer-section accordion-item" id="sectionC_Details">
+        <button class="accordion-header" type="button">
+          <h4>Job Details</h4>
+          <span class="accordion-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-content-inner">
+            <div class="info-group">
+              <div class="info-row-block">
+                <div class="description-header">
+                  <span class="info-label">Job Description</span>
+                  <a href="#" target="_blank" class="inline-link-btn" id="linkJobUrl">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+                    View Job URL
+                  </a>
+                </div>
+                <div class="text-block" id="drawerJobDescription">-</div>
+              </div>
+              <div class="info-row-block">
+                <div class="description-header">
+                  <span class="info-label">Company Description</span>
+                  <a href="#" target="_blank" class="inline-link-btn secondary" id="linkCompanyFolder">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+                    Drive Folder
+                  </a>
+                </div>
+                <div class="text-block" id="drawerCompanyDescription">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section D: Job vs CV Suitability -->
+      <div class="drawer-section accordion-item" id="sectionD_Suitability">
+        <button class="accordion-header" type="button">
+          <h4>Job vs CV Suitability</h4>
+          <span class="accordion-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-content-inner">
+            <div class="info-group">
+              <div class="info-row" id="drawerSuitabilityScoreContainer">
+                <span class="info-label">Job Suitability</span>
+                <span class="score-badge" id="drawerSuitabilityScore">-</span>
+              </div>
+              <div class="info-row-block" id="sectionSuitabilityEval">
+                <span class="info-label">Job Suitability Evaluation</span>
+                <div class="suitability-box" id="drawerSuitabilityEval">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
