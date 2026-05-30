@@ -427,8 +427,27 @@ function setupEventListeners() {
  * Fetch and Parse Data with offline Local Storage support
  */
 function fetchData() {
-  const cachedCsvText = localStorage.getItem('talent_tracker_csv_cache');
+  const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+  const cachedVal = localStorage.getItem('talent_tracker_csv_cache');
+  let cachedCsvText = null;
   let hasLoadedFromCache = false;
+
+  if (cachedVal) {
+    try {
+      // Try parsing as JSON first
+      const cachedObj = JSON.parse(cachedVal);
+      if (cachedObj && typeof cachedObj === 'object' && cachedObj.csv && cachedObj.timestamp) {
+        if (Date.now() - cachedObj.timestamp < CACHE_TTL_MS) {
+          cachedCsvText = cachedObj.csv;
+        } else {
+          console.log('[interviewz] Cache expired');
+        }
+      }
+    } catch (e) {
+      // JSON parsing failed, likely the old raw CSV string format
+      cachedCsvText = cachedVal;
+    }
+  }
 
   if (cachedCsvText) {
     try {
@@ -438,6 +457,7 @@ function fetchData() {
     } catch (e) {
       console.error('Error parsing cached CSV data:', e);
       localStorage.removeItem('talent_tracker_csv_cache');
+      cachedCsvText = null;
     }
   } else {
     updateSyncStatus('syncing', 'Fetching Live Spreadsheet...');
@@ -452,11 +472,19 @@ function fetchData() {
     })
     .then(csvText => {
       try {
-        localStorage.setItem('talent_tracker_csv_cache', csvText);
+        const cacheObj = {
+          csv: csvText,
+          timestamp: Date.now()
+        };
+        localStorage.setItem('talent_tracker_csv_cache', JSON.stringify(cacheObj));
       } catch (e) {
         console.warn('Unable to cache CSV to localStorage:', e);
       }
-      parseAndInitializeData(csvText);
+      if (csvText !== cachedCsvText) {
+        parseAndInitializeData(csvText);
+      } else {
+        console.log('[interviewz] Fetched data is identical to cache, skipping re-render');
+      }
       updateSyncStatus('success', 'Connected & Synced');
     })
     .catch(error => {
@@ -611,10 +639,10 @@ function calculateStatistics() {
   });
   statInterviewsEl.textContent = interviewApps.length;
 
-  // Calculate Conversion Rate: % of applications that progressed past "Applied"
+  // Calculate Conversion Rate: reached "interview" or beyond (offer, ready)
   const conversionApps = activeApplications.filter(app => {
     const status = (app['Application Status'] || '').trim().toLowerCase();
-    return status !== 'applied' && status !== '';
+    return status.includes('interview') || status === 'offer' || status === 'ready';
   });
   const conversionRate = activeApplications.length > 0
     ? Math.round((conversionApps.length / activeApplications.length) * 100)
@@ -641,14 +669,34 @@ function updateFiltersUI() {
   companySelect.populate(distinctCompanies, selectedCompany, (company) => {
     selectedCompany = company;
     
-    // Reset selected job title if it's no longer valid for the selected company
-    if (selectedCompany && selectedJobTitle) {
-      const isValid = activeApplications.some(app => 
-        (app['Company Name'] || '').trim() === selectedCompany && 
-        (app['Job Title'] || '').trim() === selectedJobTitle
+    // Automatically select the Job Title if there is only one associated with the selected company
+    if (selectedCompany) {
+      const companyApps = activeApplications.filter(app => 
+        (app['Company Name'] || '').trim() === selectedCompany
       );
-      if (!isValid) {
-        selectedJobTitle = null;
+      const companyJobs = [...new Set(
+        companyApps.map(app => (app['Job Title'] || '').trim()).filter(title => title !== '')
+      )];
+      
+      if (companyJobs.length === 1) {
+        selectedJobTitle = companyJobs[0];
+      } else {
+        if (selectedJobTitle) {
+          const isValid = companyJobs.includes(selectedJobTitle);
+          if (!isValid) {
+            selectedJobTitle = null;
+          }
+        }
+      }
+    } else {
+      // If company is set to null (All Companies), reset selectedJobTitle if it's no longer valid
+      if (selectedJobTitle) {
+        const isValid = activeApplications.some(app => 
+          (app['Job Title'] || '').trim() === selectedJobTitle
+        );
+        if (!isValid) {
+          selectedJobTitle = null;
+        }
       }
     }
 
@@ -821,13 +869,13 @@ function renderTable() {
     const scoreNum = parseInt(suitabilityScore, 10);
     const scoreClass = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
     
-    const statusClass = status.toLowerCase();
+    const statusClass = status.toLowerCase().replace(/\s+/g, '-');
 
     row.innerHTML = `
       <td><span class="table-job-title">${escapeHtml(title)}</span></td>
       <td><span class="table-company">${escapeHtml(company)}</span></td>
       <td><span class="status-badge ${statusClass}">${escapeHtml(status)}</span></td>
-      <td><span>${escapeHtml(dateStr || 'N/A')}</span></td>
+      <td><span class="table-date">${escapeHtml(formatDisplayDate(dateStr))}</span></td>
       <td>
         ${suitabilityScore ? `<span class="score-badge ${scoreClass}">Score: ${escapeHtml(suitabilityScore)}</span>` : '<span style="color: var(--color-text-secondary)">-</span>'}
       </td>
@@ -865,12 +913,12 @@ function renderTable() {
 function openDetailsDrawer(app) {
   // Populate Drawer Contents
   const status = (app['Application Status'] || '').trim();
-  drawerStatusBadge.className = `badge status-badge ${status.toLowerCase()}`;
+  drawerStatusBadge.className = `badge status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`;
   drawerStatusBadge.textContent = status;
   
   drawerJobTitle.textContent = (app['Job Title'] || '').trim();
   drawerCompanyName.textContent = (app['Company Name'] || '').trim();
-  drawerDate.textContent = (app['Create Date'] || 'N/A').trim();
+  drawerDate.textContent = formatDisplayDate((app['Create Date'] || '').trim());
   
   // Suitability Info
   const score = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
@@ -964,11 +1012,29 @@ function parseDate(dateStr) {
   if (!dateStr) return new Date(0);
   const parts = dateStr.trim().split('-');
   if (parts.length === 3) {
-    // DD-MM-YYYY -> Date(YYYY, MM-1, DD)
-    return new Date(parts[2], parts[1] - 1, parts[0]);
+    const d = new Date(parts[2], parts[1] - 1, parts[0]);
+    if (!isNaN(d.getTime())) return d;
   }
   const parsed = Date.parse(dateStr);
-  return isNaN(parsed) ? new Date(0) : new Date(parsed);
+  if (isNaN(parsed)) {
+    console.warn(`[interviewz] Could not parse date: "${dateStr}"`);
+    return new Date(0);
+  }
+  return new Date(parsed);
+}
+
+/**
+ * Formats a DD-MM-YYYY date into DD-MM-YYYY (We) format
+ */
+function formatDisplayDate(dateStr) {
+  if (!dateStr) return 'N/A';
+  const date = parseDate(dateStr);
+  if (date.getTime() === 0) return dateStr;
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  return `${day}-${month}-${year} (${weekdays[date.getDay()]})`;
 }
 
 /**
@@ -1051,7 +1117,7 @@ function initAnalyticsChart(applications) {
     const date = parseDate(dateStr);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
     const weekdayLetter = weekdays[date.getDay()];
     return `${day}-${month} (${weekdayLetter})`;
   });
@@ -1120,7 +1186,13 @@ function initAnalyticsChart(applications) {
           titleFont: { family: 'Roboto, sans-serif', size: 13, weight: 'bold' },
           bodyFont: { family: 'Roboto, sans-serif', size: 12 },
           padding: 10,
-          cornerRadius: 8
+          cornerRadius: 8,
+          callbacks: {
+            title: (items) => {
+              const idx = items[0].dataIndex;
+              return sortedDates[idx] || ''; // Full DD-MM-YYYY
+            }
+          }
         }
       },
       scales: {
