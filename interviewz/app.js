@@ -212,7 +212,8 @@ let selectedJobTitle = null;
 let selectedStatus = null;
 
 let currentPage = 1;
-const rowsPerPage = 10;
+let rowsPerPage = 10;
+let selectedChartRange = 'all';
 
 let companySelect, jobSelect, statusSelect;
 
@@ -221,7 +222,7 @@ const syncStatusEl = document.getElementById('syncStatus');
 const statCompaniesEl = document.getElementById('statCompanies');
 const statJobsEl = document.getElementById('statJobs');
 const statInterviewsEl = document.getElementById('statInterviews');
-const statAppliedEl = document.getElementById('statApplied');
+const statConversionEl = document.getElementById('statConversion');
 
 const btnResetFilters = document.getElementById('btnResetFilters');
 const registryTableBody = document.getElementById('registryTableBody');
@@ -385,6 +386,38 @@ function setupEventListeners() {
       if (currentPage < maxPage) {
         currentPage++;
         renderTable();
+      }
+    });
+  }
+
+  // Rows per page dropdown listener
+  const rowsPerPageSelect = document.getElementById('rowsPerPageSelect');
+  if (rowsPerPageSelect) {
+    rowsPerPageSelect.addEventListener('change', (e) => {
+      rowsPerPage = parseInt(e.target.value, 10) || 10;
+      currentPage = 1;
+      renderTable();
+    });
+  }
+
+  // Chart range toggle listener
+  const rangeToggleContainer = document.getElementById('chartRangeToggle');
+  if (rangeToggleContainer) {
+    rangeToggleContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-toggle');
+      if (!btn) return;
+      
+      rangeToggleContainer.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      selectedChartRange = btn.getAttribute('data-range');
+      
+      if (rawApplications.length > 0) {
+        try {
+          initAnalyticsChart(rawApplications);
+        } catch (error) {
+          console.error("Failed to render chart on range toggle:", error);
+        }
       }
     });
   }
@@ -578,8 +611,15 @@ function calculateStatistics() {
   });
   statInterviewsEl.textContent = interviewApps.length;
 
-  // Total submissions
-  statAppliedEl.textContent = activeApplications.length;
+  // Calculate Conversion Rate: % of applications that progressed past "Applied"
+  const conversionApps = activeApplications.filter(app => {
+    const status = (app['Application Status'] || '').trim().toLowerCase();
+    return status !== 'applied' && status !== '';
+  });
+  const conversionRate = activeApplications.length > 0
+    ? Math.round((conversionApps.length / activeApplications.length) * 100)
+    : 0;
+  statConversionEl.textContent = `${conversionRate}%`;
 }
 
 /**
@@ -950,15 +990,29 @@ let analyticsChartInstance = null;
  * Initialize and render the bottom analytics timeline chart using Chart.js
  */
 function initAnalyticsChart(applications) {
+  // Apply date range filter
+  let chartApps = applications;
+  if (selectedChartRange !== 'all') {
+    const daysLimit = parseInt(selectedChartRange, 10);
+    const limitDate = new Date();
+    limitDate.setDate(limitDate.getDate() - daysLimit);
+    limitDate.setHours(0, 0, 0, 0);
+    
+    chartApps = applications.filter(app => {
+      const date = parseDate(app['Create Date']);
+      return date >= limitDate;
+    });
+  }
+
   // 1. Group applications by date
   const dateMap = {};
   
-  applications.forEach(app => {
+  chartApps.forEach(app => {
     const dateStr = (app['Create Date'] || '').trim();
     if (!dateStr) return;
     
     if (!dateMap[dateStr]) {
-      dateMap[dateStr] = { submissions: 0, rejected: 0 };
+      dateMap[dateStr] = { submissions: 0, rejected: 0, interviews: 0 };
     }
     
     dateMap[dateStr].submissions++;
@@ -966,6 +1020,9 @@ function initAnalyticsChart(applications) {
     const status = (app['Application Status'] || '').trim().toLowerCase();
     if (status === 'rejected') {
       dateMap[dateStr].rejected++;
+    }
+    if (status.includes('interview')) {
+      dateMap[dateStr].interviews++;
     }
   });
 
@@ -977,10 +1034,12 @@ function initAnalyticsChart(applications) {
   // 3. Prepare datasets
   const submissionsData = [];
   const rejectedData = [];
+  const interviewsData = [];
   
   sortedDates.forEach(date => {
     submissionsData.push(dateMap[date].submissions);
     rejectedData.push(dateMap[date].rejected);
+    interviewsData.push(dateMap[date].interviews);
   });
 
   // 4. Render Chart
@@ -988,6 +1047,15 @@ function initAnalyticsChart(applications) {
   if (!canvasEl) return;
   const ctx = canvasEl.getContext('2d');
   
+  const chartLabels = sortedDates.map(dateStr => {
+    const date = parseDate(dateStr);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const weekdayLetter = weekdays[date.getDay()];
+    return `${day}-${month} (${weekdayLetter})`;
+  });
+
   if (analyticsChartInstance) {
     analyticsChartInstance.destroy();
   }
@@ -995,7 +1063,7 @@ function initAnalyticsChart(applications) {
   analyticsChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: sortedDates,
+      labels: chartLabels,
       datasets: [
         {
           label: 'Total Submissions',
@@ -1006,6 +1074,17 @@ function initAnalyticsChart(applications) {
           tension: 0.35,
           borderWidth: 3,
           pointBackgroundColor: '#1a73e8',
+          pointHoverRadius: 6
+        },
+        {
+          label: 'Interviews Scheduled',
+          data: interviewsData,
+          borderColor: '#f9ab00', // Warning Yellow/Amber
+          backgroundColor: 'rgba(249, 171, 0, 0.08)',
+          fill: true,
+          tension: 0.35,
+          borderWidth: 3,
+          pointBackgroundColor: '#f9ab00',
           pointHoverRadius: 6
         },
         {
@@ -1083,11 +1162,6 @@ function initTabNavigation() {
   const resultsSection = document.querySelector('.results-section');
   const statsSection = document.querySelector('.stats-section');
   const analyticsSection = document.querySelector('.analytics-section');
-
-  // Make sure analytics-section is no longer hidden by default
-  if (analyticsSection) {
-    analyticsSection.classList.remove('hidden');
-  }
 
   function switchTab(targetTab) {
     navButtons.forEach(btn => {

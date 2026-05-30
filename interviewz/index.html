@@ -11,7 +11,9 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>💼</text></svg>">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 </head>
@@ -84,8 +86,8 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
           </div>
           <div class="stat-data">
-            <h3 id="statApplied">-</h3>
-            <p>Total Submissions</p>
+            <h3 id="statConversion">-</h3>
+            <p>Conversion Rate</p>
           </div>
         </div>
       </div>
@@ -231,7 +233,17 @@
             </tbody>
           </table>
           <div class="table-pagination">
-            <span class="pagination-info" id="paginationInfo">Showing 0 - 0 of 0 rows</span>
+            <div class="pagination-left">
+              <span class="pagination-info" id="paginationInfo">Showing 0 - 0 of 0 rows</span>
+              <div class="rows-per-page">
+                <label for="rowsPerPageSelect">Rows per page:</label>
+                <select id="rowsPerPageSelect">
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
             <div class="pagination-controls">
               <button id="btnPrevPage" class="btn-pagination" disabled aria-label="Previous page">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -256,9 +268,19 @@
       <!-- Analytics Graph Section -->
       <section class="analytics-section" style="display: none;">
         <div class="analytics-header">
-          <h2>Application Analytics</h2>
-          <div class="analytics-info">
-            <span>Timeline &amp; Distributions</span>
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            Application Analytics
+          </h2>
+          <div class="analytics-toolbar">
+            <div class="btn-group" id="chartRangeToggle">
+              <button class="btn-toggle active" data-range="all">All Time</button>
+              <button class="btn-toggle" data-range="90">90 Days</button>
+              <button class="btn-toggle" data-range="30">30 Days</button>
+            </div>
+            <div class="analytics-info">
+              <span>Timeline &amp; Distributions</span>
+            </div>
           </div>
         </div>
         <div class="analytics-chart-card">
@@ -372,6 +394,6 @@
   </aside>
 
   <!-- Application Logic -->
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>
