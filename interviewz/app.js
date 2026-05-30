@@ -265,7 +265,7 @@ const linkJobUrl = document.getElementById('linkJobUrl');
 const linkCompanyFolder = document.getElementById('linkCompanyFolder');
 
 // Initialize the Application
-document.addEventListener('DOMContentLoaded', () => {
+function initializeApp() {
   // Instantiate selectors
   companySelect = new FacetedSelect(companySelectContainer, companyTrigger, companySearch, companyOptions, 'All Companies');
   jobSelect = new FacetedSelect(jobSelectContainer, jobTrigger, jobSearch, jobOptions, 'All Job Titles');
@@ -273,7 +273,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setupEventListeners();
   fetchData();
-});
+  initTabNavigation();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
+}
 
 /**
  * Event Listeners Setup
@@ -541,7 +548,11 @@ function parseAndInitializeData(csvText) {
   applyFilters();
 
   // Render bottom analytics graph
-  initAnalyticsChart(rawApplications);
+  try {
+    initAnalyticsChart(rawApplications);
+  } catch (error) {
+    console.error("Failed to render initial analytics chart:", error);
+  }
 }
 
 /**
@@ -1058,4 +1069,64 @@ function initAnalyticsChart(applications) {
       }
     }
   });
+}
+
+/**
+ * Tab Navigation Management
+ * Toggles visibility of sections based on active navigation tab:
+ * - Home: Filter Applications & Application Registry
+ * - Dashboard: Application Stats & Graphs
+ */
+function initTabNavigation() {
+  const navButtons = document.querySelectorAll('.nav-btn');
+  const filtersSection = document.querySelector('.filters-section');
+  const resultsSection = document.querySelector('.results-section');
+  const statsSection = document.querySelector('.stats-section');
+  const analyticsSection = document.querySelector('.analytics-section');
+
+  // Make sure analytics-section is no longer hidden by default
+  if (analyticsSection) {
+    analyticsSection.classList.remove('hidden');
+  }
+
+  function switchTab(targetTab) {
+    navButtons.forEach(btn => {
+      if (btn.getAttribute('data-tab') === targetTab) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    if (targetTab === 'home') {
+      if (filtersSection) filtersSection.style.display = '';
+      if (resultsSection) resultsSection.style.display = '';
+      if (statsSection) statsSection.style.display = 'none';
+      if (analyticsSection) analyticsSection.style.display = 'none';
+    } else if (targetTab === 'dashboard') {
+      if (filtersSection) filtersSection.style.display = 'none';
+      if (resultsSection) resultsSection.style.display = 'none';
+      if (statsSection) statsSection.style.display = '';
+      if (analyticsSection) analyticsSection.style.display = '';
+
+      // Re-trigger chart render to ensure correct layout and scaling
+      if (rawApplications.length > 0) {
+        try {
+          initAnalyticsChart(rawApplications);
+        } catch (error) {
+          console.error("Failed to render analytics chart on tab switch:", error);
+        }
+      }
+    }
+  }
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab');
+      switchTab(target);
+    });
+  });
+
+  // Default to 'home' tab
+  switchTab('home');
 }
