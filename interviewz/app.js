@@ -331,6 +331,40 @@ function setupEventListeners() {
         // Toggle current one
         if (!isAlreadyActive) {
           item.classList.add('active');
+          
+          // Smooth scroll the expanded section to the top of the drawer body
+          const container = detailsDrawer.querySelector('.drawer-body');
+          if (container) {
+            const items = Array.from(detailsDrawer.querySelectorAll('.accordion-item'));
+            const clickedIndex = items.indexOf(item);
+            
+            const containerStyle = window.getComputedStyle(container);
+            const paddingTop = parseFloat(containerStyle.paddingTop) || 0;
+            const gap = parseFloat(containerStyle.gap) || 0;
+            
+            let accumulatedHeight = 0;
+            for (let i = 0; i < clickedIndex; i++) {
+              const currentItem = items[i];
+              if (!currentItem.classList.contains('hidden')) {
+                const headerEl = currentItem.querySelector('.accordion-header');
+                const headerHeight = headerEl ? headerEl.offsetHeight : 0;
+                
+                const itemStyle = window.getComputedStyle(currentItem);
+                const paddingBottom = parseFloat(itemStyle.paddingBottom) || 0;
+                const borderBottom = parseFloat(itemStyle.borderBottomWidth) || 0;
+                
+                accumulatedHeight += headerHeight + paddingBottom + borderBottom;
+                accumulatedHeight += gap;
+              }
+            }
+            
+            const targetScrollTop = accumulatedHeight + paddingTop;
+            
+            container.scrollTo({
+              top: targetScrollTop,
+              behavior: 'smooth'
+            });
+          }
         }
       });
     }
