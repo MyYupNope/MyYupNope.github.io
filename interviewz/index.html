@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=15">
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>💼</text></svg>">
   <!-- Chart.js CDN -->
@@ -397,11 +397,33 @@
           <div class="accordion-content-inner">
             <div class="info-group">
               <div class="info-row-block" id="sectionInterviewCompany">
-                <span class="info-label">Interview Company</span>
+                <div class="description-header">
+                  <span class="info-label">Interview Company</span>
+                  <button type="button" class="btn-copy-html" id="btnCopyInterviewCompany" title="Copy HTML">
+                    <svg class="icon-copy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+                </div>
                 <div class="text-block markdown-content" id="drawerInterviewCompany">-</div>
               </div>
               <div class="info-row-block" id="sectionInterviewPreparation">
-                <span class="info-label">Interview Preparation</span>
+                <div class="description-header">
+                  <span class="info-label">Interview Preparation</span>
+                  <button type="button" class="btn-copy-html" id="btnCopyInterviewPreparation" title="Copy HTML">
+                    <svg class="icon-copy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+                </div>
                 <div class="text-block markdown-content" id="drawerInterviewPreparation">-</div>
               </div>
             </div>
@@ -412,6 +434,6 @@
   </aside>
 
   <!-- Application Logic -->
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>

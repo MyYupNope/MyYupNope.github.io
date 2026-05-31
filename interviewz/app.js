@@ -286,6 +286,41 @@ if (document.readyState === 'loading') {
 }
 
 /**
+ * Helper to copy HTML of a target element as rich text for MS Word/Google Docs compatibility,
+ * and show a temporary checkmark on the button.
+ */
+function copyElementHtml(button, targetElement) {
+  if (!targetElement) return;
+  const html = targetElement.innerHTML;
+  const plainText = targetElement.innerText || targetElement.textContent || '';
+  
+  // Create blobs for both rich HTML and plain text fallback
+  const htmlBlob = new Blob([html], { type: 'text/html' });
+  const textBlob = new Blob([plainText], { type: 'text/plain' });
+  
+  const clipboardItem = new ClipboardItem({
+    'text/html': htmlBlob,
+    'text/plain': textBlob
+  });
+  
+  navigator.clipboard.write([clipboardItem]).then(() => {
+    button.classList.add('copied');
+    const iconCopy = button.querySelector('.icon-copy');
+    const iconCheck = button.querySelector('.icon-check');
+    if (iconCopy) iconCopy.style.display = 'none';
+    if (iconCheck) iconCheck.style.display = 'inline-block';
+    
+    setTimeout(() => {
+      button.classList.remove('copied');
+      if (iconCopy) iconCopy.style.display = 'inline-block';
+      if (iconCheck) iconCheck.style.display = 'none';
+    }, 2000);
+  }).catch(err => {
+    console.error('Failed to copy HTML: ', err);
+  });
+}
+
+/**
  * Event Listeners Setup
  */
 function setupEventListeners() {
@@ -450,6 +485,23 @@ function setupEventListeners() {
           console.error("Failed to render chart on range toggle:", error);
         }
       }
+    });
+  }
+
+  // Copy HTML buttons in Job Interview accordion
+  const btnCopyCompany = document.getElementById('btnCopyInterviewCompany');
+  if (btnCopyCompany) {
+    btnCopyCompany.addEventListener('click', () => {
+      const target = document.getElementById('drawerInterviewCompany');
+      copyElementHtml(btnCopyCompany, target);
+    });
+  }
+
+  const btnCopyPrep = document.getElementById('btnCopyInterviewPreparation');
+  if (btnCopyPrep) {
+    btnCopyPrep.addEventListener('click', () => {
+      const target = document.getElementById('drawerInterviewPreparation');
+      copyElementHtml(btnCopyPrep, target);
     });
   }
 }

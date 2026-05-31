@@ -1586,3 +1586,45 @@ body {
 .text-block.markdown-content .md-table tr:hover {
   background-color: rgba(26, 115, 232, 0.03); /* Subtle blue tint on hover */
 }
+
+/* ==========================================================================
+   Copy HTML Button Styling
+   ========================================================================== */
+.btn-copy-html {
+  background: #f1f3f4;
+  border: 1px solid transparent;
+  color: var(--color-text-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  outline: none;
+  padding: 0;
+}
+
+.btn-copy-html:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  border-color: rgba(26, 115, 232, 0.1);
+}
+
+.btn-copy-html:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.btn-copy-html svg {
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+
+.btn-copy-html.copied {
+  background-color: var(--bg-success-light);
+  color: var(--color-success);
+  border-color: rgba(30, 142, 62, 0.15);
+}
