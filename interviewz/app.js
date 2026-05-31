@@ -228,7 +228,7 @@ const btnResetFilters = document.getElementById('btnResetFilters');
 const registryTableBody = document.getElementById('registryTableBody');
 const noResultsEl = document.getElementById('noResults');
 const resultsCountEl = document.getElementById('resultsCount');
-const sortSelect = document.getElementById('sortSelect');
+let currentSortVal = 'date-desc';
 
 // Custom Select Dropdowns
 const companySelectContainer = document.getElementById('companySelectContainer');
@@ -380,16 +380,11 @@ function setupEventListeners() {
     }
   });
 
-  // Sort dropdown change listener
-  sortSelect.addEventListener('change', () => {
-    applyFilters(true);
-  });
-
   // Table sorting from header clicks
   document.querySelectorAll('.sortable-header').forEach(header => {
     header.addEventListener('click', () => {
       const field = header.getAttribute('data-sort-field');
-      const currentVal = sortSelect.value;
+      const currentVal = currentSortVal;
       const [currentField, currentDir] = currentVal.split('-');
       
       let newDir = 'asc';
@@ -399,7 +394,7 @@ function setupEventListeners() {
         newDir = field === 'date' ? 'desc' : 'asc';
       }
       
-      sortSelect.value = `${field}-${newDir}`;
+      currentSortVal = `${field}-${newDir}`;
       applyFilters(true);
     });
   });
@@ -804,7 +799,7 @@ function applyFilters(resetPage = true) {
   });
 
   // Dynamic Sorting
-  const sortVal = sortSelect.value;
+  const sortVal = currentSortVal;
   filteredApplications.sort((a, b) => {
     let comparison = 0;
     
@@ -841,7 +836,7 @@ function applyFilters(resetPage = true) {
  * Update sorting indicators on table headers
  */
 function updateHeaderSortIndicators() {
-  const currentVal = sortSelect.value;
+  const currentVal = currentSortVal;
   const [currentField, currentDir] = currentVal.split('-');
   
   document.querySelectorAll('.sortable-header').forEach(header => {

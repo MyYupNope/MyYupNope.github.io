@@ -42,21 +42,18 @@
    2. Base & Loading Styles
    ============================================ */
 body {
-  transition: opacity 0.3s ease;
-}
-
-body.loaded {
-  /* Class still here for potential hooks */
-  opacity: 1;
-}
-
-body {
   font-family: 'Roboto', 'Google Sans', sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
   min-height: 100vh;
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  transition: opacity 0.3s ease;
+}
+
+body.loaded {
+  /* Class still here for potential hooks */
+  opacity: 1;
 }
 
 .loading-overlay {
@@ -90,24 +87,17 @@ main {
    ============================================ */
 
 /* Hero Card - Fully Responsive */
-.hero-card {
+.card.hero-card {
   border: none;
-  border-radius: var(--radius-lg) !important;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
   margin-bottom: 2rem;
-  background: var(--color-surface);
-}
-
-.hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  min-height: 200px;
+  background: var(--color-primary);
 }
 
 .hero-quote-content {
-  padding: 2.5rem !important;
+  padding: 3rem 2.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -116,70 +106,103 @@ main {
 .hero-quote-content h1 {
   font-size: clamp(1.5rem, 4vw, 2.25rem);
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: #ffffff;
   margin-bottom: 0.5rem;
 }
 
+.hero-description {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
 /* Form Card */
-.main-form-card {
+.card.main-form-card {
   border: none;
-  border-radius: var(--radius-lg) !important;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   background: var(--color-surface);
   transition: box-shadow var(--transition-base);
 }
 
-.main-form-card:hover {
+.card.main-form-card:hover {
   box-shadow: var(--shadow-lg);
 }
 
+/* Form Header styling */
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.form-header-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-primary);
+}
+
+.form-header h2 {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
 /* Form Controls */
-.form-control {
+form .form-control {
   background-color: #f1f3f4;
   border: 1px solid transparent;
-  border-radius: var(--radius-sm) !important;
+  border-radius: var(--radius-sm);
   padding: 1rem 1.25rem;
   transition: all var(--transition-base);
 }
 
-.form-control:hover {
+form .form-control:hover {
   background-color: #e8eaed;
 }
 
-.form-control:focus {
+form .form-control:focus {
   background-color: var(--color-surface);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px var(--color-primary) !important;
+  box-shadow: 0 0 0 1px var(--color-primary);
 }
 
-.form-floating>label {
+.form-floating > label {
   padding: 1rem 1.25rem;
   color: var(--color-text-secondary);
 }
 
-/* Buttons */
-.btn-primary {
-  background-color: var(--color-primary) !important;
-  border: none !important;
-  border-radius: 100px !important;
-  padding: 0.8rem 2.5rem !important;
-  font-weight: 500;
-  transition: all var(--transition-base) !important;
+.form-floating > .form-control.textarea-md {
+  height: 120px;
 }
 
-.btn-primary:hover {
+/* Buttons */
+form .btn-primary {
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: 100px;
+  padding: 0.8rem 2.5rem;
+  font-weight: 500;
+  transition: all var(--transition-base);
+}
+
+form .btn-primary:hover {
   box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
   transform: translateY(-1px);
 }
 
 /* Validation States */
-.is-invalid {
-  border-color: var(--color-error) !important;
-  background-color: #fce8e6 !important;
+form .form-control.is-invalid {
+  border-color: var(--color-error);
+  background-color: #fce8e6;
 }
 
-.is-valid {
-  border-color: var(--color-success) !important;
+form .form-control.is-valid {
+  border-color: var(--color-success);
 }
 
 /* Toast Customization */
@@ -187,9 +210,9 @@ main {
   z-index: 2000;
 }
 
-.toast {
-  border-radius: var(--radius-md) !important;
-  box-shadow: var(--shadow-lg) !important;
+.toast-container .toast {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
 }
 
 /* ============================================
@@ -219,17 +242,8 @@ main {
    5. Responsive Overrides
    ============================================ */
 @media (max-width: 768px) {
-  .hero-card .row {
-    flex-direction: column;
-  }
-
-  .hero-image {
-    min-height: 180px;
-    max-height: 250px;
-  }
-
   .hero-quote-content {
-    padding: 1.5rem !important;
+    padding: 2rem 1.5rem;
     text-align: center;
   }
 

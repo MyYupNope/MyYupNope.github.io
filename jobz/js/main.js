@@ -8,6 +8,7 @@ import { toast } from './toast.js';
 
 class App {
     constructor() {
+        this.saveDraftTimer = null;
         this.initDoms();
         this.initEventListeners();
         this.loadDraft();
@@ -25,7 +26,7 @@ class App {
     initEventListeners() {
         this.form.addEventListener("submit", (e) => this.handleSubmit(e));
 
-        // Auto-save on input
+        // Auto-save on input with debounce
         this.inputs.forEach(input => {
             input.addEventListener('input', () => this.saveDraft());
 
@@ -48,9 +49,9 @@ class App {
             document.body.classList.add('loaded');
             if (this.loadingOverlay) {
                 this.loadingOverlay.style.opacity = '0';
-                setTimeout(() => {
+                this.loadingOverlay.addEventListener('transitionend', () => {
                     this.loadingOverlay.classList.add('hidden');
-                }, 300);
+                }, { once: true });
             }
         };
 
@@ -77,7 +78,7 @@ class App {
 
         if (!this.form.checkValidity()) {
             this.form.classList.add('was-validated');
-            toast.show('Please fill in all required fields correctly.', 'warning');
+            toast.show('Please fill in all required fields correctly.', 'warning', CONFIG.TOAST_DURATION);
             return;
         }
 
@@ -115,6 +116,7 @@ class App {
 
     setLoadingState(isLoading) {
         this.submitBtn.disabled = isLoading;
+        this.form.setAttribute('aria-busy', isLoading ? 'true' : 'false');
         if (isLoading) {
             this.spinner.classList.remove("hidden");
             this.spinner.classList.add("active");
@@ -125,7 +127,7 @@ class App {
     }
 
     handleSuccess() {
-        toast.show('Application submitted successfully!', 'success');
+        toast.show('Application submitted successfully!', 'success', CONFIG.TOAST_DURATION);
 
         // Clear draft after successful submission
         localStorage.removeItem('job_app_draft');
@@ -133,38 +135,51 @@ class App {
         setTimeout(() => {
             this.form.reset();
             this.form.classList.remove('was-validated');
+            this.inputs.forEach(input => {
+                input.classList.remove('is-valid', 'is-invalid');
+            });
             this.submitBtn.disabled = false;
         }, CONFIG.SUBMISSION_RESET_TIMEOUT);
     }
 
     handleError(message) {
-        toast.show(`Error: ${message}`, 'error');
+        toast.show(`Error: ${message}`, 'error', CONFIG.TOAST_DURATION);
         this.submitBtn.disabled = false;
     }
 
     saveDraft() {
-        const data = {};
-        this.inputs.forEach(input => {
-            data[input.name] = input.value;
-        });
-        localStorage.setItem('job_app_draft', JSON.stringify(data));
+        if (this.saveDraftTimer) {
+            clearTimeout(this.saveDraftTimer);
+        }
+        this.saveDraftTimer = setTimeout(() => {
+            const data = {};
+            this.inputs.forEach(input => {
+                data[input.name] = input.value;
+            });
+            localStorage.setItem('job_app_draft', JSON.stringify(data));
+        }, 500);
     }
 
     loadDraft() {
-        const draft = localStorage.getItem('job_app_draft');
-        if (draft) {
-            const data = JSON.parse(draft);
-            this.inputs.forEach(input => {
-                if (data[input.name]) {
-                    input.value = data[input.name];
-                }
-            });
-            toast.show('Restored your progress from draft.', 'info', 3000);
+        try {
+            const draft = localStorage.getItem('job_app_draft');
+            if (draft) {
+                const data = JSON.parse(draft);
+                this.inputs.forEach(input => {
+                    if (data[input.name]) {
+                        input.value = data[input.name];
+                    }
+                });
+                toast.show('Restored your progress from draft.', 'info', CONFIG.TOAST_DURATION);
+            }
+        } catch (error) {
+            console.error("Failed to load draft:", error);
+            localStorage.removeItem('job_app_draft');
         }
     }
 }
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new App();
+    new App();
 });

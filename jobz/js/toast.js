@@ -17,7 +17,6 @@ class Toast {
             container = document.createElement('div');
             container.id = 'toast-container';
             container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-            container.style.zIndex = '1055';
             document.body.appendChild(container);
         }
         return container;
@@ -33,19 +32,32 @@ class Toast {
         const toastId = `toast-${Date.now()}`;
         const backgroundColor = this._getBackgroundColor(type);
 
-        const toastHTML = `
-            <div id="${toastId}" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true" style="background-color: ${backgroundColor};">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
-        `;
+        const toastElement = document.createElement('div');
+        toastElement.id = toastId;
+        toastElement.className = 'toast align-items-center text-white border-0';
+        toastElement.setAttribute('role', 'alert');
+        toastElement.setAttribute('aria-live', 'assertive');
+        toastElement.setAttribute('aria-atomic', 'true');
+        toastElement.style.backgroundColor = backgroundColor;
 
-        this.container.insertAdjacentHTML('beforeend', toastHTML);
-        const toastElement = document.getElementById(toastId);
+        const flexContainer = document.createElement('div');
+        flexContainer.className = 'd-flex';
+
+        const toastBody = document.createElement('div');
+        toastBody.className = 'toast-body';
+        toastBody.textContent = message;
+
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'btn-close btn-close-white me-2 m-auto';
+        closeButton.setAttribute('data-bs-dismiss', 'toast');
+        closeButton.setAttribute('aria-label', 'Close');
+
+        flexContainer.appendChild(toastBody);
+        flexContainer.appendChild(closeButton);
+        toastElement.appendChild(flexContainer);
+
+        this.container.appendChild(toastElement);
 
         // Safety check for Bootstrap
         if (typeof bootstrap === 'undefined') {

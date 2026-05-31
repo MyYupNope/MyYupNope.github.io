@@ -50,7 +50,7 @@
     }
 
     .container {
-      max-width: 720px;
+      max-width: 800px;
       width: 100%;
     }
 
@@ -88,7 +88,7 @@
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/main.css?v=2">
 </head>
 
 <body class="loading">
@@ -102,22 +102,22 @@
   <main>
     <div class="container">
 
-      <!-- Hero Card: Image on Left/Top, Quote on Right/Bottom -->
+      <!-- Hero Card: Solid Blue Banner, Full Width Text -->
       <div class="card hero-card mb-4">
-        <div class="row g-0">
-          <div class="col-md-5">
-            <picture>
-              <source srcset="images/image.jpg" type="image/jpeg">
-              <img src="images/image.jpg" class="img-fluid hero-image" alt="Job Applications Assistant" loading="eager">
-            </picture>
-          </div>
-          <div class="col-md-7">
-            <div class="card-body hero-quote-content">
-              <h1>Job Applications Assistant</h1>
-              <p class="text-secondary">Streamline your application process with our premium tools.</p>
-            </div>
-          </div>
+        <div class="card-body hero-quote-content">
+          <h1>Job Applications Assistant </h1>
+          <p class="hero-description">Streamline your application process with our premium tools.</p>
         </div>
+      </div>
+
+      <div class="form-header">
+        <svg class="form-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="12" y1="18" x2="12" y2="12"></line>
+          <line x1="9" y1="15" x2="15" y2="15"></line>
+        </svg>
+        <h2>New Submission</h2>
       </div>
 
       <!-- Application Form Card -->
@@ -156,8 +156,8 @@
 
             <!-- Job Description -->
             <div class="form-floating mb-3">
-              <textarea class="form-control" id="job_description" name="job_description" placeholder="Job Description"
-                style="height: 120px" required></textarea>
+              <textarea class="form-control textarea-md" id="job_description" name="job_description"
+                placeholder="Job Description" maxlength="5000" required></textarea>
               <label for="job_description">Job Description</label>
               <div class="invalid-feedback">Please provide a job description.</div>
             </div>
@@ -172,8 +172,8 @@
 
             <!-- Company Description -->
             <div class="form-floating mb-3">
-              <textarea class="form-control" id="company_description" name="company_description"
-                placeholder="Company Description" style="height: 120px" required></textarea>
+              <textarea class="form-control textarea-md" id="company_description" name="company_description"
+                placeholder="Company Description" maxlength="5000" required></textarea>
               <label for="company_description">Company Description</label>
               <div class="invalid-feedback">Company description is required.</div>
             </div>
