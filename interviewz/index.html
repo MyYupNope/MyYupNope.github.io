@@ -311,22 +311,22 @@
         </button>
         <div class="accordion-content">
           <div class="accordion-content-inner">
-            <div class="info-group">
-              <div class="info-row">
+            <div class="info-group status-matrix-grid">
+              <div class="info-row-block">
                 <span class="info-label">Applied Date</span>
                 <span class="info-value" id="drawerDate">-</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Hiring Team</span>
-                <span class="info-value" id="drawerHiringTeam">-</span>
-              </div>
-              <div class="info-row" id="sectionFollowUp">
-                <span class="info-label">Follow-up</span>
-                <span class="info-value" id="drawerFollowUp">-</span>
               </div>
               <div class="info-row-block" id="sectionComments">
                 <span class="info-label">Comments</span>
                 <div class="comments-box" id="drawerComments">-</div>
+              </div>
+              <div class="info-row-block" id="sectionFollowUp">
+                <span class="info-label">Follow-up</span>
+                <span class="info-value" id="drawerFollowUp">-</span>
+              </div>
+              <div class="info-row-block">
+                <span class="info-label">Hiring Team</span>
+                <span class="info-value" id="drawerHiringTeam">-</span>
               </div>
             </div>
           </div>
@@ -343,7 +343,7 @@
         </button>
         <div class="accordion-content">
           <div class="accordion-content-inner">
-            <div class="info-group">
+            <div class="info-group details-matrix-grid">
               <div class="info-row-block">
                 <div class="description-header">
                   <span class="info-label">Job Description</span>
@@ -379,10 +379,12 @@
         </button>
         <div class="accordion-content">
           <div class="accordion-content-inner">
-            <div class="info-group">
-              <div class="info-row" id="drawerSuitabilityScoreContainer">
-                <span class="info-label">Job Suitability</span>
-                <span class="score-badge" id="drawerSuitabilityScore">-</span>
+            <div class="info-group suitability-matrix-grid">
+              <div class="info-row-block" id="drawerSuitabilityScoreContainer">
+                <span class="info-label">Job Suitability Score</span>
+                <div>
+                  <span class="score-badge" id="drawerSuitabilityScore">-</span>
+                </div>
               </div>
               <div class="info-row-block" id="sectionSuitabilityEval">
                 <span class="info-label">Job Suitability Evaluation</span>
@@ -403,7 +405,7 @@
         </button>
         <div class="accordion-content">
           <div class="accordion-content-inner">
-            <div class="info-group">
+            <div class="info-group interview-matrix-grid">
               <div class="info-row-block" id="sectionInterviewCompany">
                 <div class="description-header">
                   <span class="info-label">Interview Company</span>

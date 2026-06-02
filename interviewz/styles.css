@@ -1113,6 +1113,14 @@ body {
 .score-badge.score-4 { background-color: var(--color-score-4); } /* Yellow-Green transition */
 .score-badge.score-5 { background-color: var(--color-score-5); } /* Green */
 
+#drawerSuitabilityScore {
+  font-size: 2rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: var(--radius-md);
+  display: inline-block;
+  line-height: 1;
+}
+
 /* Accordion Styles */
 .drawer-section {
   display: flex;
@@ -1261,6 +1269,193 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
+.status-matrix-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 !important;
+}
+
+.status-matrix-grid > div {
+  box-sizing: border-box;
+}
+
+/* Desktop layout: cross divider line (+ style) */
+@media (min-width: 641px) {
+  .status-matrix-grid > div {
+    padding: 1rem;
+  }
+  .status-matrix-grid > div:nth-child(odd) {
+    border-right: 1px solid var(--color-border);
+    padding-right: 1.5rem;
+    padding-left: 0;
+  }
+  .status-matrix-grid > div:nth-child(even) {
+    padding-left: 1.5rem;
+    padding-right: 0;
+  }
+  .status-matrix-grid > div:nth-child(-n+2) {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1.5rem;
+    padding-top: 0;
+  }
+  .status-matrix-grid > div:nth-child(n+3) {
+    padding-top: 1.5rem;
+    padding-bottom: 0;
+  }
+}
+
+/* Mobile layout: horizontal line dividers between items */
+@media (max-width: 640px) {
+  .status-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+  .status-matrix-grid > div {
+    padding: 1.25rem 0;
+  }
+  .status-matrix-grid > div:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .status-matrix-grid > div:first-child {
+    padding-top: 0;
+  }
+  .status-matrix-grid > div:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.details-matrix-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 !important;
+}
+
+.details-matrix-grid > div {
+  box-sizing: border-box;
+}
+
+/* Desktop layout for Job Details */
+@media (min-width: 641px) {
+  .details-matrix-grid > div {
+    padding: 0;
+  }
+  .details-matrix-grid > div:first-child {
+    border-right: 1px solid var(--color-border);
+    padding-right: 1.5rem;
+    padding-left: 0;
+  }
+  .details-matrix-grid > div:last-child {
+    padding-left: 1.5rem;
+    padding-right: 0;
+  }
+}
+
+/* Mobile layout for Job Details */
+@media (max-width: 640px) {
+  .details-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+  .details-matrix-grid > div {
+    padding: 1.25rem 0;
+  }
+  .details-matrix-grid > div:first-child {
+    border-bottom: 1px solid var(--color-border);
+    padding-top: 0;
+    padding-bottom: 1.25rem;
+  }
+  .details-matrix-grid > div:last-child {
+    padding-top: 1.25rem;
+    padding-bottom: 0;
+  }
+}
+.suitability-matrix-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 !important;
+}
+
+.suitability-matrix-grid > div {
+  box-sizing: border-box;
+}
+
+/* Desktop layout for Job Suitability (2x1 side-by-side) */
+@media (min-width: 641px) {
+  .suitability-matrix-grid > div {
+    padding: 0;
+  }
+  .suitability-matrix-grid > div:first-child {
+    border-right: 1px solid var(--color-border);
+    padding-right: 1.5rem;
+    padding-left: 0;
+  }
+  .suitability-matrix-grid > div:last-child {
+    padding-left: 1.5rem;
+    padding-right: 0;
+  }
+}
+
+/* Mobile layout for Job Suitability */
+@media (max-width: 640px) {
+  .suitability-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+  .suitability-matrix-grid > div {
+    padding: 1.25rem 0;
+  }
+  .suitability-matrix-grid > div:first-child {
+    border-bottom: 1px solid var(--color-border);
+    padding-top: 0;
+    padding-bottom: 1.25rem;
+  }
+  .suitability-matrix-grid > div:last-child {
+    padding-top: 1.25rem;
+    padding-bottom: 0;
+  }
+}
+
+.interview-matrix-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 !important;
+}
+
+.interview-matrix-grid > div {
+  box-sizing: border-box;
+}
+
+/* Desktop layout for Job Interview (2x1 side-by-side) */
+@media (min-width: 641px) {
+  .interview-matrix-grid > div {
+    padding: 0;
+  }
+  .interview-matrix-grid > div:first-child {
+    border-right: 1px solid var(--color-border);
+    padding-right: 1.5rem;
+    padding-left: 0;
+  }
+  .interview-matrix-grid > div:last-child {
+    padding-left: 1.5rem;
+    padding-right: 0;
+  }
+}
+
+/* Mobile layout for Job Interview */
+@media (max-width: 640px) {
+  .interview-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+  .interview-matrix-grid > div {
+    padding: 1.25rem 0;
+  }
+  .interview-matrix-grid > div:first-child {
+    border-bottom: 1px solid var(--color-border);
+    padding-top: 0;
+    padding-bottom: 1.25rem;
+  }
+  .interview-matrix-grid > div:last-child {
+    padding-top: 1.25rem;
+    padding-bottom: 0;
+  }
+}
 .info-row {
   display: flex;
   justify-content: space-between;
@@ -1628,3 +1823,5 @@ body {
   color: var(--color-success);
   border-color: rgba(30, 142, 62, 0.15);
 }
+
+

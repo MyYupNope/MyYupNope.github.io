@@ -4,6 +4,10 @@
 
 // Configuration
 const SHEET_EXPORT_URL = 'https://docs.google.com/spreadsheets/d/1LdXmp9wAildqYdRIyzA32BMMQIDDM2kT25lMrgYeRbk/export?format=csv';
+const API_ENDPOINT = 'https://newdawn.tail74eef3.ts.net/webhook/jappmotlet';
+
+// State variables
+let currentApp = null;
 
 /**
  * FacetedSelect Class
@@ -1021,6 +1025,9 @@ function renderTable() {
  * Open Details Drawer
  */
 function openDetailsDrawer(app) {
+  // Store reference to active application row
+  currentApp = app;
+
   // Populate Drawer Contents
   const status = (app['Application Status'] || '').trim();
   drawerStatusBadge.className = `badge status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`;
@@ -1032,7 +1039,19 @@ function openDetailsDrawer(app) {
   
   // Hiring Team
   const hiringTeamVal = (app['Hiring Team'] || '').trim();
-  drawerHiringTeam.textContent = hiringTeamVal ? hiringTeamVal : 'Not Specified';
+  if (hiringTeamVal) {
+    const isUrl = hiringTeamVal.startsWith('http://') || hiringTeamVal.startsWith('https://');
+    if (isUrl) {
+      drawerHiringTeam.innerHTML = `<a href="${escapeHtml(hiringTeamVal)}" target="_blank" class="inline-link-btn">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        Link
+      </a>`;
+    } else {
+      drawerHiringTeam.textContent = hiringTeamVal;
+    }
+  } else {
+    drawerHiringTeam.textContent = 'Not Specified';
+  }
 
   // Follow-up
   const followUpVal = (app['Follow-Up'] || '').trim();
@@ -1079,12 +1098,7 @@ function openDetailsDrawer(app) {
 
   // Comments
   const comments = (app['Comments'] || '').trim();
-  if (comments) {
-    drawerComments.textContent = comments;
-    sectionComments.classList.remove('hidden');
-  } else {
-    sectionComments.classList.add('hidden');
-  }
+  drawerComments.textContent = comments ? comments : '-';
 
   // Job and Company Descriptions
   drawerJobDescription.textContent = (app['Job Description'] || 'No description provided.').trim();
@@ -1115,19 +1129,15 @@ function openDetailsDrawer(app) {
   if (interviewCompany || interviewPrep) {
     if (sectionE) sectionE.classList.remove('hidden');
 
-    if (interviewCompany) {
-      drawerInterviewCompany.innerHTML = parseMarkdown(interviewCompany);
-      document.getElementById('sectionInterviewCompany').classList.remove('hidden');
-    } else {
-      document.getElementById('sectionInterviewCompany').classList.add('hidden');
-    }
+    const btnCopyCompany = document.getElementById('btnCopyInterviewCompany');
+    const btnCopyPrep = document.getElementById('btnCopyInterviewPreparation');
 
-    if (interviewPrep) {
-      drawerInterviewPreparation.innerHTML = parseMarkdown(interviewPrep);
-      document.getElementById('sectionInterviewPreparation').classList.remove('hidden');
-    } else {
-      document.getElementById('sectionInterviewPreparation').classList.add('hidden');
-    }
+    // Populate elements
+    drawerInterviewCompany.innerHTML = interviewCompany ? parseMarkdown(interviewCompany) : '-';
+    if (btnCopyCompany) btnCopyCompany.style.display = interviewCompany ? '' : 'none';
+
+    drawerInterviewPreparation.innerHTML = interviewPrep ? parseMarkdown(interviewPrep) : '-';
+    if (btnCopyPrep) btnCopyPrep.style.display = interviewPrep ? '' : 'none';
   } else {
     if (sectionE) sectionE.classList.add('hidden');
   }
@@ -1557,3 +1567,56 @@ function initTabNavigation() {
   // Default to 'home' tab
   switchTab('home');
 }
+
+/**
+ * Dynamic Toast Alert Utility
+ */
+function showToast(message, type = 'success') {
+  let container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  
+  const toast = document.createElement('div');
+  toast.className = `toast-item ${type}`;
+  toast.innerHTML = `<span class="toast-message">${escapeHtml(message)}</span>`;
+  container.appendChild(toast);
+  
+  // Trigger transition
+  setTimeout(() => toast.classList.add('show'), 10);
+  
+  // Fade out and remove
+  setTimeout(() => {
+    toast.classList.remove('show');
+    toast.addEventListener('transitionend', () => toast.remove());
+  }, 4000);
+}
+
+/**
+ * Serialize local rawApplications array to CSV text format for caching
+ */
+function serializeApplicationsToCSV(apps) {
+  if (apps.length === 0) return '';
+  const headers = [
+    'Application Status', 'Comments', 'Company Name', 'Job Title', 'Job Description',
+    'Company Description', 'Job URL', 'Create Date', 'Company_Folder', 'Job_Suitability',
+    'Job_Suitability_Evaluation', 'Hiring Team', 'Follow-Up', 'Interview_Company',
+    'Interview_Company_Notes', 'Interview_Preparation', 'Interview_Preparation_Notes'
+  ];
+  
+  const csvRows = [headers.join(',')];
+  apps.forEach(app => {
+    const values = headers.map(header => {
+      const val = app[header] || '';
+      // Escape quotes
+      const escaped = val.replace(/"/g, '""');
+      return `"${escaped}"`;
+    });
+    csvRows.push(values.join(','));
+  });
+  return csvRows.join('\n');
+}
+
