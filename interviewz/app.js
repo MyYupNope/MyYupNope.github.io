@@ -876,6 +876,31 @@ function applyFilters(resetPage = true) {
       if (sortVal === 'company-desc') {
         comparison = companyB.localeCompare(companyA, undefined, { sensitivity: 'base', numeric: true });
       }
+    } else if (sortVal.startsWith('status')) {
+      const statusA = (a['Application Status'] || '').trim();
+      const statusB = (b['Application Status'] || '').trim();
+      comparison = statusA.localeCompare(statusB, undefined, { sensitivity: 'base', numeric: true });
+      if (sortVal === 'status-desc') {
+        comparison = statusB.localeCompare(statusA, undefined, { sensitivity: 'base', numeric: true });
+      }
+    } else if (sortVal.startsWith('suitability')) {
+      const valA = (a['Job_Suitability'] || a['Job Suitability'] || '').trim();
+      const valB = (b['Job_Suitability'] || b['Job Suitability'] || '').trim();
+      const numA = parseInt(valA, 10);
+      const numB = parseInt(valB, 10);
+      
+      const isNaN_A = isNaN(numA);
+      const isNaN_B = isNaN(numB);
+      
+      if (isNaN_A && isNaN_B) {
+        comparison = 0;
+      } else if (isNaN_A) {
+        comparison = 1; // Put NaNs at the end
+      } else if (isNaN_B) {
+        comparison = -1; // Put NaNs at the end
+      } else {
+        comparison = sortVal === 'suitability-desc' ? numB - numA : numA - numB;
+      }
     }
     
     return comparison;
