@@ -254,6 +254,8 @@ const drawerStatusBadge = document.getElementById('drawerStatusBadge');
 const drawerJobTitle = document.getElementById('drawerJobTitle');
 const drawerCompanyName = document.getElementById('drawerCompanyName');
 const drawerDate = document.getElementById('drawerDate');
+const drawerHiringTeam = document.getElementById('drawerHiringTeam');
+const drawerFollowUp = document.getElementById('drawerFollowUp');
 const drawerSuitabilityScoreContainer = document.getElementById('drawerSuitabilityScoreContainer');
 const drawerSuitabilityScore = document.getElementById('drawerSuitabilityScore');
 const drawerSuitabilityEval = document.getElementById('drawerSuitabilityEval');
@@ -1027,6 +1029,26 @@ function openDetailsDrawer(app) {
   drawerJobTitle.textContent = (app['Job Title'] || '').trim();
   drawerCompanyName.textContent = (app['Company Name'] || '').trim();
   drawerDate.textContent = formatDisplayDate((app['Create Date'] || '').trim());
+  
+  // Hiring Team
+  const hiringTeamVal = (app['Hiring Team'] || '').trim();
+  drawerHiringTeam.textContent = hiringTeamVal ? hiringTeamVal : 'Not Specified';
+
+  // Follow-up
+  const followUpVal = (app['Follow-Up'] || '').trim();
+  if (followUpVal) {
+    const isUrl = followUpVal.startsWith('http://') || followUpVal.startsWith('https://');
+    if (isUrl) {
+      drawerFollowUp.innerHTML = `<a href="${escapeHtml(followUpVal)}" target="_blank" class="inline-link-btn">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        Link
+      </a>`;
+    } else {
+      drawerFollowUp.textContent = followUpVal;
+    }
+  } else {
+    drawerFollowUp.textContent = 'Not Specified';
+  }
   
   // Suitability Info
   const score = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
