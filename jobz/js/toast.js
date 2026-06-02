@@ -78,6 +78,8 @@ class Toast {
         toastElement.addEventListener('hidden.bs.toast', () => {
             toastElement.remove();
         });
+
+        return bsToast;
     }
 
     _getBackgroundColor(type) {

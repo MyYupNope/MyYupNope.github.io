@@ -163,27 +163,37 @@
             </div>
 
             <!-- Job Description -->
-            <div class="form-floating mb-3">
-              <textarea class="form-control textarea-lg" id="job_description" name="job_description"
-                placeholder="Job Description" maxlength="15000" required></textarea>
-              <label for="job_description">Job Description</label>
-              <div class="invalid-feedback">Please provide a job description.</div>
+            <div class="mb-3">
+              <div class="form-floating">
+                <textarea class="form-control textarea-lg" id="job_description" name="job_description"
+                  placeholder="Job Description" maxlength="15000" required></textarea>
+                <label for="job_description">Job Description</label>
+                <div class="invalid-feedback">Please provide a job description.</div>
+              </div>
+              <div class="text-end mt-1">
+                <small id="job_description_counter" class="char-counter text-muted">0 / 15000</small>
+              </div>
             </div>
 
             <!-- Hiring Team -->
             <div class="form-floating mb-3">
               <input type="text" class="form-control" id="hiring_team" name="hiring_team" placeholder="Hiring Team"
-                required>
+                value="Not Defined" autocomplete="off" required>
               <label for="hiring_team">Hiring Team</label>
               <div class="invalid-feedback">Hiring team information is required.</div>
             </div>
 
             <!-- Company Description -->
-            <div class="form-floating mb-3">
-              <textarea class="form-control textarea-lg" id="company_description" name="company_description"
-                placeholder="Company Description" maxlength="15000" required></textarea>
-              <label for="company_description">Company Description</label>
-              <div class="invalid-feedback">Company description is required.</div>
+            <div class="mb-3">
+              <div class="form-floating">
+                <textarea class="form-control textarea-lg" id="company_description" name="company_description"
+                  placeholder="Company Description" maxlength="15000" required></textarea>
+                <label for="company_description">Company Description</label>
+                <div class="invalid-feedback">Company description is required.</div>
+              </div>
+              <div class="text-end mt-1">
+                <small id="company_description_counter" class="char-counter text-muted">0 / 15000</small>
+              </div>
             </div>
 
             <!-- Submit Button & Status Indicators -->

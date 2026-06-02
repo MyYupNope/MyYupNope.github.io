@@ -181,7 +181,16 @@ form .form-control:focus {
 }
 
 .form-floating > .form-control.textarea-lg {
-  height: 320px;
+  height: 130px;
+  overflow-y: auto;
+  resize: vertical;
+}
+
+.char-counter {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  user-select: none;
 }
 
 /* Reset Button Custom Styles */

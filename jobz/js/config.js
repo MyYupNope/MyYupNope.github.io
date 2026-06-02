@@ -7,7 +7,7 @@ const CONFIG = {
     API_ENDPOINT: "https://newdawn.tail74eef3.ts.net/webhook/jappmotlet",
     
     // Form Settings
-    SUBMISSION_RESET_TIMEOUT: 30000, // 30 seconds
+    SUBMISSION_RESET_TIMEOUT: 10000, // 10 seconds
     
     // UI Settings
     TOAST_DURATION: 5000 // 5 seconds
