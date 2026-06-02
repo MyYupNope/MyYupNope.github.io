@@ -180,6 +180,39 @@ form .form-control:focus {
   height: 120px;
 }
 
+.form-floating > .form-control.textarea-lg {
+  height: 320px;
+}
+
+/* Reset Button Custom Styles */
+.btn-reset-link {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-base), color var(--transition-base);
+  cursor: pointer;
+}
+
+.btn-reset-link svg {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--transition-base);
+}
+
+.btn-reset-link:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.btn-reset-link:hover svg {
+  transform: rotate(-180deg);
+}
+
 /* Buttons */
 form .btn-primary {
   background-color: var(--color-primary);

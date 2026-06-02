@@ -110,14 +110,22 @@
         </div>
       </div>
 
-      <div class="form-header">
-        <svg class="form-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="12" y1="18" x2="12" y2="12"></line>
-          <line x1="9" y1="15" x2="15" y2="15"></line>
-        </svg>
-        <h2>New Submission</h2>
+      <div class="form-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+          <svg class="form-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <line x1="9" y1="15" x2="15" y2="15"></line>
+          </svg>
+          <h2>New Submission</h2>
+        </div>
+        <button type="button" id="reset_btn" class="btn-reset-link" title="Reset Form" aria-label="Reset Form">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+        </button>
       </div>
 
       <!-- Application Form Card -->
@@ -156,8 +164,8 @@
 
             <!-- Job Description -->
             <div class="form-floating mb-3">
-              <textarea class="form-control textarea-md" id="job_description" name="job_description"
-                placeholder="Job Description" maxlength="5000" required></textarea>
+              <textarea class="form-control textarea-lg" id="job_description" name="job_description"
+                placeholder="Job Description" maxlength="15000" required></textarea>
               <label for="job_description">Job Description</label>
               <div class="invalid-feedback">Please provide a job description.</div>
             </div>
@@ -172,23 +180,19 @@
 
             <!-- Company Description -->
             <div class="form-floating mb-3">
-              <textarea class="form-control textarea-md" id="company_description" name="company_description"
-                placeholder="Company Description" maxlength="5000" required></textarea>
+              <textarea class="form-control textarea-lg" id="company_description" name="company_description"
+                placeholder="Company Description" maxlength="15000" required></textarea>
               <label for="company_description">Company Description</label>
               <div class="invalid-feedback">Company description is required.</div>
             </div>
 
             <!-- Submit Button & Status Indicators -->
             <div class="d-flex align-items-center flex-wrap gap-3 mt-4">
-              <button type="submit" class="btn btn-primary px-5 py-3" id="submit_btn">
+              <button type="submit" class="btn btn-primary px-5 py-3 d-inline-flex align-items-center gap-2" id="submit_btn">
                 <span>Submit Application</span>
+                <!-- Loading Spinner -->
+                <span class="spinner-border spinner-border-sm text-light hidden" id="job_spin" role="status" aria-hidden="true"></span>
               </button>
-
-              <!-- Loading Spinner -->
-              <div class="spinner-border text-primary hidden" id="job_spin" role="status">
-                <span class="visually-hidden">Submitting...</span>
-              </div>
-
             </div>
 
           </form>

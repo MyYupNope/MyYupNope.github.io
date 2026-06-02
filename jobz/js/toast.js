@@ -16,7 +16,7 @@ class Toast {
         if (!container) {
             container = document.createElement('div');
             container.id = 'toast-container';
-            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            container.className = 'toast-container position-fixed top-0 start-50 translate-middle-x p-3';
             document.body.appendChild(container);
         }
         return container;

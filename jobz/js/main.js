@@ -19,12 +19,17 @@ class App {
         this.form = document.querySelector("#job_opening");
         this.submitBtn = document.querySelector("#submit_btn");
         this.spinner = document.querySelector("#job_spin");
+        this.resetBtn = document.querySelector("#reset_btn");
         this.inputs = this.form.querySelectorAll('input, textarea');
         this.loadingOverlay = document.getElementById('loading_overlay');
     }
 
     initEventListeners() {
         this.form.addEventListener("submit", (e) => this.handleSubmit(e));
+
+        if (this.resetBtn) {
+            this.resetBtn.addEventListener("click", () => this.handleReset());
+        }
 
         // Auto-save on input with debounce
         this.inputs.forEach(input => {
@@ -145,6 +150,16 @@ class App {
     handleError(message) {
         toast.show(`Error: ${message}`, 'error', CONFIG.TOAST_DURATION);
         this.submitBtn.disabled = false;
+    }
+
+    handleReset() {
+        this.form.reset();
+        this.form.classList.remove('was-validated');
+        this.inputs.forEach(input => {
+            input.classList.remove('is-valid', 'is-invalid');
+        });
+        localStorage.removeItem('job_app_draft');
+        toast.show('Form fields and draft have been reset.', 'info', CONFIG.TOAST_DURATION);
     }
 
     saveDraft() {
