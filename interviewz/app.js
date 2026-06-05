@@ -402,30 +402,45 @@ class FormApp {
   }
 
   handleReset() {
-    // Check if there is any user entered text
-    const hasContent = Array.from(this.inputs).some(input => {
-      if (input === this.hiringTeam) {
-        return input.value !== "Not Defined" && input.value.trim() !== "";
-      }
-      return input.value.trim() !== "";
-    });
+    // Two-click confirmation pattern – avoids native confirm() which browsers suppress
+    if (!this.resetPending) {
+      this.resetPending = true;
+      const btn = this.resetBtn;
+      const originalTitle = btn.getAttribute('title');
+      btn.setAttribute('title', 'Click again to confirm reset');
+      btn.classList.add('reset-confirm-pending');
+      showToast('Click Reset again to confirm clearing the form.', 'warning');
 
-    if (hasContent) {
-      const confirmed = confirm('Are you sure you want to reset the form? All unsaved data will be lost.');
-      if (!confirmed) return;
+      this._resetPendingTimer = setTimeout(() => {
+        this.resetPending = false;
+        btn.setAttribute('title', originalTitle);
+        btn.classList.remove('reset-confirm-pending');
+      }, 3000);
+      return;
     }
 
-    this.form.reset();
-    this.form.classList.remove('was-validated');
+    // Second click – confirmed, proceed with reset
+    clearTimeout(this._resetPendingTimer);
+    this.resetPending = false;
+    if (this.resetBtn) {
+      this.resetBtn.setAttribute('title', 'Reset Form');
+      this.resetBtn.classList.remove('reset-confirm-pending');
+    }
+
+    // Explicitly clear every field
     this.inputs.forEach(input => {
+      if (input === this.hiringTeam) {
+        input.value = "Not Defined";
+      } else {
+        input.value = "";
+      }
       input.classList.remove('is-valid', 'is-invalid');
     });
-    if (this.hiringTeam) {
-      this.hiringTeam.value = "Not Defined";
-    }
+
+    this.form.classList.remove('was-validated');
     localStorage.removeItem('job_app_draft');
     this.initCharacterCounters();
-    showToast('Form fields and draft have been reset.', 'info');
+    showToast('Form has been reset.', 'info');
   }
 
   saveDraft() {
@@ -1793,6 +1808,7 @@ function initTabNavigation() {
   const statsSection = document.querySelector('.stats-section');
   const analyticsSection = document.querySelector('.analytics-section');
   const newApplicationSection = document.querySelector('.new-application-section');
+  const appHeader = document.querySelector('.app-header');
 
   function switchTab(targetTab) {
     navButtons.forEach(btn => {
