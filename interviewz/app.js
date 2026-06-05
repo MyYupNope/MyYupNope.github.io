@@ -6,6 +6,11 @@
 const SHEET_EXPORT_URL = 'https://docs.google.com/spreadsheets/d/1LdXmp9wAildqYdRIyzA32BMMQIDDM2kT25lMrgYeRbk/export?format=csv';
 const API_ENDPOINT = 'https://newdawn.tail74eef3.ts.net/webhook/jappmotlet';
 
+// Form Configuration
+const FORM_API_ENDPOINT = 'https://newdawn.tail74eef3.ts.net/webhook/jappmotlet';
+const FORM_TOAST_DURATION = 5000;
+const FORM_SUBMISSION_RESET_TIMEOUT = 10000;
+
 // State variables
 let currentApp = null;
 
@@ -204,6 +209,268 @@ class FacetedSelect {
     
     this.trigger.querySelector('.trigger-text').textContent = selectedValue || this.defaultText;
     this.filterOptions();
+  }
+}
+
+class FormApp {
+  constructor() {
+    this.saveDraftTimer = null;
+    this.isSubmitting = false;
+    this.initDoms();
+    this.initEventListeners();
+    this.loadDraft();
+    this.initCharacterCounters();
+  }
+
+  initDoms() {
+    this.form = document.querySelector("#job_opening");
+    this.submitBtn = document.querySelector("#submit_btn");
+    this.spinner = document.querySelector("#job_spin");
+    this.resetBtn = document.querySelector("#reset_btn");
+    this.inputs = this.form.querySelectorAll('input, textarea');
+    this.hiringTeam = document.querySelector("#hiring_team");
+    this.jobDesc = document.querySelector("#job_description");
+    this.companyDesc = document.querySelector("#company_description");
+    this.jobDescCounter = document.querySelector("#job_description_counter");
+    this.companyDescCounter = document.querySelector("#company_description_counter");
+  }
+
+  initEventListeners() {
+    this.form.addEventListener("submit", (e) => this.handleSubmit(e));
+
+    if (this.resetBtn) {
+      this.resetBtn.addEventListener("click", () => this.handleReset());
+    }
+
+    // Auto-save on input with debounce
+    this.inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        this.saveDraft();
+        if (input === this.jobDesc || input === this.companyDesc) {
+          this.updateCounter(input);
+        }
+      });
+
+      // Real-time validation
+      input.addEventListener('blur', () => this.validateField(input));
+    });
+
+    // Hiring Team focus/blur behavior
+    if (this.hiringTeam) {
+      this.hiringTeam.addEventListener("focus", () => {
+        if (this.hiringTeam.value === "Not Defined") {
+          this.hiringTeam.value = "";
+        }
+      });
+      this.hiringTeam.addEventListener("blur", () => {
+        if (this.hiringTeam.value.trim() === "") {
+          this.hiringTeam.value = "Not Defined";
+        }
+      });
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        if (document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT') {
+          // Only trigger if form is visible/active
+          const newAppSec = document.querySelector('.new-application-section');
+          if (newAppSec && newAppSec.style.display !== 'none') {
+            this.form.requestSubmit();
+          }
+        }
+      }
+    });
+  }
+
+  validateField(input) {
+    if (!input.checkValidity()) {
+      input.classList.add('is-invalid');
+    } else {
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      setTimeout(() => input.classList.remove('is-valid'), 2000);
+    }
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault();
+
+    // Double-submit guard
+    if (this.isSubmitting) return;
+
+    if (!this.form.checkValidity()) {
+      this.form.classList.add('was-validated');
+      showToast('Please fill in all required fields correctly.', 'warning');
+
+      // Focus and scroll to first invalid field
+      const firstInvalid = this.form.querySelector(':invalid');
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstInvalid.focus();
+      }
+      return;
+    }
+
+    const formData = new FormData(this.form);
+    this.setLoadingState(true);
+    this.isSubmitting = true;
+
+    // Immediate feedback
+    showToast('Submitting your application... Please wait for feedback.', 'info');
+
+    // AbortController for 90 seconds timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+    try {
+      const response = await fetch(FORM_API_ENDPOINT, {
+        method: "POST",
+        body: formData,
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server returned ${response.status}: ${errorText}`);
+      }
+
+      const result = await response.json();
+
+      if (result.ok === true) {
+        this.handleSuccess();
+      } else {
+        this.handleError(result.message || 'The submission was not successful. Please try again.');
+      }
+    } catch (error) {
+      clearTimeout(timeoutId);
+      console.error("Submission error details:", error);
+      if (error.name === 'AbortError') {
+        this.handleError("Submission error: Request timed out after 90 seconds.");
+      } else {
+        this.handleError("Submission error: " + error.message);
+      }
+    } finally {
+      this.setLoadingState(false);
+      this.isSubmitting = false;
+    }
+  }
+
+  setLoadingState(isLoading) {
+    this.submitBtn.disabled = isLoading;
+    if (this.resetBtn) {
+      this.resetBtn.disabled = isLoading;
+    }
+    this.form.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+    if (isLoading) {
+      this.spinner.classList.remove("hidden");
+      this.spinner.classList.add("active");
+    } else {
+      this.spinner.classList.remove("active");
+      this.spinner.classList.add("hidden");
+    }
+  }
+
+  handleSuccess() {
+    showToast('Application submitted successfully!', 'success');
+
+    // Clear draft after successful submission
+    localStorage.removeItem('job_app_draft');
+
+    setTimeout(() => {
+      this.form.reset();
+      this.form.classList.remove('was-validated');
+      this.inputs.forEach(input => {
+        input.classList.remove('is-valid', 'is-invalid');
+      });
+      if (this.hiringTeam) {
+        this.hiringTeam.value = "Not Defined";
+      }
+      this.initCharacterCounters();
+      
+      // Auto-switch to Home tab
+      if (typeof window.switchTab === 'function') {
+        window.switchTab('home');
+      }
+    }, FORM_SUBMISSION_RESET_TIMEOUT);
+  }
+
+  handleError(message) {
+    showToast(`Error: ${message}`, 'error');
+  }
+
+  handleReset() {
+    // Check if there is any user entered text
+    const hasContent = Array.from(this.inputs).some(input => {
+      if (input === this.hiringTeam) {
+        return input.value !== "Not Defined" && input.value.trim() !== "";
+      }
+      return input.value.trim() !== "";
+    });
+
+    if (hasContent) {
+      const confirmed = confirm('Are you sure you want to reset the form? All unsaved data will be lost.');
+      if (!confirmed) return;
+    }
+
+    this.form.reset();
+    this.form.classList.remove('was-validated');
+    this.inputs.forEach(input => {
+      input.classList.remove('is-valid', 'is-invalid');
+    });
+    if (this.hiringTeam) {
+      this.hiringTeam.value = "Not Defined";
+    }
+    localStorage.removeItem('job_app_draft');
+    this.initCharacterCounters();
+    showToast('Form fields and draft have been reset.', 'info');
+  }
+
+  saveDraft() {
+    if (this.saveDraftTimer) {
+      clearTimeout(this.saveDraftTimer);
+    }
+    this.saveDraftTimer = setTimeout(() => {
+      const data = {};
+      this.inputs.forEach(input => {
+        data[input.name] = input.value;
+      });
+      localStorage.setItem('job_app_draft', JSON.stringify(data));
+    }, 500);
+  }
+
+  loadDraft() {
+    try {
+      const draft = localStorage.getItem('job_app_draft');
+      if (draft) {
+        const data = JSON.parse(draft);
+        this.inputs.forEach(input => {
+          if (data[input.name]) {
+            input.value = data[input.name];
+          }
+        });
+        showToast('Restored your progress from draft.', 'info');
+      }
+    } catch (error) {
+      console.error("Failed to load draft:", error);
+      localStorage.removeItem('job_app_draft');
+    }
+  }
+
+  initCharacterCounters() {
+    if (this.jobDesc) this.updateCounter(this.jobDesc);
+    if (this.companyDesc) this.updateCounter(this.companyDesc);
+  }
+
+  updateCounter(input) {
+    const length = input.value.length;
+    if (input === this.jobDesc && this.jobDescCounter) {
+      this.jobDescCounter.textContent = `${length} / 15000`;
+    } else if (input === this.companyDesc && this.companyDescCounter) {
+      this.companyDescCounter.textContent = `${length} / 15000`;
+    }
   }
 }
 
@@ -1525,6 +1792,7 @@ function initTabNavigation() {
   const resultsSection = document.querySelector('.results-section');
   const statsSection = document.querySelector('.stats-section');
   const analyticsSection = document.querySelector('.analytics-section');
+  const newApplicationSection = document.querySelector('.new-application-section');
 
   function switchTab(targetTab) {
     navButtons.forEach(btn => {
@@ -1540,11 +1808,13 @@ function initTabNavigation() {
       if (resultsSection) resultsSection.style.display = '';
       if (statsSection) statsSection.style.display = 'none';
       if (analyticsSection) analyticsSection.style.display = 'none';
+      if (newApplicationSection) newApplicationSection.style.display = 'none';
     } else if (targetTab === 'dashboard') {
       if (filtersSection) filtersSection.style.display = 'none';
       if (resultsSection) resultsSection.style.display = 'none';
       if (statsSection) statsSection.style.display = '';
       if (analyticsSection) analyticsSection.style.display = '';
+      if (newApplicationSection) newApplicationSection.style.display = 'none';
 
       // Re-trigger chart render to ensure correct layout and scaling
       if (rawApplications.length > 0) {
@@ -1554,8 +1824,21 @@ function initTabNavigation() {
           console.error("Failed to render analytics chart on tab switch:", error);
         }
       }
+    } else if (targetTab === 'new-application') {
+      if (filtersSection) filtersSection.style.display = 'none';
+      if (resultsSection) resultsSection.style.display = 'none';
+      if (statsSection) statsSection.style.display = 'none';
+      if (analyticsSection) analyticsSection.style.display = 'none';
+      if (newApplicationSection) newApplicationSection.style.display = '';
+
+      // Lazy-init FormApp on first tab visit
+      if (!window._formApp) {
+        window._formApp = new FormApp();
+      }
     }
   }
+
+  window.switchTab = switchTab;
 
   navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
