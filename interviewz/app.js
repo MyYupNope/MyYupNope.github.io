@@ -4,12 +4,28 @@
 
 // Configuration
 const SHEET_EXPORT_URL = 'https://docs.google.com/spreadsheets/d/1LdXmp9wAildqYdRIyzA32BMMQIDDM2kT25lMrgYeRbk/export?format=csv';
-const API_ENDPOINT = 'https://newdawn.tail74eef3.ts.net/webhook/jappmotlet';
 
 // Form Configuration
 const FORM_API_ENDPOINT = 'https://newdawn.tail74eef3.ts.net/webhook/jappmotlet';
 const FORM_TOAST_DURATION = 5000;
 const FORM_SUBMISSION_RESET_TIMEOUT = 10000;
+
+/** Cached theme colours — read once from CSS custom properties at startup */
+const theme = {};
+function cacheThemeColors() {
+  const cs = getComputedStyle(document.documentElement);
+  const get = (v) => cs.getPropertyValue(v).trim();
+  theme.primary   = get('--color-primary')       || '#1a73e8';
+  theme.error     = get('--color-error')          || '#d93025';
+  theme.warning   = get('--color-warning')        || '#f9ab00';
+  theme.secondary = get('--color-text-secondary') || '#5f6368';
+  theme.scores    = [1, 2, 3, 4, 5].map(n =>
+    get(`--color-score-${n}`) || ['#d93025', '#ff8da1', '#f9ab00', '#8bc34a', '#1e8e3e'][n - 1]
+  );
+}
+
+/** Returns true when a string begins with http:// or https:// */
+const isUrl = (v) => v.startsWith('http://') || v.startsWith('https://');
 
 // State variables
 let currentApp = null;
@@ -391,8 +407,8 @@ class FormApp {
       this.initCharacterCounters();
       
       // Auto-switch to Home tab
-      if (typeof window.switchTab === 'function') {
-        window.switchTab('home');
+      if (typeof switchTab === 'function') {
+        switchTab('home');
       }
     }, FORM_SUBMISSION_RESET_TIMEOUT);
   }
@@ -502,6 +518,12 @@ let rowsPerPage = 10;
 
 let companySelect, jobSelect, statusSelect;
 
+/** true = charts need a full rebuild (set when new data arrives; cleared after render) */
+let isDashboardDirty = true;
+
+/** Module-level switchTab reference — assigned by initTabNavigation() */
+let switchTab = null;
+
 // DOM Elements
 const syncStatusEl = document.getElementById('syncStatus');
 const statTotalEl = document.getElementById('statTotal');
@@ -521,6 +543,12 @@ const noResultsEl = document.getElementById('noResults');
 const resultsCountEl = document.getElementById('resultsCount');
 const activeInterviewsCountEl = document.getElementById('activeInterviewsCount');
 let currentSortVal = 'date-desc';
+
+// Pagination + table container — cached at startup to avoid re-querying on every render
+const tableContainer = document.querySelector('.registry-table-container');
+const paginationInfo = document.getElementById('paginationInfo');
+const btnPrevPage = document.getElementById('btnPrevPage');
+const btnNextPage = document.getElementById('btnNextPage');
 
 // Custom Select Dropdowns
 const companySelectContainer = document.getElementById('companySelectContainer');
@@ -563,6 +591,8 @@ const drawerInterviewPreparation = document.getElementById('drawerInterviewPrepa
 
 // Initialize the Application
 function initializeApp() {
+  cacheThemeColors();
+
   // Instantiate selectors
   companySelect = new FacetedSelect(companySelectContainer, companyTrigger, companySearch, companyOptions, 'All Companies');
   jobSelect = new FacetedSelect(jobSelectContainer, jobTrigger, jobSearch, jobOptions, 'All Job Titles');
@@ -711,9 +741,7 @@ function setupEventListeners() {
     });
   });
 
-  // Paging controls
-  const btnPrevPage = document.getElementById('btnPrevPage');
-  const btnNextPage = document.getElementById('btnNextPage');
+  // Paging controls — module-level btnPrevPage / btnNextPage are used directly
   
   if (btnPrevPage) {
     btnPrevPage.addEventListener('click', () => {
@@ -764,30 +792,45 @@ function setupEventListeners() {
 }
 
 /**
+ * Read cached CSV from localStorage. Returns the CSV string or null.
+ */
+function readCache() {
+  const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+  const raw = localStorage.getItem('talent_tracker_csv_cache');
+  if (!raw) return null;
+  try {
+    const obj = JSON.parse(raw);
+    if (obj && obj.csv && obj.timestamp) {
+      if (Date.now() - obj.timestamp < CACHE_TTL_MS) return obj.csv;
+      console.log('[interviewz] Cache expired');
+      return null;
+    }
+  } catch (e) {
+    return raw; // Legacy: raw CSV string (no JSON wrapper)
+  }
+  return null;
+}
+
+/**
+ * Write CSV text to localStorage with a timestamp.
+ */
+function writeCache(csvText) {
+  try {
+    localStorage.setItem(
+      'talent_tracker_csv_cache',
+      JSON.stringify({ csv: csvText, timestamp: Date.now() })
+    );
+  } catch (e) {
+    console.warn('Unable to cache CSV to localStorage:', e);
+  }
+}
+
+/**
  * Fetch and Parse Data with offline Local Storage support
  */
 function fetchData() {
-  const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-  const cachedVal = localStorage.getItem('talent_tracker_csv_cache');
-  let cachedCsvText = null;
+  const cachedCsvText = readCache();
   let hasLoadedFromCache = false;
-
-  if (cachedVal) {
-    try {
-      // Try parsing as JSON first
-      const cachedObj = JSON.parse(cachedVal);
-      if (cachedObj && typeof cachedObj === 'object' && cachedObj.csv && cachedObj.timestamp) {
-        if (Date.now() - cachedObj.timestamp < CACHE_TTL_MS) {
-          cachedCsvText = cachedObj.csv;
-        } else {
-          console.log('[interviewz] Cache expired');
-        }
-      }
-    } catch (e) {
-      // JSON parsing failed, likely the old raw CSV string format
-      cachedCsvText = cachedVal;
-    }
-  }
 
   if (cachedCsvText) {
     try {
@@ -797,7 +840,6 @@ function fetchData() {
     } catch (e) {
       console.error('Error parsing cached CSV data:', e);
       localStorage.removeItem('talent_tracker_csv_cache');
-      cachedCsvText = null;
     }
   } else {
     updateSyncStatus('syncing', 'Fetching Live Spreadsheet...');
@@ -805,21 +847,11 @@ function fetchData() {
 
   fetch(SHEET_EXPORT_URL)
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       return response.text();
     })
     .then(csvText => {
-      try {
-        const cacheObj = {
-          csv: csvText,
-          timestamp: Date.now()
-        };
-        localStorage.setItem('talent_tracker_csv_cache', JSON.stringify(cacheObj));
-      } catch (e) {
-        console.warn('Unable to cache CSV to localStorage:', e);
-      }
+      writeCache(csvText);
       if (csvText !== cachedCsvText) {
         parseAndInitializeData(csvText);
       } else {
@@ -830,7 +862,6 @@ function fetchData() {
     .catch(error => {
       console.error('Error fetching sheet data:', error);
       updateSyncStatus('error', 'Sync Failed - View Local Cache');
-      
       if (!hasLoadedFromCache) {
         registryTableBody.innerHTML = `
           <tr>
@@ -865,12 +896,13 @@ function updateSyncStatus(status, text) {
 
 /**
  * State-Machine CSV Parser
- * Handles multiline cells, double double-quotes, and commas within cells correctly.
+ * Uses a char array accumulator (join at field boundary) instead of string
+ * concatenation for better performance on large spreadsheets.
  */
 function parseCSV(text) {
   const rows = [];
   let currentRow = [];
-  let currentField = '';
+  let currentField = [];
   let inQuotes = false;
 
   for (let i = 0; i < text.length; i++) {
@@ -879,35 +911,27 @@ function parseCSV(text) {
 
     if (c === '"') {
       if (inQuotes && nextC === '"') {
-        // Escaped double quote inside a quoted field ("")
-        currentField += '"';
-        i++; // skip next quote
+        currentField.push('"');
+        i++;
       } else {
-        // Toggle quote state
         inQuotes = !inQuotes;
       }
     } else if (c === ',' && !inQuotes) {
-      currentRow.push(currentField);
-      currentField = '';
+      currentRow.push(currentField.join(''));
+      currentField = [];
     } else if ((c === '\r' || c === '\n') && !inQuotes) {
-      currentRow.push(currentField);
-      currentField = '';
-      
-      // Skip \n if we just handled \r
-      if (c === '\r' && nextC === '\n') {
-        i++;
-      }
-      
+      currentRow.push(currentField.join(''));
+      currentField = [];
+      if (c === '\r' && nextC === '\n') i++;
       rows.push(currentRow);
       currentRow = [];
     } else {
-      currentField += c;
+      currentField.push(c);
     }
   }
 
-  // Handle remaining field/row if file doesn't end with a newline
-  if (currentField !== '' || currentRow.length > 0) {
-    currentRow.push(currentField);
+  if (currentField.length > 0 || currentRow.length > 0) {
+    currentRow.push(currentField.join(''));
     rows.push(currentRow);
   }
 
@@ -945,106 +969,73 @@ function parseAndInitializeData(csvText) {
   updateFiltersUI();
   applyFilters();
 
-  // Render all dashboard widgets
+  // Mark dashboard as needing a rebuild then render all widgets
+  isDashboardDirty = true;
   renderAllDashboardWidgets(rawApplications);
 }
 
 /**
- * Calculates dashboard statistics based on active applications
+ * Calculates dashboard statistics — single pass over rawApplications.
  */
 function calculateStatistics() {
-  // Total Applications
-  if (statTotalEl) statTotalEl.textContent = rawApplications.length;
-
-  // Active Applications (not Rejected, not Retired)
-  if (statActiveAppsEl) statActiveAppsEl.textContent = activeApplications.length;
-
-  // Count unique companies in raw applications (all-time)
-  const uniqueCompanies = new Set(
-    rawApplications.map(app => (app['Company Name'] || '').trim()).filter(name => name !== '')
-  );
-  statCompaniesEl.textContent = uniqueCompanies.size;
-
-  // Count unique job titles in raw applications (all-time)
-  const uniqueJobs = new Set(
-    rawApplications.map(app => (app['Job Title'] || '').trim()).filter(title => title !== '')
-  );
-  statJobsEl.textContent = uniqueJobs.size;
-
-  // Count interviewing/interview applications in raw applications
-  const interviewApps = rawApplications.filter(app => {
-    const status = (app['Application Status'] || '').trim().toLowerCase();
-    return status.includes('interview');
-  });
-  statInterviewsEl.textContent = interviewApps.length;
-
-  // Calculate Conversion Rate: reached "interview" or beyond (offer, ready)
-  const conversionApps = rawApplications.filter(app => {
-    const status = (app['Application Status'] || '').trim().toLowerCase();
-    return status.includes('interview') || status === 'offer' || status === 'ready';
-  });
-  const conversionRate = rawApplications.length > 0
-    ? Math.round((conversionApps.length / rawApplications.length) * 100)
-    : 0;
-  statConversionEl.textContent = `${conversionRate}%`;
-
-  // Rejection Rate
-  const rejectedApps = rawApplications.filter(app => {
-    const status = (app['Application Status'] || '').trim().toLowerCase();
-    return status === 'rejected';
-  });
-  const rejectionRate = rawApplications.length > 0
-    ? Math.round((rejectedApps.length / rawApplications.length) * 100)
-    : 0;
-  if (statRejectionRateEl) statRejectionRateEl.textContent = `${rejectionRate}%`;
-
-  // Average Suitability Score
-  let totalSuitability = 0;
-  let suitabilityCount = 0;
-  rawApplications.forEach(app => {
-    const suitabilityVal = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
-    const score = parseFloat(suitabilityVal);
-    if (!isNaN(score)) {
-      totalSuitability += score;
-      suitabilityCount++;
-    }
-  });
-  const avgSuitability = suitabilityCount > 0 ? (totalSuitability / suitabilityCount).toFixed(1) : '0.0';
-  if (statAvgSuitabilityEl) statAvgSuitabilityEl.textContent = `${avgSuitability}/5`;
-
-  // Application Velocity (This Week / This Month)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
-  // Calendar week starts on Monday
   const currentDay = today.getDay();
   const distanceToMonday = currentDay === 0 ? 6 : currentDay - 1;
   const startOfWeek = new Date(today);
   startOfWeek.setDate(today.getDate() - distanceToMonday);
   startOfWeek.setHours(0, 0, 0, 0);
-
-  // Calendar month starts on 1st
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-  let appsThisWeek = 0;
-  let appsThisMonth = 0;
+  const companies = new Set();
+  const jobs      = new Set();
+  let interviews     = 0;
+  let converted      = 0;
+  let rejected       = 0;
+  let totalSuit      = 0;
+  let suitCount      = 0;
+  let appsThisWeek   = 0;
+  let appsThisMonth  = 0;
 
   rawApplications.forEach(app => {
+    const status  = (app['Application Status'] || '').trim().toLowerCase();
+    const company = (app['Company Name'] || '').trim();
+    const job     = (app['Job Title'] || '').trim();
     const dateStr = (app['Create Date'] || '').trim();
-    if (!dateStr) return;
-    const appDate = parseDate(dateStr);
-    appDate.setHours(0, 0, 0, 0);
+    const suitVal = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
 
-    if (appDate >= startOfWeek) {
-      appsThisWeek++;
-    }
-    if (appDate >= startOfMonth) {
-      appsThisMonth++;
+    if (company) companies.add(company);
+    if (job)     jobs.add(job);
+    if (status.includes('interview'))                                   interviews++;
+    if (status.includes('interview') || status === 'offer' || status === 'ready') converted++;
+    if (status === 'rejected')                                          rejected++;
+
+    const score = parseFloat(suitVal);
+    if (!isNaN(score)) { totalSuit += score; suitCount++; }
+
+    if (dateStr) {
+      const appDate = parseDate(dateStr);
+      appDate.setHours(0, 0, 0, 0);
+      if (appDate >= startOfWeek)  appsThisWeek++;
+      if (appDate >= startOfMonth) appsThisMonth++;
     }
   });
 
-  if (statThisWeekEl) statThisWeekEl.textContent = appsThisWeek;
-  if (statThisMonthEl) statThisMonthEl.textContent = appsThisMonth;
+  const total          = rawApplications.length;
+  const conversionRate = total > 0 ? Math.round((converted / total) * 100) : 0;
+  const rejectionRate  = total > 0 ? Math.round((rejected  / total) * 100) : 0;
+  const avgSuitability = suitCount > 0 ? (totalSuit / suitCount).toFixed(1) : '0.0';
+
+  if (statTotalEl)          statTotalEl.textContent          = total;
+  if (statActiveAppsEl)     statActiveAppsEl.textContent     = activeApplications.length;
+  if (statCompaniesEl)      statCompaniesEl.textContent      = companies.size;
+  if (statJobsEl)           statJobsEl.textContent           = jobs.size;
+  if (statInterviewsEl)     statInterviewsEl.textContent     = interviews;
+  if (statConversionEl)     statConversionEl.textContent     = `${conversionRate}%`;
+  if (statRejectionRateEl)  statRejectionRateEl.textContent  = `${rejectionRate}%`;
+  if (statAvgSuitabilityEl) statAvgSuitabilityEl.textContent = `${avgSuitability}/5`;
+  if (statThisWeekEl)       statThisWeekEl.textContent       = appsThisWeek;
+  if (statThisMonthEl)      statThisMonthEl.textContent      = appsThisMonth;
 }
 
 /**
@@ -1249,19 +1240,14 @@ function renderTable() {
   registryTableBody.innerHTML = '';
   resultsCountEl.textContent = filteredApplications.length;
 
-  const tableContainer = document.querySelector('.registry-table-container');
-  const paginationInfo = document.getElementById('paginationInfo');
-  const btnPrevPage = document.getElementById('btnPrevPage');
-  const btnNextPage = document.getElementById('btnNextPage');
-
   if (filteredApplications.length === 0) {
     noResultsEl.classList.remove('hidden');
-    if (tableContainer) tableContainer.style.display = 'none';
+    if (tableContainer) tableContainer.classList.add('section-hidden');
     return;
   }
 
   noResultsEl.classList.add('hidden');
-  if (tableContainer) tableContainer.style.display = '';
+  if (tableContainer) tableContainer.classList.remove('section-hidden');
 
   // Calculate pagination bounds
   const totalRows = filteredApplications.length;
@@ -1377,8 +1363,7 @@ function openDetailsDrawer(app) {
   // Hiring Team
   const hiringTeamVal = (app['Hiring Team'] || '').trim();
   if (hiringTeamVal) {
-    const isUrl = hiringTeamVal.startsWith('http://') || hiringTeamVal.startsWith('https://');
-    if (isUrl) {
+    if (isUrl(hiringTeamVal)) {
       drawerHiringTeam.innerHTML = `<a href="${escapeHtml(hiringTeamVal)}" target="_blank" class="inline-link-btn">
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
         Link
@@ -1393,8 +1378,7 @@ function openDetailsDrawer(app) {
   // Follow-up
   const followUpVal = (app['Follow-Up'] || '').trim();
   if (followUpVal) {
-    const isUrl = followUpVal.startsWith('http://') || followUpVal.startsWith('https://');
-    if (isUrl) {
+    if (isUrl(followUpVal)) {
       drawerFollowUp.innerHTML = `<a href="${escapeHtml(followUpVal)}" target="_blank" class="inline-link-btn">
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
         Link
@@ -1849,10 +1833,10 @@ function initStatusSplitChart(applications) {
   const data = [rejected, applied, interviews];
   const labels = ['Rejected', 'Applied (Pending)', 'Interviews'];
   
-  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1a73e8';
-  const warningColor = getComputedStyle(document.documentElement).getPropertyValue('--color-warning').trim() || '#f9ab00';
-  const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--color-error').trim() || '#d93025';
-  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--color-text-secondary').trim() || '#5f6368';
+  const primaryColor = theme.primary;
+  const warningColor = theme.warning;
+  const errorColor   = theme.error;
+  const textColor    = theme.secondary;
   
   const colors = [errorColor, primaryColor, warningColor];
   
@@ -1944,12 +1928,8 @@ function initSuitabilityBarChart(applications) {
   const labels = ['Score 1', 'Score 2', 'Score 3', 'Score 4', 'Score 5'];
   const data = [counts[1], counts[2], counts[3], counts[4], counts[5]];
   
-  const color1 = getComputedStyle(document.documentElement).getPropertyValue('--color-score-1').trim() || '#d93025';
-  const color2 = getComputedStyle(document.documentElement).getPropertyValue('--color-score-2').trim() || '#ff8da1';
-  const color3 = getComputedStyle(document.documentElement).getPropertyValue('--color-score-3').trim() || '#f9ab00';
-  const color4 = getComputedStyle(document.documentElement).getPropertyValue('--color-score-4').trim() || '#8bc34a';
-  const color5 = getComputedStyle(document.documentElement).getPropertyValue('--color-score-5').trim() || '#1e8e3e';
-  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--color-text-secondary').trim() || '#5f6368';
+  const [color1, color2, color3, color4, color5] = theme.scores;
+  const textColor = theme.secondary;
   
   const colors = [color1, color2, color3, color4, color5];
   
@@ -2118,11 +2098,11 @@ function renderActiveInterviewsPanel(applications) {
   const isHomeTab = activeTabBtn ? activeTabBtn.getAttribute('data-tab') === 'home' : true;
   
   if (interviewApps.length === 0 || !isHomeTab) {
-    sectionEl.style.display = 'none';
+    sectionEl.classList.add('section-hidden');
     return;
   }
   
-  sectionEl.style.display = '';
+  sectionEl.classList.remove('section-hidden');
   if (activeInterviewsCountEl) {
     activeInterviewsCountEl.textContent = interviewApps.length;
   }
@@ -2143,8 +2123,7 @@ function renderActiveInterviewsPanel(applications) {
     
     let followUpHtml = '';
     if (followUpVal) {
-      const isUrl = followUpVal.startsWith('http://') || followUpVal.startsWith('https://');
-      if (isUrl) {
+      if (isUrl(followUpVal)) {
         followUpHtml = `
           <a href="${escapeHtml(followUpVal)}" target="_blank" class="interview-btn">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
@@ -2198,6 +2177,7 @@ function renderAllDashboardWidgets(applications) {
     initSuitabilityBarChart(applications);
     initTopCompaniesChart(applications);
     renderActiveInterviewsPanel(applications);
+    isDashboardDirty = false; // charts are up to date
   } catch (error) {
     console.error("Error rendering dashboard widgets:", error);
   }
@@ -2206,76 +2186,65 @@ function renderAllDashboardWidgets(applications) {
 
 /**
  * Tab Navigation Management
- * Toggles visibility of sections based on active navigation tab:
- * - Home: Filter Applications & Application Registry
- * - Dashboard: Application Stats & Graphs
  */
 function initTabNavigation() {
-  const navButtons = document.querySelectorAll('.nav-btn');
-  const filtersSection = document.querySelector('.filters-section');
-  const resultsSection = document.querySelector('.results-section');
+  const navButtons             = document.querySelectorAll('.nav-btn');
+  const filtersSection         = document.querySelector('.filters-section');
+  const resultsSection         = document.querySelector('.results-section');
   const activeInterviewsSection = document.getElementById('activeInterviewsSection');
-  const statsSection = document.querySelector('.stats-section');
-  const analyticsSection = document.querySelector('.analytics-section');
-  const newApplicationSection = document.querySelector('.new-application-section');
-  const appHeader = document.querySelector('.app-header');
+  const statsSection           = document.querySelector('.stats-section');
+  const analyticsSection       = document.querySelector('.analytics-section');
+  const newApplicationSection  = document.querySelector('.new-application-section');
 
-  function switchTab(targetTab) {
+  /** Toggle a section's visibility via the .section-hidden utility class */
+  const show = (el) => el && el.classList.remove('section-hidden');
+  const hide = (el) => el && el.classList.add('section-hidden');
+
+  switchTab = function(targetTab) {
     navButtons.forEach(btn => {
-      if (btn.getAttribute('data-tab') === targetTab) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === targetTab);
     });
 
     if (targetTab === 'home') {
-      if (filtersSection) filtersSection.style.display = '';
-      if (resultsSection) resultsSection.style.display = '';
-      if (activeInterviewsSection && rawApplications.length > 0) {
-        renderActiveInterviewsPanel(rawApplications);
-      }
-      if (statsSection) statsSection.style.display = 'none';
-      if (analyticsSection) analyticsSection.style.display = 'none';
-      if (newApplicationSection) newApplicationSection.style.display = 'none';
+      show(filtersSection);
+      show(resultsSection);
+      if (rawApplications.length > 0) renderActiveInterviewsPanel(rawApplications);
+      hide(statsSection);
+      hide(analyticsSection);
+      hide(newApplicationSection);
     } else if (targetTab === 'dashboard') {
-      if (filtersSection) filtersSection.style.display = 'none';
-      if (resultsSection) resultsSection.style.display = 'none';
-      if (activeInterviewsSection) activeInterviewsSection.style.display = 'none';
-      if (statsSection) statsSection.style.display = '';
-      if (analyticsSection) analyticsSection.style.display = '';
-      if (newApplicationSection) newApplicationSection.style.display = 'none';
+      hide(filtersSection);
+      hide(resultsSection);
+      hide(activeInterviewsSection);
+      show(statsSection);
+      show(analyticsSection);
+      hide(newApplicationSection);
 
-      // Re-trigger widget render to ensure correct layout and scaling
-      if (rawApplications.length > 0) {
+      // Only rebuild charts when new data has arrived since the last render
+      if (rawApplications.length > 0 && isDashboardDirty) {
         try {
           renderAllDashboardWidgets(rawApplications);
         } catch (error) {
-          console.error("Failed to render dashboard widgets on tab switch:", error);
+          console.error('Failed to render dashboard widgets on tab switch:', error);
         }
       }
     } else if (targetTab === 'new-application') {
-      if (filtersSection) filtersSection.style.display = 'none';
-      if (resultsSection) resultsSection.style.display = 'none';
-      if (activeInterviewsSection) activeInterviewsSection.style.display = 'none';
-      if (statsSection) statsSection.style.display = 'none';
-      if (analyticsSection) analyticsSection.style.display = 'none';
-      if (newApplicationSection) newApplicationSection.style.display = '';
+      hide(filtersSection);
+      hide(resultsSection);
+      hide(activeInterviewsSection);
+      hide(statsSection);
+      hide(analyticsSection);
+      show(newApplicationSection);
 
       // Lazy-init FormApp on first tab visit
       if (!window._formApp) {
         window._formApp = new FormApp();
       }
     }
-  }
-
-  window.switchTab = switchTab;
+  };
 
   navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.getAttribute('data-tab');
-      switchTab(target);
-    });
+    btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
   });
 
   // Default to 'home' tab
@@ -2308,29 +2277,3 @@ function showToast(message, type = 'success') {
     toast.addEventListener('transitionend', () => toast.remove());
   }, 4000);
 }
-
-/**
- * Serialize local rawApplications array to CSV text format for caching
- */
-function serializeApplicationsToCSV(apps) {
-  if (apps.length === 0) return '';
-  const headers = [
-    'Application Status', 'Comments', 'Company Name', 'Job Title', 'Job Description',
-    'Company Description', 'Job URL', 'Create Date', 'Company_Folder', 'Job_Suitability',
-    'Job_Suitability_Evaluation', 'Hiring Team', 'Follow-Up', 'Interview_Company',
-    'Interview_Preparation'
-  ];
-  
-  const csvRows = [headers.join(',')];
-  apps.forEach(app => {
-    const values = headers.map(header => {
-      const val = app[header] || '';
-      // Escape quotes
-      const escaped = val.replace(/"/g, '""');
-      return `"${escaped}"`;
-    });
-    csvRows.push(values.join(','));
-  });
-  return csvRows.join('\n');
-}
-
