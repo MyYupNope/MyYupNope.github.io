@@ -287,10 +287,10 @@ body {
   border: 1px solid rgba(26, 115, 232, 0.08);
   /* Extremely subtle primary tint border */
   border-radius: var(--radius-lg);
-  padding: 1.75rem;
+  padding: 1.15rem 1.25rem;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   box-shadow: var(--shadow-md);
   transition: box-shadow var(--transition-base), transform var(--transition-base);
 }
@@ -303,8 +303,8 @@ body {
 }
 
 .stat-icon {
-  padding: 0.85rem;
-  border-radius: var(--radius-md);
+  padding: 0.65rem;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -314,8 +314,8 @@ body {
 }
 
 .stat-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .stat-icon.companies svg {
@@ -335,24 +335,24 @@ body {
 }
 
 .stat-data h3 {
-  font-size: 1.85rem;
+  font-size: 1.45rem;
   font-weight: 500;
   line-height: 1.1;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   color: var(--color-text-primary);
 }
 
 .stat-data p {
   color: var(--color-text-secondary);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 
 .stat-subtitle {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--color-text-secondary);
-  margin-top: 0.2rem;
+  margin-top: 0.15rem;
   opacity: 0.8;
   font-weight: 400;
 }
@@ -2732,8 +2732,7 @@ body {
 }
 
 /* Grids for side-by-side dashboard analytics widgets */
-.analytics-main-grid,
-.analytics-secondary-grid {
+.analytics-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
@@ -2744,13 +2743,23 @@ body {
 }
 
 @media (min-width: 992px) {
-  .analytics-main-grid {
-    grid-template-columns: 3fr 2fr;
-    /* 60/40 ratio */
+  .analytics-grid {
+    grid-template-columns: repeat(10, 1fr);
   }
 
-  .analytics-secondary-grid {
-    grid-template-columns: 1fr 1fr;
-    /* 50/50 ratio */
+  .cumulative-card {
+    grid-column: span 6;
+  }
+
+  .status-card {
+    grid-column: span 4;
+  }
+
+  .suitability-card {
+    grid-column: span 5;
+  }
+
+  .companies-card {
+    grid-column: span 5;
   }
 }
