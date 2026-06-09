@@ -1212,6 +1212,7 @@ function applyFilters(resetPage = true) {
   });
 
   renderTable();
+  renderActiveInterviewsPanel(filteredApplications);
 }
 
 /**
@@ -2176,7 +2177,7 @@ function renderAllDashboardWidgets(applications) {
     initStatusSplitChart(applications);
     initSuitabilityBarChart(applications);
     initTopCompaniesChart(applications);
-    renderActiveInterviewsPanel(applications);
+    renderActiveInterviewsPanel(filteredApplications);
     isDashboardDirty = false; // charts are up to date
   } catch (error) {
     console.error("Error rendering dashboard widgets:", error);
@@ -2208,7 +2209,7 @@ function initTabNavigation() {
     if (targetTab === 'home') {
       show(filtersSection);
       show(resultsSection);
-      if (rawApplications.length > 0) renderActiveInterviewsPanel(rawApplications);
+      if (rawApplications.length > 0) renderActiveInterviewsPanel(filteredApplications);
       hide(statsSection);
       hide(analyticsSection);
       hide(newApplicationSection);
