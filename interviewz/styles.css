@@ -2664,7 +2664,6 @@ body {
   padding: 2rem;
   box-shadow: var(--shadow-md);
   transition: box-shadow var(--transition-base);
-  margin-bottom: 2rem;
 }
 
 .active-interviews-card:hover {
@@ -2825,4 +2824,17 @@ body {
   .companies-card {
     grid-column: span 5;
   }
+}
+
+/* Footer Section */
+.app-footer {
+  margin-top: 0;
+  padding: 1.5rem 0;
+  text-align: center;
+}
+
+.app-footer p {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
 }
