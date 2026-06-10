@@ -956,6 +956,7 @@ function parseAndInitializeData(csvText) {
     headers.forEach((header, index) => {
       app[header] = row[index] !== undefined ? row[index] : '';
     });
+    app._index = i;
     rawApplications.push(app);
   }
 
@@ -1166,6 +1167,13 @@ function applyFilters(resetPage = true) {
       comparison = dateA - dateB; // Oldest first (asc)
       if (sortVal === 'date-desc') {
         comparison = dateB - dateA; // Newest first (desc)
+        if (comparison === 0) {
+          comparison = b._index - a._index;
+        }
+      } else if (sortVal === 'date-asc') {
+        if (comparison === 0) {
+          comparison = a._index - b._index;
+        }
       }
     } else if (sortVal.startsWith('job')) {
       const jobA = (a['Job Title'] || '').trim();
@@ -1206,6 +1214,10 @@ function applyFilters(resetPage = true) {
       } else {
         comparison = sortVal === 'suitability-desc' ? numB - numA : numA - numB;
       }
+    }
+    
+    if (comparison === 0) {
+      comparison = b._index - a._index;
     }
     
     return comparison;
@@ -2098,9 +2110,32 @@ function renderActiveInterviewsPanel(applications) {
   const activeTabBtn = document.querySelector('.nav-btn.active');
   const isHomeTab = activeTabBtn ? activeTabBtn.getAttribute('data-tab') === 'home' : true;
   
-  if (interviewApps.length === 0 || !isHomeTab) {
+  if (!isHomeTab) {
     sectionEl.classList.add('section-hidden');
     return;
+  }
+  
+  const hasActiveFilters = !!(selectedCompany || selectedJobTitle || selectedStatus);
+  
+  if (interviewApps.length === 0) {
+    if (applications.length === 0) {
+      sectionEl.classList.remove('section-hidden');
+      if (activeInterviewsCountEl) {
+        activeInterviewsCountEl.textContent = '0';
+      }
+      gridEl.innerHTML = '<div class="no-results-text" style="grid-column: 1 / -1; text-align: center; color: var(--color-text-secondary); font-size: 0.95rem; padding: 1.5rem 0;">No results</div>';
+      return;
+    } else if (hasActiveFilters) {
+      sectionEl.classList.remove('section-hidden');
+      if (activeInterviewsCountEl) {
+        activeInterviewsCountEl.textContent = '0';
+      }
+      gridEl.innerHTML = '<div class="no-results-text" style="grid-column: 1 / -1; text-align: center; color: var(--color-text-secondary); font-size: 0.95rem; padding: 1.5rem 0;">No results for current filters.</div>';
+      return;
+    } else {
+      sectionEl.classList.add('section-hidden');
+      return;
+    }
   }
   
   sectionEl.classList.remove('section-hidden');
