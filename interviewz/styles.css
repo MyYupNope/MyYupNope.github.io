@@ -1229,6 +1229,13 @@ body {
   transform: translateX(0);
 }
 
+#jobinterview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
 .drawer-header {
   padding: 2rem 2.5rem 0.75rem 2.5rem;
   background: transparent;
@@ -1799,18 +1806,29 @@ body {
 /* Desktop layout for Job Interview */
 @media (min-width: 641px) {
   .interview-matrix-grid>div {
-    padding: 0;
+    padding: 1rem;
   }
 
-  .interview-matrix-grid>div:first-child {
+  .interview-matrix-grid>div:nth-child(odd) {
     border-right: 1px solid var(--color-border);
     padding-right: 1.5rem;
     padding-left: 0;
   }
 
-  .interview-matrix-grid>div:last-child {
+  .interview-matrix-grid>div:nth-child(even) {
     padding-left: 1.5rem;
     padding-right: 0;
+  }
+
+  .interview-matrix-grid>div:nth-child(-n+2) {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1.5rem;
+    padding-top: 0;
+  }
+
+  .interview-matrix-grid>div:nth-child(n+3) {
+    padding-top: 1.5rem;
+    padding-bottom: 0;
   }
 }
 
@@ -1824,16 +1842,62 @@ body {
     padding: 1.25rem 0;
   }
 
-  .interview-matrix-grid>div:first-child {
+  .interview-matrix-grid>div:not(:last-child) {
     border-bottom: 1px solid var(--color-border);
+  }
+
+  .interview-matrix-grid>div:first-child {
     padding-top: 0;
-    padding-bottom: 1.25rem;
   }
 
   .interview-matrix-grid>div:last-child {
-    padding-top: 1.25rem;
     padding-bottom: 0;
   }
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-action-icon:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-primary);
+}
+
+.textarea-notes {
+  width: 100%;
+  min-height: 560px;
+  resize: vertical;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  background-color: #f8f9fa;
+  transition: border-color var(--transition-base);
+}
+
+.textarea-notes:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
 }
 
 #drawerInterviewCompany,

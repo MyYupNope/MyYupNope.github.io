@@ -15,11 +15,11 @@ const theme = {};
 function cacheThemeColors() {
   const cs = getComputedStyle(document.documentElement);
   const get = (v) => cs.getPropertyValue(v).trim();
-  theme.primary   = get('--color-primary')       || '#1a73e8';
-  theme.error     = get('--color-error')          || '#d93025';
-  theme.warning   = get('--color-warning')        || '#f9ab00';
+  theme.primary = get('--color-primary') || '#1a73e8';
+  theme.error = get('--color-error') || '#d93025';
+  theme.warning = get('--color-warning') || '#f9ab00';
   theme.secondary = get('--color-text-secondary') || '#5f6368';
-  theme.scores    = [1, 2, 3, 4, 5].map(n =>
+  theme.scores = [1, 2, 3, 4, 5].map(n =>
     get(`--color-score-${n}`) || ['#d93025', '#ff8da1', '#f9ab00', '#8bc34a', '#1e8e3e'][n - 1]
   );
 }
@@ -42,17 +42,17 @@ class FacetedSelect {
     this.searchInput = searchInput;
     this.optionsList = optionsList;
     this.defaultText = defaultText;
-    
+
     this.focusedIndex = -1;
     this.initEvents();
   }
-  
+
   initEvents() {
     // Toggle active dropdown state on trigger click
     this.trigger.addEventListener('click', (e) => {
       e.stopPropagation();
       const wasActive = this.container.classList.contains('active');
-      
+
       // Close other active dropdowns
       document.querySelectorAll('.custom-select').forEach(sel => {
         if (sel !== this.container) {
@@ -61,11 +61,11 @@ class FacetedSelect {
           if (trigger) trigger.setAttribute('aria-expanded', 'false');
         }
       });
-      
+
       this.container.classList.toggle('active');
       const isActive = this.container.classList.contains('active');
       this.trigger.setAttribute('aria-expanded', isActive ? 'true' : 'false');
-      
+
       if (!wasActive) {
         this.searchInput.value = '';
         this.filterOptions();
@@ -73,17 +73,17 @@ class FacetedSelect {
         this.resetFocus();
       }
     });
-    
+
     // Filter dropdown elements on user input
     this.searchInput.addEventListener('input', () => {
       this.filterOptions();
       this.resetFocus();
     });
-    
+
     // Handle keyboard accessibility
     this.container.addEventListener('keydown', (e) => {
       if (!this.container.classList.contains('active')) return;
-      
+
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
@@ -105,18 +105,18 @@ class FacetedSelect {
       }
     });
   }
-  
+
   close() {
     this.container.classList.remove('active');
     this.trigger.setAttribute('aria-expanded', 'false');
     this.resetFocus();
   }
-  
+
   resetFocus() {
     this.focusedIndex = -1;
     this.updateKbdFocusUI();
   }
-  
+
   updateKbdFocusUI() {
     const options = this.getSelectableOptions();
     options.forEach((opt, idx) => {
@@ -128,19 +128,19 @@ class FacetedSelect {
       }
     });
   }
-  
+
   getSelectableOptions() {
     return Array.from(this.optionsList.querySelectorAll('.option')).filter(opt => {
-      return opt.style.display !== 'none' && 
-             !opt.classList.contains('loading') && 
-             !opt.classList.contains('no-match');
+      return opt.style.display !== 'none' &&
+        !opt.classList.contains('loading') &&
+        !opt.classList.contains('no-match');
     });
   }
-  
+
   moveFocus(dir) {
     const options = this.getSelectableOptions();
     if (options.length === 0) return;
-    
+
     this.focusedIndex += dir;
     if (this.focusedIndex < 0) {
       this.focusedIndex = options.length - 1;
@@ -149,29 +149,29 @@ class FacetedSelect {
     }
     this.updateKbdFocusUI();
   }
-  
+
   selectFocused() {
     const options = this.getSelectableOptions();
     if (this.focusedIndex >= 0 && this.focusedIndex < options.length) {
       options[this.focusedIndex].click();
     }
   }
-  
+
   filterOptions() {
     const filterText = this.searchInput.value.toLowerCase().trim();
     const options = this.optionsList.querySelectorAll('.option');
     let matches = 0;
-    
+
     options.forEach(option => {
       if (option.classList.contains('loading') || option.classList.contains('no-match')) return;
-      
+
       // Always show the "All..." default filter option
       if (option.textContent.startsWith('All ')) {
         option.style.display = '';
         matches++;
         return;
       }
-      
+
       const text = option.textContent.toLowerCase();
       if (text.includes(filterText)) {
         option.style.display = '';
@@ -180,11 +180,11 @@ class FacetedSelect {
         option.style.display = 'none';
       }
     });
-    
+
     // Clear out-of-date "No Matches" labels
     const existingNoMatch = this.optionsList.querySelector('.option.no-match');
     if (existingNoMatch) existingNoMatch.remove();
-    
+
     if (matches === 1) { // Only the default "All..." matched
       const noMatchLi = document.createElement('li');
       noMatchLi.className = 'option no-match';
@@ -192,10 +192,10 @@ class FacetedSelect {
       this.optionsList.appendChild(noMatchLi);
     }
   }
-  
+
   populate(items, selectedValue, onSelectCallback) {
     this.optionsList.innerHTML = '';
-    
+
     // Default option
     const allLi = document.createElement('li');
     allLi.className = `option ${selectedValue === null ? 'selected' : ''}`;
@@ -208,7 +208,7 @@ class FacetedSelect {
       onSelectCallback(null);
     });
     this.optionsList.appendChild(allLi);
-    
+
     items.forEach(item => {
       const li = document.createElement('li');
       li.className = `option ${selectedValue === item ? 'selected' : ''}`;
@@ -222,7 +222,7 @@ class FacetedSelect {
       });
       this.optionsList.appendChild(li);
     });
-    
+
     this.trigger.querySelector('.trigger-text').textContent = selectedValue || this.defaultText;
     this.filterOptions();
   }
@@ -405,7 +405,7 @@ class FormApp {
         this.hiringTeam.value = "Not Defined";
       }
       this.initCharacterCounters();
-      
+
       // Auto-switch to Home tab
       if (typeof switchTab === 'function') {
         switchTab('home');
@@ -573,6 +573,8 @@ const btnCloseDrawer = document.getElementById('btnCloseDrawer');
 const drawerStatusBadge = document.getElementById('drawerStatusBadge');
 const drawerJobTitle = document.getElementById('drawerJobTitle');
 const drawerCompanyName = document.getElementById('drawerCompanyName');
+const drawerJobTitleDisplay = document.getElementById('drawerJobTitleDisplay');
+const drawerCompanyNameDisplay = document.getElementById('drawerCompanyNameDisplay');
 const drawerDate = document.getElementById('drawerDate');
 const drawerHiringTeam = document.getElementById('drawerHiringTeam');
 const drawerFollowUp = document.getElementById('drawerFollowUp');
@@ -588,6 +590,14 @@ const linkJobUrl = document.getElementById('linkJobUrl');
 const linkCompanyFolder = document.getElementById('linkCompanyFolder');
 const drawerInterviewCompany = document.getElementById('drawerInterviewCompany');
 const drawerInterviewPreparation = document.getElementById('drawerInterviewPreparation');
+
+const inputInterviewCompanyNotes = document.getElementById('inputInterviewCompanyNotes');
+const btnResetInterviewCompanyNotes = document.getElementById('btnResetInterviewCompanyNotes');
+const btnSubmitInterviewCompanyNotes = document.getElementById('btnSubmitInterviewCompanyNotes');
+
+const inputInterviewPreparationNotes = document.getElementById('inputInterviewPreparationNotes');
+const btnResetInterviewPreparationNotes = document.getElementById('btnResetInterviewPreparationNotes');
+const btnSubmitInterviewPreparationNotes = document.getElementById('btnSubmitInterviewPreparationNotes');
 
 // Initialize the Application
 function initializeApp() {
@@ -617,23 +627,23 @@ function copyElementHtml(button, targetElement) {
   if (!targetElement) return;
   const html = targetElement.innerHTML;
   const plainText = targetElement.innerText || targetElement.textContent || '';
-  
+
   // Create blobs for both rich HTML and plain text fallback
   const htmlBlob = new Blob([html], { type: 'text/html' });
   const textBlob = new Blob([plainText], { type: 'text/plain' });
-  
+
   const clipboardItem = new ClipboardItem({
     'text/html': htmlBlob,
     'text/plain': textBlob
   });
-  
+
   navigator.clipboard.write([clipboardItem]).then(() => {
     button.classList.add('copied');
     const iconCopy = button.querySelector('.icon-copy');
     const iconCheck = button.querySelector('.icon-check');
     if (iconCopy) iconCopy.style.display = 'none';
     if (iconCheck) iconCheck.style.display = 'inline-block';
-    
+
     setTimeout(() => {
       button.classList.remove('copied');
       if (iconCopy) iconCopy.style.display = 'inline-block';
@@ -666,7 +676,7 @@ function setupEventListeners() {
     selectedCompany = null;
     selectedJobTitle = null;
     selectedStatus = null;
-    
+
     // Refresh filter UI and data views
     updateFiltersUI();
     applyFilters(true);
@@ -675,7 +685,7 @@ function setupEventListeners() {
   // Drawer Close Actions
   btnCloseDrawer.addEventListener('click', closeDetailsDrawer);
   drawerOverlay.addEventListener('click', closeDetailsDrawer);
-  
+
   // Drawer Tab Click Event Listeners
   const drawerTabs = detailsDrawer.querySelectorAll('.drawer-tab');
   drawerTabs.forEach(tab => {
@@ -695,14 +705,14 @@ function setupEventListeners() {
         const tabs = Array.from(drawerTabsContainer.querySelectorAll('.drawer-tab'));
         const enabledTabs = tabs.filter(t => !t.classList.contains('disabled'));
         const activeIndex = enabledTabs.findIndex(t => t.classList.contains('active'));
-        
+
         let nextIndex = activeIndex;
         if (e.key === 'ArrowRight') {
           nextIndex = (activeIndex + 1) % enabledTabs.length;
         } else if (e.key === 'ArrowLeft') {
           nextIndex = (activeIndex - 1 + enabledTabs.length) % enabledTabs.length;
         }
-        
+
         const nextTab = enabledTabs[nextIndex];
         if (nextTab) {
           selectTab(nextTab.id);
@@ -728,21 +738,21 @@ function setupEventListeners() {
       const field = header.getAttribute('data-sort-field');
       const currentVal = currentSortVal;
       const [currentField, currentDir] = currentVal.split('-');
-      
+
       let newDir = 'asc';
       if (field === currentField) {
         newDir = currentDir === 'asc' ? 'desc' : 'asc';
       } else {
         newDir = field === 'date' ? 'desc' : 'asc';
       }
-      
+
       currentSortVal = `${field}-${newDir}`;
       applyFilters(true);
     });
   });
 
   // Paging controls — module-level btnPrevPage / btnNextPage are used directly
-  
+
   if (btnPrevPage) {
     btnPrevPage.addEventListener('click', () => {
       if (currentPage > 1) {
@@ -788,6 +798,141 @@ function setupEventListeners() {
       const target = document.getElementById('drawerInterviewPreparation');
       copyElementHtml(btnCopyPrep, target);
     });
+  }
+
+  if (btnResetInterviewCompanyNotes) {
+    btnResetInterviewCompanyNotes.addEventListener('click', () => {
+      if (inputInterviewCompanyNotes) {
+        inputInterviewCompanyNotes.value = '';
+        showToast('Company notes reset', 'info');
+      }
+    });
+  }
+
+  if (btnResetInterviewPreparationNotes) {
+    btnResetInterviewPreparationNotes.addEventListener('click', () => {
+      if (inputInterviewPreparationNotes) {
+        inputInterviewPreparationNotes.value = '';
+        showToast('Preparation notes reset', 'info');
+      }
+    });
+  }
+
+  const formJobInterview = document.getElementById('jobinterview');
+  if (formJobInterview) {
+    formJobInterview.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const submitter = e.submitter;
+      if (submitter) {
+        if (submitter.id === 'btnSubmitInterviewCompanyNotes') {
+          if (!inputInterviewCompanyNotes || inputInterviewCompanyNotes.value.trim() === '') {
+            showToast('Please enter some notes before submitting', 'warning');
+            return;
+          }
+        } else if (submitter.id === 'btnSubmitInterviewPreparationNotes') {
+          if (!inputInterviewPreparationNotes || inputInterviewPreparationNotes.value.trim() === '') {
+            showToast('Please enter some notes before submitting', 'warning');
+            return;
+          }
+        }
+      } else {
+        // Fallback if submitted via enter key or other means: check that at least one field is filled
+        const companyVal = inputInterviewCompanyNotes ? inputInterviewCompanyNotes.value.trim() : '';
+        const prepVal = inputInterviewPreparationNotes ? inputInterviewPreparationNotes.value.trim() : '';
+        if (companyVal === '' && prepVal === '') {
+          showToast('Please enter some notes before submitting', 'warning');
+          return;
+        }
+      }
+
+      submitJobInterviewForm();
+    });
+  }
+}
+
+let isInterviewSubmitting = false;
+
+function setInterviewLoadingState(isLoading) {
+  const form = document.getElementById('jobinterview');
+  if (form) {
+    form.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+  }
+
+  // Disable/enable all submit and reset buttons in the notes section
+  const buttons = [
+    document.getElementById('btnSubmitInterviewCompanyNotes'),
+    document.getElementById('btnResetInterviewCompanyNotes'),
+    document.getElementById('btnSubmitInterviewPreparationNotes'),
+    document.getElementById('btnResetInterviewPreparationNotes')
+  ];
+  buttons.forEach(btn => {
+    if (btn) btn.disabled = isLoading;
+  });
+}
+
+/**
+ * Submit the Job Interview notes form to the webhook
+ */
+async function submitJobInterviewForm() {
+  const form = document.getElementById('jobinterview');
+  if (!form) return;
+
+  // Double-submit guard
+  if (isInterviewSubmitting) return;
+
+  if (!form.checkValidity()) {
+    form.classList.add('was-validated');
+    showToast('Please fill in all required fields correctly.', 'warning');
+    return;
+  }
+
+  const formData = new FormData(form);
+  setInterviewLoadingState(true);
+  isInterviewSubmitting = true;
+
+  // Immediate feedback
+  showToast('Submitting your notes... Please wait for feedback.', 'info');
+
+  // AbortController for 90 seconds timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+  try {
+    const url = 'https://newdawn.tail74eef3.ts.net/webhook/interprepnotes';
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Server returned ${response.status}: ${errorText}`);
+    }
+
+    const result = await response.json();
+
+    if (result.ok === true) {
+      showToast('Notes submitted successfully!', 'success');
+      form.classList.remove('was-validated');
+      fetchData(); // Trigger fresh data fetch to get the updated notes
+    } else {
+      showToast(result.message || 'The submission was not successful. Please try again.', 'error');
+    }
+  } catch (error) {
+    clearTimeout(timeoutId);
+    console.error("Notes submission error details:", error);
+    if (error.name === 'AbortError') {
+      showToast("Submission error: Request timed out after 90 seconds.", "error");
+    } else {
+      showToast("Submission error: " + error.message, "error");
+    }
+  } finally {
+    setInterviewLoadingState(false);
+    isInterviewSubmitting = false;
   }
 }
 
@@ -881,10 +1026,10 @@ function fetchData() {
 function updateSyncStatus(status, text) {
   const dot = syncStatusEl.querySelector('.status-dot');
   const txt = syncStatusEl.querySelector('.status-text');
-  
+
   dot.className = 'status-dot';
   txt.textContent = text;
-  
+
   if (status === 'success') {
     dot.classList.add('ready');
   } else if (status === 'error') {
@@ -973,6 +1118,14 @@ function parseAndInitializeData(csvText) {
   // Mark dashboard as needing a rebuild then render all widgets
   isDashboardDirty = true;
   renderAllDashboardWidgets(rawApplications);
+
+  // If the details drawer is currently active, refresh its data
+  if (detailsDrawer && detailsDrawer.classList.contains('active') && currentApp) {
+    const updatedApp = rawApplications.find(a => a._index === currentApp._index);
+    if (updatedApp) {
+      openDetailsDrawer(updatedApp, true); // Keep the active tab
+    }
+  }
 }
 
 /**
@@ -989,27 +1142,27 @@ function calculateStatistics() {
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
   const companies = new Set();
-  const jobs      = new Set();
-  let interviews     = 0;
-  let converted      = 0;
-  let rejected       = 0;
-  let totalSuit      = 0;
-  let suitCount      = 0;
-  let appsThisWeek   = 0;
-  let appsThisMonth  = 0;
+  const jobs = new Set();
+  let interviews = 0;
+  let converted = 0;
+  let rejected = 0;
+  let totalSuit = 0;
+  let suitCount = 0;
+  let appsThisWeek = 0;
+  let appsThisMonth = 0;
 
   rawApplications.forEach(app => {
-    const status  = (app['Application Status'] || '').trim().toLowerCase();
+    const status = (app['Application Status'] || '').trim().toLowerCase();
     const company = (app['Company Name'] || '').trim();
-    const job     = (app['Job Title'] || '').trim();
+    const job = (app['Job Title'] || '').trim();
     const dateStr = (app['Create Date'] || '').trim();
     const suitVal = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
 
     if (company) companies.add(company);
-    if (job)     jobs.add(job);
-    if (status.includes('interview'))                                   interviews++;
+    if (job) jobs.add(job);
+    if (status.includes('interview')) interviews++;
     if (status.includes('interview') || status === 'offer' || status === 'ready') converted++;
-    if (status === 'rejected')                                          rejected++;
+    if (status === 'rejected') rejected++;
 
     const score = parseFloat(suitVal);
     if (!isNaN(score)) { totalSuit += score; suitCount++; }
@@ -1017,26 +1170,26 @@ function calculateStatistics() {
     if (dateStr) {
       const appDate = parseDate(dateStr);
       appDate.setHours(0, 0, 0, 0);
-      if (appDate >= startOfWeek)  appsThisWeek++;
+      if (appDate >= startOfWeek) appsThisWeek++;
       if (appDate >= startOfMonth) appsThisMonth++;
     }
   });
 
-  const total          = rawApplications.length;
+  const total = rawApplications.length;
   const conversionRate = total > 0 ? Math.round((converted / total) * 100) : 0;
-  const rejectionRate  = total > 0 ? Math.round((rejected  / total) * 100) : 0;
+  const rejectionRate = total > 0 ? Math.round((rejected / total) * 100) : 0;
   const avgSuitability = suitCount > 0 ? (totalSuit / suitCount).toFixed(1) : '0.0';
 
-  if (statTotalEl)          statTotalEl.textContent          = total;
-  if (statActiveAppsEl)     statActiveAppsEl.textContent     = activeApplications.length;
-  if (statCompaniesEl)      statCompaniesEl.textContent      = companies.size;
-  if (statJobsEl)           statJobsEl.textContent           = jobs.size;
-  if (statInterviewsEl)     statInterviewsEl.textContent     = interviews;
-  if (statConversionEl)     statConversionEl.textContent     = `${conversionRate}%`;
-  if (statRejectionRateEl)  statRejectionRateEl.textContent  = `${rejectionRate}%`;
+  if (statTotalEl) statTotalEl.textContent = total;
+  if (statActiveAppsEl) statActiveAppsEl.textContent = activeApplications.length;
+  if (statCompaniesEl) statCompaniesEl.textContent = companies.size;
+  if (statJobsEl) statJobsEl.textContent = jobs.size;
+  if (statInterviewsEl) statInterviewsEl.textContent = interviews;
+  if (statConversionEl) statConversionEl.textContent = `${conversionRate}%`;
+  if (statRejectionRateEl) statRejectionRateEl.textContent = `${rejectionRate}%`;
   if (statAvgSuitabilityEl) statAvgSuitabilityEl.textContent = `${avgSuitability}/5`;
-  if (statThisWeekEl)       statThisWeekEl.textContent       = appsThisWeek;
-  if (statThisMonthEl)      statThisMonthEl.textContent      = appsThisMonth;
+  if (statThisWeekEl) statThisWeekEl.textContent = appsThisWeek;
+  if (statThisMonthEl) statThisMonthEl.textContent = appsThisMonth;
 }
 
 /**
@@ -1057,16 +1210,16 @@ function updateFiltersUI() {
 
   companySelect.populate(distinctCompanies, selectedCompany, (company) => {
     selectedCompany = company;
-    
+
     // Automatically select the Job Title if there is only one associated with the selected company
     if (selectedCompany) {
-      const companyApps = activeApplications.filter(app => 
+      const companyApps = activeApplications.filter(app =>
         (app['Company Name'] || '').trim() === selectedCompany
       );
       const companyJobs = [...new Set(
         companyApps.map(app => (app['Job Title'] || '').trim()).filter(title => title !== '')
       )];
-      
+
       if (companyJobs.length === 1) {
         selectedJobTitle = companyJobs[0];
       } else {
@@ -1080,7 +1233,7 @@ function updateFiltersUI() {
     } else {
       // If company is set to null (All Companies), reset selectedJobTitle if it's no longer valid
       if (selectedJobTitle) {
-        const isValid = activeApplications.some(app => 
+        const isValid = activeApplications.some(app =>
           (app['Job Title'] || '').trim() === selectedJobTitle
         );
         if (!isValid) {
@@ -1160,7 +1313,7 @@ function applyFilters(resetPage = true) {
   const sortVal = currentSortVal;
   filteredApplications.sort((a, b) => {
     let comparison = 0;
-    
+
     if (sortVal.startsWith('date')) {
       const dateA = parseDate(a['Create Date']);
       const dateB = parseDate(b['Create Date']);
@@ -1201,10 +1354,10 @@ function applyFilters(resetPage = true) {
       const valB = (b['Job_Suitability'] || b['Job Suitability'] || '').trim();
       const numA = parseInt(valA, 10);
       const numB = parseInt(valB, 10);
-      
+
       const isNaN_A = isNaN(numA);
       const isNaN_B = isNaN(numB);
-      
+
       if (isNaN_A && isNaN_B) {
         comparison = 0;
       } else if (isNaN_A) {
@@ -1215,11 +1368,11 @@ function applyFilters(resetPage = true) {
         comparison = sortVal === 'suitability-desc' ? numB - numA : numA - numB;
       }
     }
-    
+
     if (comparison === 0) {
       comparison = b._index - a._index;
     }
-    
+
     return comparison;
   });
 
@@ -1233,7 +1386,7 @@ function applyFilters(resetPage = true) {
 function updateHeaderSortIndicators() {
   const currentVal = currentSortVal;
   const [currentField, currentDir] = currentVal.split('-');
-  
+
   document.querySelectorAll('.sortable-header').forEach(header => {
     const field = header.getAttribute('data-sort-field');
     const icon = header.querySelector('.sort-icon');
@@ -1265,7 +1418,7 @@ function renderTable() {
   // Calculate pagination bounds
   const totalRows = filteredApplications.length;
   const maxPage = Math.ceil(totalRows / rowsPerPage) || 1;
-  
+
   // Bounds check
   if (currentPage > maxPage) {
     currentPage = maxPage;
@@ -1281,7 +1434,7 @@ function renderTable() {
 
   pageApplications.forEach((app) => {
     const row = document.createElement('tr');
-    
+
     const company = (app['Company Name'] || '').trim();
     const title = (app['Job Title'] || '').trim();
     const status = (app['Application Status'] || '').trim();
@@ -1289,7 +1442,7 @@ function renderTable() {
     const suitabilityScore = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
     const scoreNum = parseInt(suitabilityScore, 10);
     const scoreClass = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
-    
+
     const statusClass = status.toLowerCase().replace(/\s+/g, '-');
 
     row.innerHTML = `
@@ -1316,7 +1469,7 @@ function renderTable() {
   if (paginationInfo) {
     paginationInfo.textContent = `Showing ${totalRows === 0 ? 0 : startIdx + 1} - ${endIdx} of ${totalRows} rows`;
   }
-  
+
   if (btnPrevPage) {
     btnPrevPage.disabled = currentPage === 1;
   }
@@ -1334,7 +1487,7 @@ function renderTable() {
 function selectTab(tabId) {
   const tabs = document.querySelectorAll('.drawer-tab');
   const panes = document.querySelectorAll('.drawer-tab-pane');
-  
+
   tabs.forEach(tab => {
     if (tab.id === tabId) {
       tab.classList.add('active');
@@ -1344,10 +1497,10 @@ function selectTab(tabId) {
       tab.setAttribute('aria-selected', 'false');
     }
   });
-  
+
   const selectedTabEl = document.getElementById(tabId);
   const targetPaneId = selectedTabEl ? selectedTabEl.getAttribute('aria-controls') : '';
-  
+
   panes.forEach(pane => {
     if (pane.id === targetPaneId) {
       pane.classList.add('active');
@@ -1360,7 +1513,7 @@ function selectTab(tabId) {
 /**
  * Open Details Drawer
  */
-function openDetailsDrawer(app) {
+function openDetailsDrawer(app, keepActiveTab = false) {
   // Store reference to active application row
   currentApp = app;
 
@@ -1368,11 +1521,15 @@ function openDetailsDrawer(app) {
   const status = (app['Application Status'] || '').trim();
   drawerStatusBadge.className = `badge status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`;
   drawerStatusBadge.textContent = status;
-  
-  drawerJobTitle.textContent = (app['Job Title'] || '').trim();
-  drawerCompanyName.textContent = (app['Company Name'] || '').trim();
+
+  const jobTitleVal = (app['Job Title'] || '').trim();
+  const companyNameVal = (app['Company Name'] || '').trim();
+  if (drawerJobTitleDisplay) drawerJobTitleDisplay.textContent = jobTitleVal;
+  if (drawerCompanyNameDisplay) drawerCompanyNameDisplay.textContent = companyNameVal;
+  if (drawerJobTitle) drawerJobTitle.value = jobTitleVal;
+  if (drawerCompanyName) drawerCompanyName.value = companyNameVal;
   drawerDate.textContent = formatDisplayDate((app['Create Date'] || '').trim());
-  
+
   // Hiring Team
   const hiringTeamVal = (app['Hiring Team'] || '').trim();
   if (hiringTeamVal) {
@@ -1402,37 +1559,37 @@ function openDetailsDrawer(app) {
   } else {
     drawerFollowUp.textContent = 'Not Specified';
   }
-  
+
   // Suitability Info & Circle Redesign
   const score = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
   const evaluation = (app['Job_Suitability_Evaluation'] || app['Job Suitability Evaluation'] || '').trim();
   const tabSuitability = document.getElementById('tabSuitability');
-  
+
   const hasSuitability = !!(score || evaluation);
   if (hasSuitability) {
     if (tabSuitability) {
       tabSuitability.classList.remove('disabled');
       tabSuitability.removeAttribute('disabled');
     }
-    
+
     // Circle progress render
     const fillElement = document.getElementById('scoreCircleFill');
     const circleContainer = document.getElementById('suitabilityScoreCircle');
-    
+
     if (score) {
       drawerSuitabilityScore.textContent = score;
       const scoreNum = parseInt(score, 10);
       const scoreClass = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
-      
+
       if (circleContainer) {
         circleContainer.className = `suitability-score-circle ${scoreClass}`;
       }
-      
+
       if (fillElement) {
         const scorePercent = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? scoreNum / 5 : 0;
         fillElement.style.strokeDashoffset = 251.2 * (1 - scorePercent);
       }
-      
+
       drawerSuitabilityScoreContainer.style.display = '';
     } else {
       drawerSuitabilityScoreContainer.style.display = 'none';
@@ -1499,6 +1656,13 @@ function openDetailsDrawer(app) {
 
     drawerInterviewPreparation.innerHTML = interviewPrep ? parseMarkdown(interviewPrep) : '-';
     if (btnCopyPrep) btnCopyPrep.style.display = interviewPrep ? '' : 'none';
+
+    if (inputInterviewCompanyNotes) {
+      inputInterviewCompanyNotes.value = (app['Interview_Company_Notes'] || '').trim();
+    }
+    if (inputInterviewPreparationNotes) {
+      inputInterviewPreparationNotes.value = (app['Interview_Preparation_Notes'] || '').trim();
+    }
   } else {
     if (tabInterview) {
       tabInterview.classList.add('disabled');
@@ -1506,14 +1670,16 @@ function openDetailsDrawer(app) {
     }
   }
 
-  // Default to the first tab (Overview)
-  selectTab('tabOverview');
+  // Default to the first tab (Overview) if not keeping active tab
+  if (!keepActiveTab) {
+    selectTab('tabOverview');
+  }
 
   // Show Drawer and Overlay
   drawerOverlay.classList.add('active');
   detailsDrawer.classList.add('active');
   document.body.style.overflow = 'hidden'; // prevent body scrolling
-  
+
   // Reset drawer body scroll position
   detailsDrawer.querySelector('.drawer-body').scrollTop = 0;
 }
@@ -1577,38 +1743,38 @@ function escapeHtml(str) {
  */
 function parseMarkdown(text) {
   if (!text) return '';
-  
+
   // Escape HTML first to prevent XSS
   let html = escapeHtml(text);
-  
+
   // Replace headers: ###, ##, #
   html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
   html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
   html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
-  
+
   // Bold: **text**
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  
+
   // Italics: *text*
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  
+
   // Split into trimmed, non-empty lines
   const lines = html.split('\n')
     .map(line => line.trim())
     .filter(line => line !== '');
   let inList = false;
   let result = [];
-  
+
   function isSeparatorRow(line) {
     if (!line.startsWith('|') || !line.endsWith('|') || line.length <= 2) return false;
     const inner = line.slice(1, -1);
     return /^[:\-\s\|]+$/.test(inner) && inner.includes('-');
   }
-  
+
   function parseTableCells(line) {
     return line.slice(1, -1).split('|').map(cell => cell.trim());
   }
-  
+
   function parseAlignments(line) {
     return parseTableCells(line).map(cell => {
       const alignLeft = cell.startsWith(':');
@@ -1619,7 +1785,7 @@ function parseMarkdown(text) {
       return '';
     });
   }
-  
+
   function generateTableHtml(headers, rows, alignments) {
     let tableHtml = '<table class="md-table">';
     tableHtml += '<thead><tr>';
@@ -1640,10 +1806,10 @@ function parseMarkdown(text) {
     tableHtml += '</tbody></table>';
     return tableHtml;
   }
-  
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    
+
     // Check if it's a table
     if (line.startsWith('|') && line.endsWith('|')) {
       if (i + 1 < lines.length && isSeparatorRow(lines[i + 1])) {
@@ -1651,11 +1817,11 @@ function parseMarkdown(text) {
           result.push('</ul>');
           inList = false;
         }
-        
+
         const headers = parseTableCells(line);
         const alignments = parseAlignments(lines[i + 1]);
         const rows = [];
-        
+
         let j = i + 2;
         while (j < lines.length && lines[j].startsWith('|') && lines[j].endsWith('|')) {
           if (isSeparatorRow(lines[j])) {
@@ -1664,13 +1830,13 @@ function parseMarkdown(text) {
           rows.push(parseTableCells(lines[j]));
           j++;
         }
-        
+
         result.push(generateTableHtml(headers, rows, alignments));
         i = j - 1;
         continue;
       }
     }
-    
+
     if (line.startsWith('- ') || line.startsWith('* ')) {
       if (!inList) {
         result.push('<ul>');
@@ -1690,11 +1856,11 @@ function parseMarkdown(text) {
       }
     }
   }
-  
+
   if (inList) {
     result.push('</ul>');
   }
-  
+
   return result.join('\n');
 }
 
@@ -1707,11 +1873,11 @@ function initCumulativeSubmissionsChart(applications) {
 
   // 1. Group applications by date
   const dateMap = {};
-  
+
   applications.forEach(app => {
     const dateStr = (app['Create Date'] || '').trim();
     if (!dateStr) return;
-    
+
     if (!dateMap[dateStr]) {
       dateMap[dateStr] = 0;
     }
@@ -1827,14 +1993,14 @@ let statusSplitChartInstance = null;
 function initStatusSplitChart(applications) {
   const canvasEl = document.getElementById('statusSplitChart');
   if (!canvasEl) return;
-  
+
   const ctx = canvasEl.getContext('2d');
-  
+
   let rejected = 0;
   let applied = 0;
   let interviews = 0;
   let other = 0;
-  
+
   applications.forEach(app => {
     const status = (app['Application Status'] || '').trim().toLowerCase();
     if (status === 'rejected') rejected++;
@@ -1842,27 +2008,27 @@ function initStatusSplitChart(applications) {
     else if (status === 'applied') applied++;
     else if (status) other++;
   });
-  
+
   const data = [rejected, applied, interviews];
   const labels = ['Rejected', 'Applied (Pending)', 'Interviews'];
-  
+
   const primaryColor = theme.primary;
   const warningColor = theme.warning;
-  const errorColor   = theme.error;
-  const textColor    = theme.secondary;
-  
+  const errorColor = theme.error;
+  const textColor = theme.secondary;
+
   const colors = [errorColor, primaryColor, warningColor];
-  
+
   if (other > 0) {
     data.push(other);
     labels.push('Other');
     colors.push('#70757a');
   }
-  
+
   if (statusSplitChartInstance) {
     statusSplitChartInstance.destroy();
   }
-  
+
   statusSplitChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1925,11 +2091,11 @@ let suitabilityBarChartInstance = null;
 function initSuitabilityBarChart(applications) {
   const canvasEl = document.getElementById('suitabilityBarChart');
   if (!canvasEl) return;
-  
+
   const ctx = canvasEl.getContext('2d');
-  
+
   const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-  
+
   applications.forEach(app => {
     const scoreVal = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
     const score = parseInt(scoreVal, 10);
@@ -1937,19 +2103,19 @@ function initSuitabilityBarChart(applications) {
       counts[score]++;
     }
   });
-  
+
   const labels = ['Score 1', 'Score 2', 'Score 3', 'Score 4', 'Score 5'];
   const data = [counts[1], counts[2], counts[3], counts[4], counts[5]];
-  
+
   const [color1, color2, color3, color4, color5] = theme.scores;
   const textColor = theme.secondary;
-  
+
   const colors = [color1, color2, color3, color4, color5];
-  
+
   if (suitabilityBarChartInstance) {
     suitabilityBarChartInstance.destroy();
   }
-  
+
   suitabilityBarChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -2004,9 +2170,9 @@ let topCompaniesChartInstance = null;
 function initTopCompaniesChart(applications) {
   const canvasEl = document.getElementById('topCompaniesChart');
   if (!canvasEl) return;
-  
+
   const ctx = canvasEl.getContext('2d');
-  
+
   const companyCounts = {};
   applications.forEach(app => {
     const company = (app['Company Name'] || '').trim();
@@ -2014,21 +2180,21 @@ function initTopCompaniesChart(applications) {
       companyCounts[company] = (companyCounts[company] || 0) + 1;
     }
   });
-  
+
   const sortedCompanies = Object.entries(companyCounts)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8);
-    
+
   const labels = sortedCompanies.map(item => item[0]);
   const data = sortedCompanies.map(item => item[1]);
-  
+
   const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1a73e8';
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--color-text-secondary').trim() || '#5f6368';
-  
+
   if (topCompaniesChartInstance) {
     topCompaniesChartInstance.destroy();
   }
-  
+
   topCompaniesChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -2101,22 +2267,22 @@ function renderActiveInterviewsPanel(applications) {
   const sectionEl = document.getElementById('activeInterviewsSection');
   const gridEl = document.getElementById('activeInterviewsGrid');
   if (!sectionEl || !gridEl) return;
-  
+
   const interviewApps = applications.filter(app => {
     const status = (app['Application Status'] || '').trim().toLowerCase();
     return status.includes('interview');
   });
-  
+
   const activeTabBtn = document.querySelector('.nav-btn.active');
   const isHomeTab = activeTabBtn ? activeTabBtn.getAttribute('data-tab') === 'home' : true;
-  
+
   if (!isHomeTab) {
     sectionEl.classList.add('section-hidden');
     return;
   }
-  
+
   const hasActiveFilters = !!(selectedCompany || selectedJobTitle || selectedStatus);
-  
+
   if (interviewApps.length === 0) {
     if (applications.length === 0) {
       sectionEl.classList.remove('section-hidden');
@@ -2137,26 +2303,26 @@ function renderActiveInterviewsPanel(applications) {
       return;
     }
   }
-  
+
   sectionEl.classList.remove('section-hidden');
   if (activeInterviewsCountEl) {
     activeInterviewsCountEl.textContent = interviewApps.length;
   }
   gridEl.innerHTML = '';
-  
+
   interviewApps.forEach(app => {
     const company = (app['Company Name'] || '').trim();
     const title = (app['Job Title'] || '').trim();
     const scoreVal = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
     const commentsVal = (app['Comments'] || '').trim();
     const followUpVal = (app['Follow-Up'] || '').trim();
-    
+
     const scoreNum = parseInt(scoreVal, 10);
     const scoreClass = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
-    
+
     const lastCommentLine = getLastComment(commentsVal);
     const formattedComment = parseCommentLine(lastCommentLine);
-    
+
     let followUpHtml = '';
     if (followUpVal) {
       if (isUrl(followUpVal)) {
@@ -2169,7 +2335,7 @@ function renderActiveInterviewsPanel(applications) {
         followUpHtml = `<span class="followup-text">Follow Up: ${escapeHtml(followUpVal)}</span>`;
       }
     }
-    
+
     const card = document.createElement('div');
     card.className = 'interview-card';
     card.innerHTML = `
@@ -2194,12 +2360,12 @@ function renderActiveInterviewsPanel(applications) {
         </button>
       </div>
     `;
-    
+
     card.querySelector('.view-detail-trigger').addEventListener('click', (e) => {
       e.stopPropagation();
       openDetailsDrawer(app);
     });
-    
+
     gridEl.appendChild(card);
   });
 }
@@ -2224,19 +2390,19 @@ function renderAllDashboardWidgets(applications) {
  * Tab Navigation Management
  */
 function initTabNavigation() {
-  const navButtons             = document.querySelectorAll('.nav-btn');
-  const filtersSection         = document.querySelector('.filters-section');
-  const resultsSection         = document.querySelector('.results-section');
+  const navButtons = document.querySelectorAll('.nav-btn');
+  const filtersSection = document.querySelector('.filters-section');
+  const resultsSection = document.querySelector('.results-section');
   const activeInterviewsSection = document.getElementById('activeInterviewsSection');
-  const statsSection           = document.querySelector('.stats-section');
-  const analyticsSection       = document.querySelector('.analytics-section');
-  const newApplicationSection  = document.querySelector('.new-application-section');
+  const statsSection = document.querySelector('.stats-section');
+  const analyticsSection = document.querySelector('.analytics-section');
+  const newApplicationSection = document.querySelector('.new-application-section');
 
   /** Toggle a section's visibility via the .section-hidden utility class */
   const show = (el) => el && el.classList.remove('section-hidden');
   const hide = (el) => el && el.classList.add('section-hidden');
 
-  switchTab = function(targetTab) {
+  switchTab = function (targetTab) {
     navButtons.forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('data-tab') === targetTab);
     });
@@ -2298,15 +2464,15 @@ function showToast(message, type = 'success') {
     container.className = 'toast-container';
     document.body.appendChild(container);
   }
-  
+
   const toast = document.createElement('div');
   toast.className = `toast-item ${type}`;
   toast.innerHTML = `<span class="toast-message">${escapeHtml(message)}</span>`;
   container.appendChild(toast);
-  
+
   // Trigger transition
   setTimeout(() => toast.classList.add('show'), 10);
-  
+
   // Fade out and remove
   setTimeout(() => {
     toast.classList.remove('show');

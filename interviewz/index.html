@@ -660,47 +660,52 @@
   <!-- Detail Drawer Panel -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <aside class="details-drawer" id="detailsDrawer">
-    <div class="drawer-header">
-      <div class="drawer-header-left">
-        <!-- Section A: Job Title, Company Name -->
-        <span class="status-badge" id="drawerStatusBadge">-</span>
-        <h2 id="drawerJobTitle">Job Title</h2>
-        <h3 id="drawerCompanyName">Company Name</h3>
+    <form id="jobinterview">
+      <!-- Hidden inputs to act as form fields for job title and company name -->
+      <input type="hidden" id="drawerJobTitle" name="drawerJobTitle">
+      <input type="hidden" id="drawerCompanyName" name="drawerCompanyName">
+
+      <div class="drawer-header">
+        <div class="drawer-header-left">
+          <!-- Section A: Job Title, Company Name -->
+          <span class="status-badge" id="drawerStatusBadge">-</span>
+          <h2 id="drawerJobTitleDisplay">Job Title</h2>
+          <h3 id="drawerCompanyNameDisplay">Company Name</h3>
+        </div>
+        <button type="button" class="btn-close-drawer" id="btnCloseDrawer" aria-label="Close detail panel">
+          <svg aria-hidden="true" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
       </div>
-      <button class="btn-close-drawer" id="btnCloseDrawer" aria-label="Close detail panel">
-        <svg aria-hidden="true" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </svg>
-      </button>
-    </div>
-    <div class="drawer-body">
-      <!-- Tab Navigation Bar -->
-      <div class="drawer-tabs" role="tablist" aria-label="Application details tabs">
-        <button class="drawer-tab active" id="tabOverview" role="tab" aria-selected="true" aria-controls="sectionB_Status">
-          <svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4" />
-            <path d="M12 8h.01" />
-          </svg>
-          Overview
-        </button>
-        <button class="drawer-tab" id="tabDetails" role="tab" aria-selected="false" aria-controls="sectionC_Details">
-          <svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-            <rect width="20" height="14" x="2" y="6" rx="2" />
-          </svg>
-          Job Details
-        </button>
-        <button class="drawer-tab" id="tabSuitability" role="tab" aria-selected="false" aria-controls="sectionD_Suitability">
-          <svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="8" r="7" />
-            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-          </svg>
-          Suitability
-        </button>
-        <button class="drawer-tab" id="tabInterview" role="tab" aria-selected="false" aria-controls="sectionE_JobInterview">
+      <div class="drawer-body">
+        <!-- Tab Navigation Bar -->
+        <div class="drawer-tabs" role="tablist" aria-label="Application details tabs">
+          <button type="button" class="drawer-tab active" id="tabOverview" role="tab" aria-selected="true" aria-controls="sectionB_Status">
+            <svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
+            </svg>
+            Overview
+          </button>
+          <button type="button" class="drawer-tab" id="tabDetails" role="tab" aria-selected="false" aria-controls="sectionC_Details">
+            <svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              <rect width="20" height="14" x="2" y="6" rx="2" />
+            </svg>
+            Job Details
+          </button>
+          <button type="button" class="drawer-tab" id="tabSuitability" role="tab" aria-selected="false" aria-controls="sectionD_Suitability">
+            <svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="7" />
+              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+            </svg>
+            Suitability
+          </button>
+          <button type="button" class="drawer-tab" id="tabInterview" role="tab" aria-selected="false" aria-controls="sectionE_JobInterview">
           <svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
@@ -797,6 +802,25 @@
               </div>
               <div class="text-block markdown-content" id="drawerInterviewCompany">-</div>
             </div>
+            <div class="info-row-block" id="sectionInterviewCompanyNotes">
+              <div class="description-header">
+                <span class="info-label">Interview Company Notes</span>
+                <div class="action-buttons-group">
+                  <button type="button" class="btn-action-icon" id="btnResetInterviewCompanyNotes" title="Reset Notes">
+                    <svg aria-hidden="true" width="14" height="14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                      <path d="M3 3v5h5" />
+                    </svg>
+                  </button>
+                  <button type="submit" class="btn-action-icon" id="btnSubmitInterviewCompanyNotes" title="Submit Notes">
+                    <svg aria-hidden="true" width="14" height="14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <textarea class="form-control textarea-notes" id="inputInterviewCompanyNotes" name="inputInterviewCompanyNotes" placeholder="Add notes here..."></textarea>
+            </div>
             <div class="info-row-block" id="sectionInterviewPreparation">
               <div class="description-header">
                 <span class="info-label">Interview Preparation</span>
@@ -807,10 +831,29 @@
               </div>
               <div class="text-block markdown-content" id="drawerInterviewPreparation">-</div>
             </div>
+            <div class="info-row-block" id="sectionInterviewPreparationNotes">
+              <div class="description-header">
+                <span class="info-label">Interview Preparation Notes</span>
+                <div class="action-buttons-group">
+                  <button type="button" class="btn-action-icon" id="btnResetInterviewPreparationNotes" title="Reset Notes">
+                    <svg aria-hidden="true" width="14" height="14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                      <path d="M3 3v5h5" />
+                    </svg>
+                  </button>
+                  <button type="submit" class="btn-action-icon" id="btnSubmitInterviewPreparationNotes" title="Submit Notes">
+                    <svg aria-hidden="true" width="14" height="14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <textarea class="form-control textarea-notes" id="inputInterviewPreparationNotes" name="inputInterviewPreparationNotes" placeholder="Add notes here..."></textarea>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   </aside>
 
   <!-- Bootstrap Bundle JS removed (unused) -->
