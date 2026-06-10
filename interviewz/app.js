@@ -5,9 +5,12 @@
 // Configuration
 const SHEET_EXPORT_URL = 'https://docs.google.com/spreadsheets/d/1LdXmp9wAildqYdRIyzA32BMMQIDDM2kT25lMrgYeRbk/export?format=csv';
 
-// Form Configuration
-const FORM_API_ENDPOINT = 'https://newdawn.tail74eef3.ts.net/webhook/jappmotlet';
-const FORM_TOAST_DURATION = 5000;
+// Form & API Configuration — all magic numbers and URLs in one place
+const FORM_API_ENDPOINT             = 'https://newdawn.tail74eef3.ts.net/webhook/jappmotlet';
+const NOTES_API_ENDPOINT            = 'https://newdawn.tail74eef3.ts.net/webhook/interprepnotes';
+const FORM_TIMEOUT_MS               = 90_000;                  // AbortController timeout for all form submissions
+const CACHE_TTL_MS                  = 24 * 60 * 60 * 1_000;   // 24-hour localStorage cache TTL
+const FORM_TOAST_DURATION           = 5000;
 const FORM_SUBMISSION_RESET_TIMEOUT = 10000;
 
 /** Cached theme colours — read once from CSS custom properties at startup */
@@ -26,6 +29,19 @@ function cacheThemeColors() {
 
 /** Returns true when a string begins with http:// or https:// */
 const isUrl = (v) => v.startsWith('http://') || v.startsWith('https://');
+
+/**
+ * Debounce utility — collapses rapid-fire calls into one delayed execution.
+ * @param {Function} fn   - Function to debounce
+ * @param {number}   wait - Milliseconds to wait after the last call
+ */
+function debounce(fn, wait) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), wait);
+  };
+}
 
 // State variables
 let currentApp = null;
@@ -335,9 +351,9 @@ class FormApp {
     // Immediate feedback
     showToast('Submitting your application... Please wait for feedback.', 'info');
 
-    // AbortController for 90 seconds timeout
+    // AbortController with configurable timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 90000);
+    const timeoutId = setTimeout(() => controller.abort(), FORM_TIMEOUT_MS);
 
     try {
       const response = await fetch(FORM_API_ENDPOINT, {
@@ -544,6 +560,9 @@ const resultsCountEl = document.getElementById('resultsCount');
 const activeInterviewsCountEl = document.getElementById('activeInterviewsCount');
 let currentSortVal = 'date-desc';
 
+/** Debounced version of applyFilters — initialised in initializeApp(), used by filter dropdown callbacks */
+let debouncedApplyFilters = null;
+
 // Pagination + table container — cached at startup to avoid re-querying on every render
 const tableContainer = document.querySelector('.registry-table-container');
 const paginationInfo = document.getElementById('paginationInfo');
@@ -586,7 +605,8 @@ const drawerComments = document.getElementById('drawerComments');
 const sectionComments = document.getElementById('sectionComments');
 const drawerJobDescription = document.getElementById('drawerJobDescription');
 const drawerCompanyDescription = document.getElementById('drawerCompanyDescription');
-const linkJobUrl = document.getElementById('linkJobUrl');
+const linkJobUrl = document.getElementById('linkJobUrl');       // hidden input — submitted with jobinterview form
+const linkJobUrlAnchor = document.getElementById('linkJobUrlAnchor'); // visual anchor — for user navigation
 const linkCompanyFolder = document.getElementById('linkCompanyFolder');
 const drawerInterviewCompany = document.getElementById('drawerInterviewCompany');
 const drawerInterviewPreparation = document.getElementById('drawerInterviewPreparation');
@@ -602,6 +622,7 @@ const btnSubmitInterviewPreparationNotes = document.getElementById('btnSubmitInt
 // Initialize the Application
 function initializeApp() {
   cacheThemeColors();
+  debouncedApplyFilters = debounce(applyFilters, 80);
 
   // Instantiate selectors
   companySelect = new FacetedSelect(companySelectContainer, companyTrigger, companySearch, companyOptions, 'All Companies');
@@ -859,15 +880,17 @@ function setInterviewLoadingState(isLoading) {
     form.setAttribute('aria-busy', isLoading ? 'true' : 'false');
   }
 
-  // Disable/enable all submit and reset buttons in the notes section
-  const buttons = [
+  // Disable/enable all submit, reset buttons, and textareas in the notes section
+  const elements = [
     document.getElementById('btnSubmitInterviewCompanyNotes'),
     document.getElementById('btnResetInterviewCompanyNotes'),
     document.getElementById('btnSubmitInterviewPreparationNotes'),
-    document.getElementById('btnResetInterviewPreparationNotes')
+    document.getElementById('btnResetInterviewPreparationNotes'),
+    document.getElementById('inputInterviewCompanyNotes'),
+    document.getElementById('inputInterviewPreparationNotes')
   ];
-  buttons.forEach(btn => {
-    if (btn) btn.disabled = isLoading;
+  elements.forEach(el => {
+    if (el) el.disabled = isLoading;
   });
 }
 
@@ -894,13 +917,12 @@ async function submitJobInterviewForm() {
   // Immediate feedback
   showToast('Submitting your notes... Please wait for feedback.', 'info');
 
-  // AbortController for 90 seconds timeout
+  // AbortController with configurable timeout
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 90000);
+  const timeoutId = setTimeout(() => controller.abort(), FORM_TIMEOUT_MS);
 
   try {
-    const url = 'https://newdawn.tail74eef3.ts.net/webhook/interprepnotes';
-    const response = await fetch(url, {
+    const response = await fetch(NOTES_API_ENDPOINT, {
       method: 'POST',
       body: formData,
       signal: controller.signal
@@ -918,9 +940,21 @@ async function submitJobInterviewForm() {
     if (result.ok === true) {
       showToast('Notes submitted successfully!', 'success');
       form.classList.remove('was-validated');
-      fetchData(); // Trigger fresh data fetch to get the updated notes
+      // Patch the in-memory record immediately so the drawer reflects the change without waiting for a network round-trip
+      if (currentApp) {
+        currentApp['Interview_Company_Notes'] = inputInterviewCompanyNotes ? inputInterviewCompanyNotes.value.trim() : '';
+        currentApp['Interview_Preparation_Notes'] = inputInterviewPreparationNotes ? inputInterviewPreparationNotes.value.trim() : '';
+      }
+      // Schedule a silent background sync to confirm server state after 3 seconds, which will reload/refresh details and re-enable inputs
+      setTimeout(() => {
+        fetchData();
+        // Since isInterviewSubmitting is reset, but loading state remains true, it will be cleared once the data is loaded and openDetailsDrawer is called
+      }, 3000);
+      isInterviewSubmitting = false;
     } else {
       showToast(result.message || 'The submission was not successful. Please try again.', 'error');
+      setInterviewLoadingState(false);
+      isInterviewSubmitting = false;
     }
   } catch (error) {
     clearTimeout(timeoutId);
@@ -930,7 +964,6 @@ async function submitJobInterviewForm() {
     } else {
       showToast("Submission error: " + error.message, "error");
     }
-  } finally {
     setInterviewLoadingState(false);
     isInterviewSubmitting = false;
   }
@@ -940,7 +973,6 @@ async function submitJobInterviewForm() {
  * Read cached CSV from localStorage. Returns the CSV string or null.
  */
 function readCache() {
-  const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
   const raw = localStorage.getItem('talent_tracker_csv_cache');
   if (!raw) return null;
   try {
@@ -1243,7 +1275,7 @@ function updateFiltersUI() {
     }
 
     updateFiltersUI();
-    applyFilters(true);
+    debouncedApplyFilters(true);
   });
 
   // --- 2. Populate Job Title List ---
@@ -1269,7 +1301,7 @@ function updateFiltersUI() {
     }
 
     updateFiltersUI();
-    applyFilters(true);
+    debouncedApplyFilters(true);
   });
 
   // --- 3. Populate Application Status List ---
@@ -1286,7 +1318,7 @@ function updateFiltersUI() {
   statusSelect.populate(distinctStatuses, selectedStatus, (statusValue) => {
     selectedStatus = statusValue;
     updateFiltersUI();
-    applyFilters(true);
+    debouncedApplyFilters(true);
   });
 }
 
@@ -1621,10 +1653,16 @@ function openDetailsDrawer(app, keepActiveTab = false) {
   // Links
   const jobUrl = (app['Job URL'] || '').trim();
   if (jobUrl) {
-    linkJobUrl.href = jobUrl;
-    linkJobUrl.style.display = '';
+    linkJobUrl.value = jobUrl;            // form field — submitted with jobinterview form
+    if (linkJobUrlAnchor) {
+      linkJobUrlAnchor.href = jobUrl;
+      linkJobUrlAnchor.style.display = '';
+    }
   } else {
-    linkJobUrl.style.display = 'none';
+    linkJobUrl.value = '';
+    if (linkJobUrlAnchor) {
+      linkJobUrlAnchor.style.display = 'none';
+    }
   }
 
   const companyFolder = (app['Company_Folder'] || '').trim();
@@ -1663,6 +1701,8 @@ function openDetailsDrawer(app, keepActiveTab = false) {
     if (inputInterviewPreparationNotes) {
       inputInterviewPreparationNotes.value = (app['Interview_Preparation_Notes'] || '').trim();
     }
+    // Re-enable editing now that textareas content is refreshed
+    setInterviewLoadingState(false);
   } else {
     if (tabInterview) {
       tabInterview.classList.add('disabled');
@@ -1907,11 +1947,14 @@ function initCumulativeSubmissionsChart(applications) {
     return `${day}-${month} (${weekdayLetter})`;
   });
 
-  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1a73e8';
-  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--color-text-secondary').trim() || '#5f6368';
+  const primaryColor = theme.primary;
+  const textColor = theme.secondary;
 
   if (cumulativeSubmissionsChartInstance) {
-    cumulativeSubmissionsChartInstance.destroy();
+    cumulativeSubmissionsChartInstance.data.labels = chartLabels;
+    cumulativeSubmissionsChartInstance.data.datasets[0].data = cumulativeData;
+    cumulativeSubmissionsChartInstance.update('none');
+    return;
   }
 
   cumulativeSubmissionsChartInstance = new Chart(ctx, {
@@ -2026,7 +2069,11 @@ function initStatusSplitChart(applications) {
   }
 
   if (statusSplitChartInstance) {
-    statusSplitChartInstance.destroy();
+    statusSplitChartInstance.data.labels = labels;
+    statusSplitChartInstance.data.datasets[0].data = data;
+    statusSplitChartInstance.data.datasets[0].backgroundColor = colors;
+    statusSplitChartInstance.update('none');
+    return;
   }
 
   statusSplitChartInstance = new Chart(ctx, {
@@ -2113,7 +2160,9 @@ function initSuitabilityBarChart(applications) {
   const colors = [color1, color2, color3, color4, color5];
 
   if (suitabilityBarChartInstance) {
-    suitabilityBarChartInstance.destroy();
+    suitabilityBarChartInstance.data.datasets[0].data = data;
+    suitabilityBarChartInstance.update('none');
+    return;
   }
 
   suitabilityBarChartInstance = new Chart(ctx, {
@@ -2188,11 +2237,14 @@ function initTopCompaniesChart(applications) {
   const labels = sortedCompanies.map(item => item[0]);
   const data = sortedCompanies.map(item => item[1]);
 
-  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1a73e8';
-  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--color-text-secondary').trim() || '#5f6368';
+  const primaryColor = theme.primary;
+  const textColor = theme.secondary;
 
   if (topCompaniesChartInstance) {
-    topCompaniesChartInstance.destroy();
+    topCompaniesChartInstance.data.labels = labels;
+    topCompaniesChartInstance.data.datasets[0].data = data;
+    topCompaniesChartInstance.update('none');
+    return;
   }
 
   topCompaniesChartInstance = new Chart(ctx, {
@@ -2338,6 +2390,7 @@ function renderActiveInterviewsPanel(applications) {
 
     const card = document.createElement('div');
     card.className = 'interview-card';
+    card.dataset.appIndex = app._index;
     card.innerHTML = `
       <div class="interview-card-header">
         <div>
