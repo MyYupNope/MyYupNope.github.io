@@ -815,6 +815,57 @@ body {
   color: var(--color-primary);
 }
 
+/* Refresh icon button in the registry header */
+.btn-icon-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color var(--transition-base), color var(--transition-base), transform var(--transition-base);
+  flex-shrink: 0;
+}
+
+.btn-icon-ghost svg {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--transition-base);
+}
+
+.btn-icon-ghost:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.btn-icon-ghost:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.btn-icon-ghost:active {
+  transform: scale(0.92);
+}
+
+.btn-icon-ghost.is-refreshing {
+  color: var(--color-primary);
+  pointer-events: none;
+}
+
+.btn-icon-ghost.is-refreshing svg {
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 .badge {
   background: var(--color-primary-light);
   padding: 0.2rem 0.8rem;
@@ -1083,6 +1134,11 @@ body {
 }
 
 .status-badge.ready {
+  color: var(--color-text-secondary);
+  background: #f1f3f4;
+}
+
+.status-badge.accepted {
   color: var(--color-success);
   background: var(--bg-success-light);
 }

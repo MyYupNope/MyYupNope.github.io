@@ -43,6 +43,177 @@ function debounce(fn, wait) {
   };
 }
 
+/**
+ * Date Parser helper (DD-MM-YYYY)
+ */
+function parseDate(dateStr) {
+  if (!dateStr) return new Date(0);
+  const parts = dateStr.trim().split('-');
+  if (parts.length === 3) {
+    const d = new Date(parts[2], parts[1] - 1, parts[0]);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const parsed = Date.parse(dateStr);
+  if (isNaN(parsed)) {
+    console.warn(`[interviewz] Could not parse date: "${dateStr}"`);
+    return new Date(0);
+  }
+  return new Date(parsed);
+}
+
+/**
+ * Formats a DD-MM-YYYY date into DD-MM-YYYY (We) format
+ */
+function formatDisplayDate(dateStr) {
+  if (!dateStr) return 'N/A';
+  const date = parseDate(dateStr);
+  if (date.getTime() === 0) return dateStr;
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  return `${day}-${month}-${year} (${weekdays[date.getDay()]})`;
+}
+
+/**
+ * Escapes HTML to prevent XSS injection
+ */
+function escapeHtml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
+ * Simple Markdown-to-HTML parser that supports headers, bold, italics, and lists.
+ */
+function parseMarkdown(text) {
+  if (!text) return '';
+
+  // Escape HTML first to prevent XSS
+  let html = escapeHtml(text);
+
+  // Replace headers: ###, ##, #
+  html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+
+  // Bold: **text**
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+  // Italics: *text*
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+  // Split into trimmed, non-empty lines
+  const lines = html.split('\n')
+    .map(line => line.trim())
+    .filter(line => line !== '');
+  let inList = false;
+  let result = [];
+
+  function isSeparatorRow(line) {
+    if (!line.startsWith('|') || !line.endsWith('|') || line.length <= 2) return false;
+    const inner = line.slice(1, -1);
+    return /^[:\-\s\|]+$/.test(inner) && inner.includes('-');
+  }
+
+  function parseTableCells(line) {
+    return line.slice(1, -1).split('|').map(cell => cell.trim());
+  }
+
+  function parseAlignments(line) {
+    return parseTableCells(line).map(cell => {
+      const alignLeft = cell.startsWith(':');
+      const alignRight = cell.endsWith(':');
+      if (alignLeft && alignRight) return 'center';
+      if (alignRight) return 'right';
+      if (alignLeft) return 'left';
+      return '';
+    });
+  }
+
+  function generateTableHtml(headers, rows, alignments) {
+    let tableHtml = '<table class="md-table">';
+    tableHtml += '<thead><tr>';
+    headers.forEach((header, idx) => {
+      const align = alignments[idx] ? ` style="text-align: ${alignments[idx]}"` : '';
+      tableHtml += `<th${align}>${header}</th>`;
+    });
+    tableHtml += '</tr></thead><tbody>';
+    rows.forEach(row => {
+      tableHtml += '<tr>';
+      for (let idx = 0; idx < headers.length; idx++) {
+        const cell = row[idx] !== undefined ? row[idx] : '';
+        const align = alignments[idx] ? ` style="text-align: ${alignments[idx]}"` : '';
+        tableHtml += `<td${align}>${cell}</td>`;
+      }
+      tableHtml += '</tr>';
+    });
+    tableHtml += '</tbody></table>';
+    return tableHtml;
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Check if it's a table
+    if (line.startsWith('|') && line.endsWith('|')) {
+      if (i + 1 < lines.length && isSeparatorRow(lines[i + 1])) {
+        if (inList) {
+          result.push('</ul>');
+          inList = false;
+        }
+
+        const headers = parseTableCells(line);
+        const alignments = parseAlignments(lines[i + 1]);
+        const rows = [];
+
+        let j = i + 2;
+        while (j < lines.length && lines[j].startsWith('|') && lines[j].endsWith('|')) {
+          if (isSeparatorRow(lines[j])) {
+            break;
+          }
+          rows.push(parseTableCells(lines[j]));
+          j++;
+        }
+
+        result.push(generateTableHtml(headers, rows, alignments));
+        i = j - 1;
+        continue;
+      }
+    }
+
+    if (line.startsWith('- ') || line.startsWith('* ')) {
+      if (!inList) {
+        result.push('<ul>');
+        inList = true;
+      }
+      const content = line.substring(2).trim();
+      result.push(`<li>${content}</li>`);
+    } else {
+      if (inList) {
+        result.push('</ul>');
+        inList = false;
+      }
+      if (line.startsWith('<h') || line.startsWith('<table')) {
+        result.push(line);
+      } else {
+        result.push(`<p>${line}</p>`);
+      }
+    }
+  }
+
+  if (inList) {
+    result.push('</ul>');
+  }
+
+  return result.join('\n');
+}
+
 // State variables
 let currentApp = null;
 
@@ -344,50 +515,18 @@ class FormApp {
       return;
     }
 
-    const formData = new FormData(this.form);
-    this.setLoadingState(true);
     this.isSubmitting = true;
-
-    // Immediate feedback
     showToast('Submitting your application... Please wait for feedback.', 'info');
 
-    // AbortController with configurable timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), FORM_TIMEOUT_MS);
+    await postForm(FORM_API_ENDPOINT, new FormData(this.form), {
+      setLoading: (v) => this.setLoadingState(v),
+      onSuccess:  ()  => this.handleSuccess(),
+      onError:    (e) => this.handleError(e.name === 'AbortError'
+        ? 'Submission error: Request timed out after 90 seconds.'
+        : 'Submission error: ' + e.message),
+    });
 
-    try {
-      const response = await fetch(FORM_API_ENDPOINT, {
-        method: "POST",
-        body: formData,
-        signal: controller.signal
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Server returned ${response.status}: ${errorText}`);
-      }
-
-      const result = await response.json();
-
-      if (result.ok === true) {
-        this.handleSuccess();
-      } else {
-        this.handleError(result.message || 'The submission was not successful. Please try again.');
-      }
-    } catch (error) {
-      clearTimeout(timeoutId);
-      console.error("Submission error details:", error);
-      if (error.name === 'AbortError') {
-        this.handleError("Submission error: Request timed out after 90 seconds.");
-      } else {
-        this.handleError("Submission error: " + error.message);
-      }
-    } finally {
-      this.setLoadingState(false);
-      this.isSubmitting = false;
-    }
+    this.isSubmitting = false;
   }
 
   setLoadingState(isLoading) {
@@ -521,7 +660,44 @@ class FormApp {
   }
 }
 
-// App State
+/**
+ * Shared form submission utility.
+ * Handles AbortController timeout, fetch, JSON result check, and error routing
+ * so individual submit handlers only express their own success/error logic.
+ *
+ * @param {string}   url         - POST endpoint
+ * @param {FormData} formData    - Payload
+ * @param {object}   opts
+ * @param {function} opts.setLoading - Called with true/false around the fetch
+ * @param {function} opts.onSuccess  - Called when result.ok === true
+ * @param {function} opts.onError    - Called with the Error on any failure
+ */
+async function postForm(url, formData, { setLoading, onSuccess, onError }) {
+  setLoading(true);
+  const controller = new AbortController();
+  const timeoutId  = setTimeout(() => controller.abort(), FORM_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, { method: 'POST', body: formData, signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Server returned ${response.status}: ${errText}`);
+    }
+    const result = await response.json();
+    if (result.ok === true) {
+      onSuccess(result);
+    } else {
+      throw new Error(result.message || 'The submission was not successful. Please try again.');
+    }
+  } catch (err) {
+    clearTimeout(timeoutId);
+    console.error('[postForm] error:', err);
+    onError(err);
+  } finally {
+    setLoading(false);
+  }
+}
+
 let rawApplications = [];
 let activeApplications = []; // Applications where status <> retired and status <> rejected
 let filteredApplications = []; // Currently filtered applications
@@ -585,39 +761,10 @@ const statusTrigger = document.getElementById('statusTrigger');
 const statusSearch = document.getElementById('statusSearch');
 const statusOptions = document.getElementById('statusOptions');
 
-// Drawer Elements
+// Drawer container elements — needed at module scope for event binding and drawer state checks
 const drawerOverlay = document.getElementById('drawerOverlay');
 const detailsDrawer = document.getElementById('detailsDrawer');
 const btnCloseDrawer = document.getElementById('btnCloseDrawer');
-const drawerStatusBadge = document.getElementById('drawerStatusBadge');
-const drawerJobTitle = document.getElementById('drawerJobTitle');
-const drawerCompanyName = document.getElementById('drawerCompanyName');
-const drawerJobTitleDisplay = document.getElementById('drawerJobTitleDisplay');
-const drawerCompanyNameDisplay = document.getElementById('drawerCompanyNameDisplay');
-const drawerDate = document.getElementById('drawerDate');
-const drawerHiringTeam = document.getElementById('drawerHiringTeam');
-const drawerFollowUp = document.getElementById('drawerFollowUp');
-const drawerSuitabilityScoreContainer = document.getElementById('drawerSuitabilityScoreContainer');
-const drawerSuitabilityScore = document.getElementById('drawerSuitabilityScore');
-const drawerSuitabilityEval = document.getElementById('drawerSuitabilityEval');
-const sectionSuitabilityEval = document.getElementById('sectionSuitabilityEval');
-const drawerComments = document.getElementById('drawerComments');
-const sectionComments = document.getElementById('sectionComments');
-const drawerJobDescription = document.getElementById('drawerJobDescription');
-const drawerCompanyDescription = document.getElementById('drawerCompanyDescription');
-const linkJobUrl = document.getElementById('linkJobUrl');       // hidden input — submitted with jobinterview form
-const linkJobUrlAnchor = document.getElementById('linkJobUrlAnchor'); // visual anchor — for user navigation
-const linkCompanyFolder = document.getElementById('linkCompanyFolder');
-const drawerInterviewCompany = document.getElementById('drawerInterviewCompany');
-const drawerInterviewPreparation = document.getElementById('drawerInterviewPreparation');
-
-const inputInterviewCompanyNotes = document.getElementById('inputInterviewCompanyNotes');
-const btnResetInterviewCompanyNotes = document.getElementById('btnResetInterviewCompanyNotes');
-const btnSubmitInterviewCompanyNotes = document.getElementById('btnSubmitInterviewCompanyNotes');
-
-const inputInterviewPreparationNotes = document.getElementById('inputInterviewPreparationNotes');
-const btnResetInterviewPreparationNotes = document.getElementById('btnResetInterviewPreparationNotes');
-const btnSubmitInterviewPreparationNotes = document.getElementById('btnSubmitInterviewPreparationNotes');
 
 // Initialize the Application
 function initializeApp() {
@@ -702,6 +849,24 @@ function setupEventListeners() {
     updateFiltersUI();
     applyFilters(true);
   });
+
+  // Registry refresh button — busts cache and forces a fresh network fetch
+  const btnRefreshRegistry = document.getElementById('btnRefreshRegistry');
+  if (btnRefreshRegistry) {
+    btnRefreshRegistry.addEventListener('click', () => {
+      btnRefreshRegistry.classList.add('is-refreshing');
+      // Resolve the loading class once the sync status updates to success or error
+      const observer = new MutationObserver(() => {
+        const dot = syncStatusEl.querySelector('.status-dot');
+        if (dot && (dot.classList.contains('ready') || dot.classList.contains('error'))) {
+          btnRefreshRegistry.classList.remove('is-refreshing');
+          observer.disconnect();
+        }
+      });
+      observer.observe(syncStatusEl, { subtree: true, attributes: true, attributeFilter: ['class'] });
+      fetchData(true);
+    });
+  }
 
   // Drawer Close Actions
   btnCloseDrawer.addEventListener('click', closeDetailsDrawer);
@@ -821,19 +986,23 @@ function setupEventListeners() {
     });
   }
 
-  if (btnResetInterviewCompanyNotes) {
-    btnResetInterviewCompanyNotes.addEventListener('click', () => {
-      if (inputInterviewCompanyNotes) {
-        inputInterviewCompanyNotes.value = '';
+  const btnResetCompanyNotes = document.getElementById('btnResetInterviewCompanyNotes');
+  if (btnResetCompanyNotes) {
+    btnResetCompanyNotes.addEventListener('click', () => {
+      const inp = document.getElementById('inputInterviewCompanyNotes');
+      if (inp) {
+        inp.value = '';
         showToast('Company notes reset', 'info');
       }
     });
   }
 
-  if (btnResetInterviewPreparationNotes) {
-    btnResetInterviewPreparationNotes.addEventListener('click', () => {
-      if (inputInterviewPreparationNotes) {
-        inputInterviewPreparationNotes.value = '';
+  const btnResetPrepNotes = document.getElementById('btnResetInterviewPreparationNotes');
+  if (btnResetPrepNotes) {
+    btnResetPrepNotes.addEventListener('click', () => {
+      const inp = document.getElementById('inputInterviewPreparationNotes');
+      if (inp) {
+        inp.value = '';
         showToast('Preparation notes reset', 'info');
       }
     });
@@ -844,23 +1013,26 @@ function setupEventListeners() {
     formJobInterview.addEventListener('submit', (e) => {
       e.preventDefault();
 
+      const companyNotesEl = document.getElementById('inputInterviewCompanyNotes');
+      const prepNotesEl    = document.getElementById('inputInterviewPreparationNotes');
+
       const submitter = e.submitter;
       if (submitter) {
         if (submitter.id === 'btnSubmitInterviewCompanyNotes') {
-          if (!inputInterviewCompanyNotes || inputInterviewCompanyNotes.value.trim() === '') {
+          if (!companyNotesEl || companyNotesEl.value.trim() === '') {
             showToast('Please enter some notes before submitting', 'warning');
             return;
           }
         } else if (submitter.id === 'btnSubmitInterviewPreparationNotes') {
-          if (!inputInterviewPreparationNotes || inputInterviewPreparationNotes.value.trim() === '') {
+          if (!prepNotesEl || prepNotesEl.value.trim() === '') {
             showToast('Please enter some notes before submitting', 'warning');
             return;
           }
         }
       } else {
         // Fallback if submitted via enter key or other means: check that at least one field is filled
-        const companyVal = inputInterviewCompanyNotes ? inputInterviewCompanyNotes.value.trim() : '';
-        const prepVal = inputInterviewPreparationNotes ? inputInterviewPreparationNotes.value.trim() : '';
+        const companyVal = companyNotesEl ? companyNotesEl.value.trim() : '';
+        const prepVal    = prepNotesEl    ? prepNotesEl.value.trim()    : '';
         if (companyVal === '' && prepVal === '') {
           showToast('Please enter some notes before submitting', 'warning');
           return;
@@ -910,63 +1082,33 @@ async function submitJobInterviewForm() {
     return;
   }
 
-  const formData = new FormData(form);
-  setInterviewLoadingState(true);
   isInterviewSubmitting = true;
-
-  // Immediate feedback
   showToast('Submitting your notes... Please wait for feedback.', 'info');
 
-  // AbortController with configurable timeout
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), FORM_TIMEOUT_MS);
-
-  try {
-    const response = await fetch(NOTES_API_ENDPOINT, {
-      method: 'POST',
-      body: formData,
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Server returned ${response.status}: ${errorText}`);
-    }
-
-    const result = await response.json();
-
-    if (result.ok === true) {
-      showToast('Notes submitted successfully!', 'success');
+  await postForm(NOTES_API_ENDPOINT, new FormData(form), {
+    setLoading: (v) => setInterviewLoadingState(v),
+    onSuccess: () => {
       form.classList.remove('was-validated');
+      showToast('Notes submitted successfully!', 'success');
       // Patch the in-memory record immediately so the drawer reflects the change without waiting for a network round-trip
       if (currentApp) {
-        currentApp['Interview_Company_Notes'] = inputInterviewCompanyNotes ? inputInterviewCompanyNotes.value.trim() : '';
-        currentApp['Interview_Preparation_Notes'] = inputInterviewPreparationNotes ? inputInterviewPreparationNotes.value.trim() : '';
+        const companyNotesEl = document.getElementById('inputInterviewCompanyNotes');
+        const prepNotesEl    = document.getElementById('inputInterviewPreparationNotes');
+        currentApp['Interview_Company_Notes']     = companyNotesEl ? companyNotesEl.value.trim() : '';
+        currentApp['Interview_Preparation_Notes'] = prepNotesEl    ? prepNotesEl.value.trim()    : '';
       }
-      // Schedule a silent background sync to confirm server state after 3 seconds, which will reload/refresh details and re-enable inputs
-      setTimeout(() => {
-        fetchData();
-        // Since isInterviewSubmitting is reset, but loading state remains true, it will be cleared once the data is loaded and openDetailsDrawer is called
-      }, 3000);
-      isInterviewSubmitting = false;
-    } else {
-      showToast(result.message || 'The submission was not successful. Please try again.', 'error');
-      setInterviewLoadingState(false);
-      isInterviewSubmitting = false;
-    }
-  } catch (error) {
-    clearTimeout(timeoutId);
-    console.error("Notes submission error details:", error);
-    if (error.name === 'AbortError') {
-      showToast("Submission error: Request timed out after 90 seconds.", "error");
-    } else {
-      showToast("Submission error: " + error.message, "error");
-    }
-    setInterviewLoadingState(false);
-    isInterviewSubmitting = false;
-  }
+      // Schedule a silent background sync to confirm server state after 3 seconds
+      setTimeout(fetchData, 3000);
+    },
+    onError: (e) => {
+      showToast(e.name === 'AbortError'
+        ? 'Submission error: Request timed out after 90 seconds.'
+        : 'Submission error: ' + e.message,
+        'error');
+    },
+  });
+
+  isInterviewSubmitting = false;
 }
 
 /**
@@ -1003,9 +1145,15 @@ function writeCache(csvText) {
 }
 
 /**
- * Fetch and Parse Data with offline Local Storage support
+ * Fetch and Parse Data with offline Local Storage support.
+ * @param {boolean} [forceRefresh=false] — when true, the local cache is cleared
+ *   before fetching so the response is always written fresh.
  */
-function fetchData() {
+function fetchData(forceRefresh = false) {
+  if (forceRefresh) {
+    localStorage.removeItem('talent_tracker_csv_cache');
+  }
+
   const cachedCsvText = readCache();
   let hasLoadedFromCache = false;
 
@@ -1477,32 +1625,67 @@ function renderTable() {
   pageApplications.forEach((app) => {
     const row = document.createElement('tr');
 
-    const company = (app['Company Name'] || '').trim();
-    const title = (app['Job Title'] || '').trim();
-    const status = (app['Application Status'] || '').trim();
-    const dateStr = (app['Create Date'] || '').trim();
+    const company          = (app['Company Name'] || '').trim();
+    const title            = (app['Job Title'] || '').trim();
+    const status           = (app['Application Status'] || '').trim();
+    const dateStr          = (app['Create Date'] || '').trim();
     const suitabilityScore = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
-    const scoreNum = parseInt(suitabilityScore, 10);
-    const scoreClass = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
+    const scoreNum         = parseInt(suitabilityScore, 10);
+    const scoreClass       = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
+    const statusClass      = status.toLowerCase().replace(/\s+/g, '-');
 
-    const statusClass = status.toLowerCase().replace(/\s+/g, '-');
+    // Title cell
+    const titleTd   = document.createElement('td');
+    const titleSpan = document.createElement('span');
+    titleSpan.className   = 'table-job-title';
+    titleSpan.textContent = title;
+    titleTd.appendChild(titleSpan);
 
-    row.innerHTML = `
-      <td><span class="table-job-title">${escapeHtml(title)}</span></td>
-      <td><span class="table-company">${escapeHtml(company)}</span></td>
-      <td><span class="status-badge ${statusClass}">${escapeHtml(status)}</span></td>
-      <td><span class="table-date">${escapeHtml(formatDisplayDate(dateStr))}</span></td>
-      <td>
-        ${suitabilityScore ? `<span class="score-badge ${scoreClass}">Score: ${escapeHtml(suitabilityScore)}</span>` : '<span style="color: var(--color-text-secondary)">-</span>'}
-      </td>
-      <td>
-        <button type="button" class="table-action-btn">
-          View Detail
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </button>
-      </td>
-    `;
+    // Company cell
+    const companyTd   = document.createElement('td');
+    const companySpan = document.createElement('span');
+    companySpan.className   = 'table-company';
+    companySpan.textContent = company;
+    companyTd.appendChild(companySpan);
 
+    // Status cell
+    const statusTd   = document.createElement('td');
+    const statusSpan = document.createElement('span');
+    statusSpan.className   = `status-badge ${statusClass}`;
+    statusSpan.textContent = status;
+    statusTd.appendChild(statusSpan);
+
+    // Date cell
+    const dateTd   = document.createElement('td');
+    const dateSpan = document.createElement('span');
+    dateSpan.className   = 'table-date';
+    dateSpan.textContent = formatDisplayDate(dateStr);
+    dateTd.appendChild(dateSpan);
+
+    // Suitability cell
+    const suitTd = document.createElement('td');
+    if (suitabilityScore) {
+      const suitSpan = document.createElement('span');
+      suitSpan.className   = `score-badge ${scoreClass}`;
+      suitSpan.textContent = `Score: ${suitabilityScore}`;
+      suitTd.appendChild(suitSpan);
+    } else {
+      const dash = document.createElement('span');
+      dash.style.color  = 'var(--color-text-secondary)';
+      dash.textContent  = '-';
+      suitTd.appendChild(dash);
+    }
+
+    // Action cell — SVG is static markup, safe to use innerHTML here
+    const actionTd  = document.createElement('td');
+    const actionBtn = document.createElement('button');
+    actionBtn.type      = 'button';
+    actionBtn.className = 'table-action-btn';
+    actionBtn.innerHTML = `View Detail
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`;
+    actionTd.appendChild(actionBtn);
+
+    row.append(titleTd, companyTd, statusTd, dateTd, suitTd, actionTd);
     row.addEventListener('click', () => openDetailsDrawer(app));
     registryTableBody.appendChild(row);
   });
@@ -1553,366 +1736,214 @@ function selectTab(tabId) {
 }
 
 /**
- * Open Details Drawer
+ * DrawerController
+ * Encapsulates all open/close/populate logic for the details drawer.
+ * Mirrors the FormApp / FacetedSelect class pattern already in the codebase.
+ * DOM elements are resolved locally inside each method (no module-scope drawer refs needed).
+ */
+const DrawerController = {
+  /** Open the drawer for a given application record. */
+  open(app, keepActiveTab = false) {
+    currentApp = app;
+    this._populateHeader(app);
+    this._populateOverview(app);
+    this._populateSuitability(app);
+    this._populateInterview(app);
+
+    if (!keepActiveTab) selectTab('tabOverview');
+
+    drawerOverlay.classList.add('active');
+    detailsDrawer.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    detailsDrawer.querySelector('.drawer-body').scrollTop = 0;
+  },
+
+  /** Close the drawer. */
+  close() {
+    drawerOverlay.classList.remove('active');
+    detailsDrawer.classList.remove('active');
+    document.body.style.overflow = '';
+  },
+
+  // ─── Private helpers ──────────────────────────────────────────────────────
+
+  _populateHeader(app) {
+    const status       = (app['Application Status'] || '').trim();
+    const jobTitleVal  = (app['Job Title']           || '').trim();
+    const companyVal   = (app['Company Name']        || '').trim();
+
+    const badge = document.getElementById('drawerStatusBadge');
+    if (badge) {
+      badge.className   = `badge status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`;
+      badge.textContent = status;
+    }
+
+    const titleDisplay   = document.getElementById('drawerJobTitleDisplay');
+    const companyDisplay = document.getElementById('drawerCompanyNameDisplay');
+    const titleInput     = document.getElementById('drawerJobTitle');
+    const companyInput   = document.getElementById('drawerCompanyName');
+    const dateEl         = document.getElementById('drawerDate');
+
+    if (titleDisplay)   titleDisplay.textContent   = jobTitleVal;
+    if (companyDisplay) companyDisplay.textContent = companyVal;
+    if (titleInput)     titleInput.value           = jobTitleVal;
+    if (companyInput)   companyInput.value         = companyVal;
+    if (dateEl)         dateEl.textContent         = formatDisplayDate((app['Create Date'] || '').trim());
+  },
+
+  _populateOverview(app) {
+    // Hiring Team
+    const hiringTeamVal = (app['Hiring Team'] || '').trim();
+    const hiringTeamEl  = document.getElementById('drawerHiringTeam');
+    if (hiringTeamEl) {
+      if (hiringTeamVal) {
+        if (isUrl(hiringTeamVal)) {
+          hiringTeamEl.innerHTML = `<a href="${escapeHtml(hiringTeamVal)}" target="_blank" class="inline-link-btn">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+            Link
+          </a>`;
+        } else {
+          hiringTeamEl.textContent = hiringTeamVal;
+        }
+      } else {
+        hiringTeamEl.textContent = 'Not Specified';
+      }
+    }
+
+    // Follow-up
+    const followUpVal = (app['Follow-Up'] || '').trim();
+    const followUpEl  = document.getElementById('drawerFollowUp');
+    if (followUpEl) {
+      if (followUpVal) {
+        if (isUrl(followUpVal)) {
+          followUpEl.innerHTML = `<a href="${escapeHtml(followUpVal)}" target="_blank" class="inline-link-btn">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+            Link
+          </a>`;
+        } else {
+          followUpEl.textContent = followUpVal;
+        }
+      } else {
+        followUpEl.textContent = 'Not Specified';
+      }
+    }
+
+    // Comments
+    const comments   = (app['Comments'] || '').trim();
+    const commentsEl = document.getElementById('drawerComments');
+    if (commentsEl) commentsEl.textContent = comments || '-';
+
+    // Descriptions
+    const jobDescEl  = document.getElementById('drawerJobDescription');
+    const coDescEl   = document.getElementById('drawerCompanyDescription');
+    if (jobDescEl) jobDescEl.textContent = (app['Job Description']     || 'No description provided.').trim();
+    if (coDescEl)  coDescEl.textContent  = (app['Company Description'] || 'No company profile available.').trim();
+
+    // Links
+    const jobUrl        = (app['Job URL']        || '').trim();
+    const companyFolder = (app['Company_Folder'] || '').trim();
+    const linkJobUrl    = document.getElementById('linkJobUrl');
+    const linkJobAnchor = document.getElementById('linkJobUrlAnchor');
+    const linkFolder    = document.getElementById('linkCompanyFolder');
+
+    if (linkJobUrl) linkJobUrl.value = jobUrl;
+    if (linkJobAnchor) {
+      if (jobUrl) { linkJobAnchor.href = jobUrl; linkJobAnchor.style.display = ''; }
+      else        { linkJobAnchor.style.display = 'none'; }
+    }
+    if (linkFolder) {
+      if (companyFolder) { linkFolder.href = companyFolder; linkFolder.style.display = ''; }
+      else               { linkFolder.style.display = 'none'; }
+    }
+  },
+
+  _populateSuitability(app) {
+    const score      = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
+    const evaluation = (app['Job_Suitability_Evaluation'] || app['Job Suitability Evaluation'] || '').trim();
+    const tabSuit    = document.getElementById('tabSuitability');
+
+    if (score || evaluation) {
+      if (tabSuit) { tabSuit.classList.remove('disabled'); tabSuit.removeAttribute('disabled'); }
+
+      const fillEl    = document.getElementById('scoreCircleFill');
+      const circleEl  = document.getElementById('suitabilityScoreCircle');
+      const scoreDisp = document.getElementById('drawerSuitabilityScore');
+      const scoreBox  = document.getElementById('drawerSuitabilityScoreContainer');
+      const evalDisp  = document.getElementById('drawerSuitabilityEval');
+      const evalSec   = document.getElementById('sectionSuitabilityEval');
+
+      if (score) {
+        if (scoreDisp) scoreDisp.textContent = score;
+        const scoreNum   = parseInt(score, 10);
+        const scoreClass = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
+        if (circleEl) circleEl.className = `suitability-score-circle ${scoreClass}`;
+        if (fillEl) {
+          const pct = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? scoreNum / 5 : 0;
+          fillEl.style.strokeDashoffset = 251.2 * (1 - pct);
+        }
+        if (scoreBox) scoreBox.style.display = '';
+      } else {
+        if (scoreBox) scoreBox.style.display = 'none';
+        if (fillEl)   fillEl.style.strokeDashoffset = 251.2;
+        if (circleEl) circleEl.className = 'suitability-score-circle';
+      }
+
+      if (evaluation) {
+        if (evalDisp) evalDisp.textContent = evaluation;
+        if (evalSec)  evalSec.classList.remove('hidden');
+      } else {
+        if (evalSec) evalSec.classList.add('hidden');
+      }
+    } else {
+      if (tabSuit) { tabSuit.classList.add('disabled'); tabSuit.setAttribute('disabled', 'true'); }
+    }
+  },
+
+  _populateInterview(app) {
+    const interviewCompany = (app['Interview_Company']    || '').trim();
+    const interviewPrep    = (app['Interview_Preparation'] || '').trim();
+    const tabInterview     = document.getElementById('tabInterview');
+
+    if (interviewCompany || interviewPrep) {
+      if (tabInterview) { tabInterview.classList.remove('disabled'); tabInterview.removeAttribute('disabled'); }
+
+      const companyContentEl = document.getElementById('drawerInterviewCompany');
+      const prepContentEl    = document.getElementById('drawerInterviewPreparation');
+      const btnCopyCompany   = document.getElementById('btnCopyInterviewCompany');
+      const btnCopyPrep      = document.getElementById('btnCopyInterviewPreparation');
+      const companyNotesEl   = document.getElementById('inputInterviewCompanyNotes');
+      const prepNotesEl      = document.getElementById('inputInterviewPreparationNotes');
+
+      if (companyContentEl) companyContentEl.innerHTML = interviewCompany ? parseMarkdown(interviewCompany) : '-';
+      if (btnCopyCompany)   btnCopyCompany.style.display = interviewCompany ? '' : 'none';
+
+      if (prepContentEl) prepContentEl.innerHTML = interviewPrep ? parseMarkdown(interviewPrep) : '-';
+      if (btnCopyPrep)   btnCopyPrep.style.display = interviewPrep ? '' : 'none';
+
+      if (companyNotesEl) companyNotesEl.value = (app['Interview_Company_Notes']    || '').trim();
+      if (prepNotesEl)    prepNotesEl.value    = (app['Interview_Preparation_Notes'] || '').trim();
+
+      // Re-enable editing now that textareas content is refreshed
+      setInterviewLoadingState(false);
+    } else {
+      if (tabInterview) { tabInterview.classList.add('disabled'); tabInterview.setAttribute('disabled', 'true'); }
+    }
+  },
+};
+
+/**
+ * Thin wrappers preserved for backward compatibility with all existing callers.
  */
 function openDetailsDrawer(app, keepActiveTab = false) {
-  // Store reference to active application row
-  currentApp = app;
-
-  // Populate Drawer Contents
-  const status = (app['Application Status'] || '').trim();
-  drawerStatusBadge.className = `badge status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`;
-  drawerStatusBadge.textContent = status;
-
-  const jobTitleVal = (app['Job Title'] || '').trim();
-  const companyNameVal = (app['Company Name'] || '').trim();
-  if (drawerJobTitleDisplay) drawerJobTitleDisplay.textContent = jobTitleVal;
-  if (drawerCompanyNameDisplay) drawerCompanyNameDisplay.textContent = companyNameVal;
-  if (drawerJobTitle) drawerJobTitle.value = jobTitleVal;
-  if (drawerCompanyName) drawerCompanyName.value = companyNameVal;
-  drawerDate.textContent = formatDisplayDate((app['Create Date'] || '').trim());
-
-  // Hiring Team
-  const hiringTeamVal = (app['Hiring Team'] || '').trim();
-  if (hiringTeamVal) {
-    if (isUrl(hiringTeamVal)) {
-      drawerHiringTeam.innerHTML = `<a href="${escapeHtml(hiringTeamVal)}" target="_blank" class="inline-link-btn">
-        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
-        Link
-      </a>`;
-    } else {
-      drawerHiringTeam.textContent = hiringTeamVal;
-    }
-  } else {
-    drawerHiringTeam.textContent = 'Not Specified';
-  }
-
-  // Follow-up
-  const followUpVal = (app['Follow-Up'] || '').trim();
-  if (followUpVal) {
-    if (isUrl(followUpVal)) {
-      drawerFollowUp.innerHTML = `<a href="${escapeHtml(followUpVal)}" target="_blank" class="inline-link-btn">
-        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
-        Link
-      </a>`;
-    } else {
-      drawerFollowUp.textContent = followUpVal;
-    }
-  } else {
-    drawerFollowUp.textContent = 'Not Specified';
-  }
-
-  // Suitability Info & Circle Redesign
-  const score = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
-  const evaluation = (app['Job_Suitability_Evaluation'] || app['Job Suitability Evaluation'] || '').trim();
-  const tabSuitability = document.getElementById('tabSuitability');
-
-  const hasSuitability = !!(score || evaluation);
-  if (hasSuitability) {
-    if (tabSuitability) {
-      tabSuitability.classList.remove('disabled');
-      tabSuitability.removeAttribute('disabled');
-    }
-
-    // Circle progress render
-    const fillElement = document.getElementById('scoreCircleFill');
-    const circleContainer = document.getElementById('suitabilityScoreCircle');
-
-    if (score) {
-      drawerSuitabilityScore.textContent = score;
-      const scoreNum = parseInt(score, 10);
-      const scoreClass = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
-
-      if (circleContainer) {
-        circleContainer.className = `suitability-score-circle ${scoreClass}`;
-      }
-
-      if (fillElement) {
-        const scorePercent = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? scoreNum / 5 : 0;
-        fillElement.style.strokeDashoffset = 251.2 * (1 - scorePercent);
-      }
-
-      drawerSuitabilityScoreContainer.style.display = '';
-    } else {
-      drawerSuitabilityScoreContainer.style.display = 'none';
-      if (fillElement) fillElement.style.strokeDashoffset = 251.2;
-      if (circleContainer) circleContainer.className = 'suitability-score-circle';
-    }
-
-    if (evaluation) {
-      drawerSuitabilityEval.textContent = evaluation;
-      sectionSuitabilityEval.classList.remove('hidden');
-    } else {
-      sectionSuitabilityEval.classList.add('hidden');
-    }
-  } else {
-    if (tabSuitability) {
-      tabSuitability.classList.add('disabled');
-      tabSuitability.setAttribute('disabled', 'true');
-    }
-  }
-
-  // Comments
-  const comments = (app['Comments'] || '').trim();
-  drawerComments.textContent = comments ? comments : '-';
-
-  // Job and Company Descriptions
-  drawerJobDescription.textContent = (app['Job Description'] || 'No description provided.').trim();
-  drawerCompanyDescription.textContent = (app['Company Description'] || 'No company profile available.').trim();
-
-  // Links
-  const jobUrl = (app['Job URL'] || '').trim();
-  if (jobUrl) {
-    linkJobUrl.value = jobUrl;            // form field — submitted with jobinterview form
-    if (linkJobUrlAnchor) {
-      linkJobUrlAnchor.href = jobUrl;
-      linkJobUrlAnchor.style.display = '';
-    }
-  } else {
-    linkJobUrl.value = '';
-    if (linkJobUrlAnchor) {
-      linkJobUrlAnchor.style.display = 'none';
-    }
-  }
-
-  const companyFolder = (app['Company_Folder'] || '').trim();
-  if (companyFolder) {
-    linkCompanyFolder.href = companyFolder;
-    linkCompanyFolder.style.display = '';
-  } else {
-    linkCompanyFolder.style.display = 'none';
-  }
-
-  // Job Interview Info
-  const interviewCompany = (app['Interview_Company'] || '').trim();
-  const interviewPrep = (app['Interview_Preparation'] || '').trim();
-  const tabInterview = document.getElementById('tabInterview');
-
-  const hasInterview = !!(interviewCompany || interviewPrep);
-  if (hasInterview) {
-    if (tabInterview) {
-      tabInterview.classList.remove('disabled');
-      tabInterview.removeAttribute('disabled');
-    }
-
-    const btnCopyCompany = document.getElementById('btnCopyInterviewCompany');
-    const btnCopyPrep = document.getElementById('btnCopyInterviewPreparation');
-
-    // Populate elements
-    drawerInterviewCompany.innerHTML = interviewCompany ? parseMarkdown(interviewCompany) : '-';
-    if (btnCopyCompany) btnCopyCompany.style.display = interviewCompany ? '' : 'none';
-
-    drawerInterviewPreparation.innerHTML = interviewPrep ? parseMarkdown(interviewPrep) : '-';
-    if (btnCopyPrep) btnCopyPrep.style.display = interviewPrep ? '' : 'none';
-
-    if (inputInterviewCompanyNotes) {
-      inputInterviewCompanyNotes.value = (app['Interview_Company_Notes'] || '').trim();
-    }
-    if (inputInterviewPreparationNotes) {
-      inputInterviewPreparationNotes.value = (app['Interview_Preparation_Notes'] || '').trim();
-    }
-    // Re-enable editing now that textareas content is refreshed
-    setInterviewLoadingState(false);
-  } else {
-    if (tabInterview) {
-      tabInterview.classList.add('disabled');
-      tabInterview.setAttribute('disabled', 'true');
-    }
-  }
-
-  // Default to the first tab (Overview) if not keeping active tab
-  if (!keepActiveTab) {
-    selectTab('tabOverview');
-  }
-
-  // Show Drawer and Overlay
-  drawerOverlay.classList.add('active');
-  detailsDrawer.classList.add('active');
-  document.body.style.overflow = 'hidden'; // prevent body scrolling
-
-  // Reset drawer body scroll position
-  detailsDrawer.querySelector('.drawer-body').scrollTop = 0;
+  DrawerController.open(app, keepActiveTab);
 }
 
-/**
- * Close Details Drawer
- */
 function closeDetailsDrawer() {
-  drawerOverlay.classList.remove('active');
-  detailsDrawer.classList.remove('active');
-  document.body.style.overflow = ''; // restore body scrolling
+  DrawerController.close();
 }
 
-/**
- * Date Parser helper (DD-MM-YYYY)
- */
-function parseDate(dateStr) {
-  if (!dateStr) return new Date(0);
-  const parts = dateStr.trim().split('-');
-  if (parts.length === 3) {
-    const d = new Date(parts[2], parts[1] - 1, parts[0]);
-    if (!isNaN(d.getTime())) return d;
-  }
-  const parsed = Date.parse(dateStr);
-  if (isNaN(parsed)) {
-    console.warn(`[interviewz] Could not parse date: "${dateStr}"`);
-    return new Date(0);
-  }
-  return new Date(parsed);
-}
 
-/**
- * Formats a DD-MM-YYYY date into DD-MM-YYYY (We) format
- */
-function formatDisplayDate(dateStr) {
-  if (!dateStr) return 'N/A';
-  const date = parseDate(dateStr);
-  if (date.getTime() === 0) return dateStr;
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-  return `${day}-${month}-${year} (${weekdays[date.getDay()]})`;
-}
 
-/**
- * Escapes HTML to prevent XSS injection
- */
-function escapeHtml(str) {
-  if (!str) return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-/**
- * Simple Markdown-to-HTML parser that supports headers, bold, italics, and lists.
- */
-function parseMarkdown(text) {
-  if (!text) return '';
-
-  // Escape HTML first to prevent XSS
-  let html = escapeHtml(text);
-
-  // Replace headers: ###, ##, #
-  html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
-  html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
-
-  // Bold: **text**
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  // Italics: *text*
-  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-  // Split into trimmed, non-empty lines
-  const lines = html.split('\n')
-    .map(line => line.trim())
-    .filter(line => line !== '');
-  let inList = false;
-  let result = [];
-
-  function isSeparatorRow(line) {
-    if (!line.startsWith('|') || !line.endsWith('|') || line.length <= 2) return false;
-    const inner = line.slice(1, -1);
-    return /^[:\-\s\|]+$/.test(inner) && inner.includes('-');
-  }
-
-  function parseTableCells(line) {
-    return line.slice(1, -1).split('|').map(cell => cell.trim());
-  }
-
-  function parseAlignments(line) {
-    return parseTableCells(line).map(cell => {
-      const alignLeft = cell.startsWith(':');
-      const alignRight = cell.endsWith(':');
-      if (alignLeft && alignRight) return 'center';
-      if (alignRight) return 'right';
-      if (alignLeft) return 'left';
-      return '';
-    });
-  }
-
-  function generateTableHtml(headers, rows, alignments) {
-    let tableHtml = '<table class="md-table">';
-    tableHtml += '<thead><tr>';
-    headers.forEach((header, idx) => {
-      const align = alignments[idx] ? ` style="text-align: ${alignments[idx]}"` : '';
-      tableHtml += `<th${align}>${header}</th>`;
-    });
-    tableHtml += '</tr></thead><tbody>';
-    rows.forEach(row => {
-      tableHtml += '<tr>';
-      for (let idx = 0; idx < headers.length; idx++) {
-        const cell = row[idx] !== undefined ? row[idx] : '';
-        const align = alignments[idx] ? ` style="text-align: ${alignments[idx]}"` : '';
-        tableHtml += `<td${align}>${cell}</td>`;
-      }
-      tableHtml += '</tr>';
-    });
-    tableHtml += '</tbody></table>';
-    return tableHtml;
-  }
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-
-    // Check if it's a table
-    if (line.startsWith('|') && line.endsWith('|')) {
-      if (i + 1 < lines.length && isSeparatorRow(lines[i + 1])) {
-        if (inList) {
-          result.push('</ul>');
-          inList = false;
-        }
-
-        const headers = parseTableCells(line);
-        const alignments = parseAlignments(lines[i + 1]);
-        const rows = [];
-
-        let j = i + 2;
-        while (j < lines.length && lines[j].startsWith('|') && lines[j].endsWith('|')) {
-          if (isSeparatorRow(lines[j])) {
-            break;
-          }
-          rows.push(parseTableCells(lines[j]));
-          j++;
-        }
-
-        result.push(generateTableHtml(headers, rows, alignments));
-        i = j - 1;
-        continue;
-      }
-    }
-
-    if (line.startsWith('- ') || line.startsWith('* ')) {
-      if (!inList) {
-        result.push('<ul>');
-        inList = true;
-      }
-      const content = line.substring(2).trim();
-      result.push(`<li>${content}</li>`);
-    } else {
-      if (inList) {
-        result.push('</ul>');
-        inList = false;
-      }
-      if (line.startsWith('<h') || line.startsWith('<table')) {
-        result.push(line);
-      } else {
-        result.push(`<p>${line}</p>`);
-      }
-    }
-  }
-
-  if (inList) {
-    result.push('</ul>');
-  }
-
-  return result.join('\n');
-}
 
 let cumulativeSubmissionsChartInstance = null;
 
@@ -2373,58 +2404,96 @@ function renderActiveInterviewsPanel(applications) {
   gridEl.innerHTML = '';
 
   interviewApps.forEach(app => {
-    const company = (app['Company Name'] || '').trim();
-    const title = (app['Job Title'] || '').trim();
-    const scoreVal = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
+    const company     = (app['Company Name'] || '').trim();
+    const title       = (app['Job Title'] || '').trim();
+    const scoreVal    = (app['Job_Suitability'] || app['Job Suitability'] || '').trim();
     const commentsVal = (app['Comments'] || '').trim();
     const followUpVal = (app['Follow-Up'] || '').trim();
 
-    const scoreNum = parseInt(scoreVal, 10);
+    const scoreNum   = parseInt(scoreVal, 10);
     const scoreClass = !isNaN(scoreNum) && scoreNum >= 1 && scoreNum <= 5 ? `score-${scoreNum}` : '';
 
-    const lastCommentLine = getLastComment(commentsVal);
+    const lastCommentLine  = getLastComment(commentsVal);
     const formattedComment = parseCommentLine(lastCommentLine);
 
-    let followUpHtml = '';
+    // ── Card shell ────────────────────────────────────────────────────────
+    const card = document.createElement('div');
+    card.className        = 'interview-card';
+    card.dataset.appIndex = app._index;
+
+    // ── Header ────────────────────────────────────────────────────────────
+    const header    = document.createElement('div');
+    header.className = 'interview-card-header';
+
+    const headerLeft = document.createElement('div');
+
+    const companyH4 = document.createElement('h4');
+    companyH4.className   = 'interview-company';
+    companyH4.textContent = company;
+
+    const titleP = document.createElement('p');
+    titleP.className   = 'interview-title';
+    titleP.textContent = title;
+
+    headerLeft.append(companyH4, titleP);
+    header.appendChild(headerLeft);
+
+    if (scoreVal) {
+      const scoreBadge = document.createElement('span');
+      scoreBadge.className   = `score-badge ${scoreClass}`;
+      scoreBadge.textContent = `Suitability: ${scoreVal}`;
+      header.appendChild(scoreBadge);
+    }
+
+    // ── Body ──────────────────────────────────────────────────────────────
+    const body     = document.createElement('div');
+    body.className = 'interview-card-body';
+
+    const activityDiv = document.createElement('div');
+    activityDiv.className = 'interview-latest-activity';
+
+    const activityLabel = document.createElement('span');
+    activityLabel.className   = 'activity-label';
+    activityLabel.textContent = 'Latest Activity';
+
+    // formattedComment is already escaped by parseCommentLine, safe to set via innerHTML
+    const activityContent = document.createElement('div');
+    activityContent.className = 'activity-content';
+    activityContent.innerHTML = formattedComment;
+
+    activityDiv.append(activityLabel, activityContent);
+    body.appendChild(activityDiv);
+
+    // ── Footer ────────────────────────────────────────────────────────────
+    const footer     = document.createElement('div');
+    footer.className = 'interview-card-footer';
+
     if (followUpVal) {
       if (isUrl(followUpVal)) {
-        followUpHtml = `
-          <a href="${escapeHtml(followUpVal)}" target="_blank" class="interview-btn">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
-            Follow Up
-          </a>`;
+        const followUpLink = document.createElement('a');
+        followUpLink.href      = followUpVal;
+        followUpLink.target    = '_blank';
+        followUpLink.className = 'interview-btn';
+        // SVG is static, safe to use innerHTML
+        followUpLink.innerHTML = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg> Follow Up`;
+        footer.appendChild(followUpLink);
       } else {
-        followUpHtml = `<span class="followup-text">Follow Up: ${escapeHtml(followUpVal)}</span>`;
+        const followUpSpan = document.createElement('span');
+        followUpSpan.className   = 'followup-text';
+        followUpSpan.textContent = `Follow Up: ${followUpVal}`;
+        footer.appendChild(followUpSpan);
       }
     }
 
-    const card = document.createElement('div');
-    card.className = 'interview-card';
-    card.dataset.appIndex = app._index;
-    card.innerHTML = `
-      <div class="interview-card-header">
-        <div>
-          <h4 class="interview-company">${escapeHtml(company)}</h4>
-          <p class="interview-title">${escapeHtml(title)}</p>
-        </div>
-        ${scoreVal ? `<span class="score-badge ${scoreClass}">Suitability: ${escapeHtml(scoreVal)}</span>` : ''}
-      </div>
-      <div class="interview-card-body">
-        <div class="interview-latest-activity">
-          <span class="activity-label">Latest Activity</span>
-          <div class="activity-content">${formattedComment}</div>
-        </div>
-      </div>
-      <div class="interview-card-footer">
-        ${followUpHtml}
-        <button type="button" class="interview-btn secondary view-detail-trigger">
-          View Details
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </button>
-      </div>
-    `;
+    const viewBtn = document.createElement('button');
+    viewBtn.type      = 'button';
+    viewBtn.className = 'interview-btn secondary view-detail-trigger';
+    viewBtn.innerHTML = `View Details <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`;
+    footer.appendChild(viewBtn);
 
-    card.querySelector('.view-detail-trigger').addEventListener('click', (e) => {
+    card.append(header, body, footer);
+
+    viewBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       openDetailsDrawer(app);
     });
