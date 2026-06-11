@@ -1155,6 +1155,16 @@ function parseAndInitializeData(csvText) {
   if (detailsDrawer && detailsDrawer.classList.contains('active') && currentApp) {
     const updatedApp = rawApplications.find(a => a._index === currentApp._index);
     if (updatedApp) {
+      // Preserve any optimistically-patched note fields from currentApp so that
+      // a background sync triggered right after a successful submission does not
+      // momentarily flash the old server values back into the textareas before
+      // the sheet has had a chance to propagate the change.
+      const NOTE_FIELDS = ['Interview_Company_Notes', 'Interview_Preparation_Notes'];
+      NOTE_FIELDS.forEach(field => {
+        if (Object.prototype.hasOwnProperty.call(currentApp, field)) {
+          updatedApp[field] = currentApp[field];
+        }
+      });
       openDetailsDrawer(updatedApp, true); // Keep the active tab
     }
   }
