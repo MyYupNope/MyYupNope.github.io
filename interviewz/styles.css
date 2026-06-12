@@ -95,8 +95,6 @@ body {
    App Layout
    ========================================================================== */
 .app-container {
-  max-width: 1000px;
-  margin: 0 auto;
   padding: 1.5rem 1.5rem var(--spacing-fluid) 1.5rem;
   display: flex;
   flex-direction: column;
@@ -120,7 +118,8 @@ body {
    Hero Banner Component (Google Hero Quote Card Style)
    ========================================================================== */
 .hero-banner {
-  background: var(--color-primary);
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('hero-bg.png') no-repeat center center;
+  background-size: cover;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   border: none;
@@ -252,8 +251,6 @@ body {
 }
 
 .topbar-inner {
-  width: 100%;
-  max-width: 1000px;
   padding: 0 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -316,13 +313,49 @@ body {
   transform: scaleX(1);
 }
 
+.navbar-toggler {
+  border: none;
+  padding: 0.25rem 0.5rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+@media (max-width: 991px) {
+  .topbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem 0;
+  }
+  .topbar-nav-btn {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+  }
+  .topbar-nav-btn::after {
+    left: 0;
+    bottom: 0;
+    width: 3px;
+    height: 100%;
+    transform: scaleY(0);
+    transform-origin: left;
+    border-radius: 3px 0 0 3px;
+  }
+  .topbar-nav-btn.active::after {
+    transform: scaleY(1);
+  }
+}
+
 /* ==========================================================================
    Footer Component
    ========================================================================== */
 .site-footer {
-  background-color: var(--color-surface);
-  border-top: 1px solid var(--color-border);
-  padding: 2.5rem 1.5rem;
+  background-color: transparent;
+  padding: 1.5rem 1.5rem;
   margin-top: auto;
   display: flex;
   justify-content: center;
@@ -330,22 +363,18 @@ body {
 
 .site-footer-inner {
   width: 100%;
-  max-width: 1000px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
 }
 
-.site-footer-brand h4 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.site-footer-brand p {
+.site-footer-inner p {
   font-size: 0.85rem;
   color: var(--color-text-secondary);
+  margin: 0;
 }
 
 /* ==========================================================================

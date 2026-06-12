@@ -42,19 +42,31 @@
     </symbol>
   </svg>
 
-  <header class="topbar">
-    <div class="topbar-inner">
+  <header class="navbar navbar-expand-lg topbar">
+    <div class="container topbar-inner">
       <a class="topbar-brand" href="#" onclick="event.preventDefault(); switchTab('home')">TalentTracker</a>
-      <nav class="topbar-nav">
-        <button class="topbar-nav-btn active" data-tab="home">Home</button>
-        <button class="topbar-nav-btn" data-tab="dashboard">Dashboard</button>
-        <button class="topbar-nav-btn" data-tab="new-application">New Application</button>
-      </nav>
-      <div class="topbar-right"></div>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#topbarNavbar" aria-controls="topbarNavbar" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="offcanvas-lg offcanvas-end" tabindex="-1" id="topbarNavbar" aria-labelledby="topbarNavbarLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="topbarNavbarLabel">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#topbarNavbar" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <nav class="topbar-nav">
+            <button class="topbar-nav-btn active" data-tab="home" data-bs-dismiss="offcanvas" data-bs-target="#topbarNavbar">Home</button>
+            <button class="topbar-nav-btn" data-tab="dashboard" data-bs-dismiss="offcanvas" data-bs-target="#topbarNavbar">Dashboard</button>
+            <button class="topbar-nav-btn" data-tab="new-application" data-bs-dismiss="offcanvas" data-bs-target="#topbarNavbar">New Application</button>
+          </nav>
+        </div>
+      </div>
     </div>
   </header>
 
-  <div class="app-container">
+  <div class="container app-container">
     <!-- Hero Banner -->
     <div class="hero-banner">
       <div class="logo-text">
@@ -649,11 +661,8 @@
   </div>
 
   <footer class="site-footer">
-    <div class="site-footer-inner">
-      <div class="site-footer-brand">
-        <h4>TalentTracker</h4>
-        <p>© 2026 Rodrigo Matias. All rights reserved.</p>
-      </div>
+    <div class="container site-footer-inner">
+      <p><strong>TalentTracker</strong> © 2026 Rodrigo Matias. All rights reserved.</p>
     </div>
   </footer>
 

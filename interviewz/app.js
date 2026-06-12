@@ -2211,6 +2211,7 @@ function initTabNavigation() {
   const analyticsSection = document.querySelector('.analytics-section');
   const newApplicationSection = document.querySelector('.new-application-section');
   const fabBtn = document.getElementById('fabNewApplication');
+  const syncContainer = document.querySelector('.sync-container');
 
   function switchTab(targetTab) {
     navButtons.forEach(btn => {
@@ -2232,6 +2233,7 @@ function initTabNavigation() {
     if (targetTab === 'home') {
       showEl(filtersSection);
       showEl(resultsSection);
+      showEl(syncContainer);
       if (rawApplications.length > 0) renderActiveInterviewsPanel(rawApplications);
       hideEl(statsSection);
       hideEl(analyticsSection);
@@ -2240,6 +2242,7 @@ function initTabNavigation() {
       hideEl(filtersSection);
       hideEl(resultsSection);
       hideEl(activeInterviewsSection);
+      showEl(syncContainer);
       showEl(statsSection);
       showEl(analyticsSection);
       hideEl(newApplicationSection);
@@ -2256,6 +2259,7 @@ function initTabNavigation() {
       hideEl(filtersSection);
       hideEl(resultsSection);
       hideEl(activeInterviewsSection);
+      hideEl(syncContainer);
       hideEl(statsSection);
       hideEl(analyticsSection);
       showEl(newApplicationSection);
