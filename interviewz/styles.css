@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Google Store-Inspired Design System V2 (jobz reference)
-   Styles for Job Application Dashboard
+   TalentTracker — Design System
+   Styles for the Job Application Dashboard
    ========================================================================== */
 
 :root {
@@ -65,117 +65,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ==========================================================================
-   Bootstrap Replacement Shim
-   Covers only the utility classes used in this project so Bootstrap CDN
-   can be removed, saving ~30 kB of network payload.
-   ========================================================================== */
-
-/* Flex utilities */
-.d-flex         { display: flex; }
-.d-inline-flex  { display: inline-flex; }
-.align-items-center      { align-items: center; }
-.justify-content-between { justify-content: space-between; }
-.flex-wrap      { flex-wrap: wrap; }
-
-/* Gap */
-.gap-2 { gap: 0.5rem; }
-.gap-3 { gap: 1rem; }
-
-/* Spacing */
-.mb-3  { margin-bottom: 1rem; }
-.mb-4  { margin-bottom: 1.5rem !important; }
-.mt-1  { margin-top: 0.25rem; }
-.mt-4  { margin-top: 1.5rem; }
-.px-5  { padding-left: 3rem;  padding-right: 3rem; }
-.py-3  { padding-top: 1rem;   padding-bottom: 1rem; }
-.text-end  { text-align: right; }
-.text-muted { color: var(--color-text-secondary); }
-
-/* Grid row / col */
-.row     { display: flex; flex-wrap: wrap; }
-.row.g-3 { gap: 1rem; }
-.col-md-6 { flex: 1 1 calc(50% - 0.5rem); min-width: 0; }
-@media (max-width: 767px) { .col-md-6 { flex: 1 1 100%; } }
-
-/* Card */
-.card      { background: var(--color-surface); border-radius: var(--radius-lg); }
-.card-body { padding: 1.5rem; }
-
-/* Form control base */
-.form-control {
-  display: block; width: 100%;
-  font-size: 1rem; font-family: inherit; line-height: 1.5;
-  color: var(--color-text-primary);
-}
-.form-control:focus { outline: none; }
-
-/* Floating label */
-.form-floating { position: relative; }
-.form-floating > .form-control {
-  height: 3.5rem;
-  padding: 1.25rem 1.25rem 0.25rem;
-}
-.form-floating > textarea.form-control {
-  height: auto; min-height: 3.5rem;
-}
-.form-floating > label {
-  position: absolute; top: 0; left: 0;
-  width: 100%; height: 100%;
-  padding: 1rem 1.25rem;
-  pointer-events: none;
-  transform-origin: 0 0;
-  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
-  color: var(--color-text-secondary);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.form-floating > .form-control:focus ~ label,
-.form-floating > .form-control:not(:placeholder-shown) ~ label,
-.form-floating > textarea.form-control:focus ~ label,
-.form-floating > textarea.form-control:not(:placeholder-shown) ~ label {
-  opacity: 0.75;
-  transform: scale(0.85) translateY(-0.5rem);
-}
-
-/* Validation */
-.invalid-feedback {
-  display: none; width: 100%;
-  margin-top: 0.25rem; font-size: 0.8rem;
-  color: var(--color-error);
-}
-.was-validated .form-control:invalid ~ .invalid-feedback,
-.was-validated .form-control:invalid + .invalid-feedback { display: block; }
-
-/* Button */
-.btn {
-  display: inline-block; cursor: pointer;
-  font-family: inherit; font-size: 1rem; font-weight: 500;
-  text-align: center; border: 1px solid transparent;
-  padding: 0.375rem 0.75rem;
-}
-.btn-primary {
-  background-color: var(--color-primary);
-  color: #fff;
-  border-color: var(--color-primary);
-}
-
-/* Spinner */
-@keyframes spinner-border { to { transform: rotate(360deg); } }
-.spinner-border {
-  display: inline-block;
-  width: 1rem; height: 1rem;
-  border: 0.2em solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: spinner-border 0.75s linear infinite;
-  vertical-align: text-bottom;
-}
-.spinner-border-sm { width: 0.75rem; height: 0.75rem; border-width: 0.15em; }
-.text-light { color: #fff !important; }
-
-/* Visibility utility — replaces inline style="display:none" on tab sections */
-.section-hidden { display: none !important; }
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -196,12 +85,19 @@ body {
 }
 
 /* ==========================================================================
+   Visibility utility — used by JS tab switching (replaces inline style.display)
+   ========================================================================== */
+.tab-hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
    App Layout
    ========================================================================== */
 .app-container {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: var(--spacing-fluid) 1.5rem;
+  padding: 1.5rem 1.5rem var(--spacing-fluid) 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -221,9 +117,9 @@ body {
 }
 
 /* ==========================================================================
-   Header Component (Google Hero Quote Card Style)
+   Hero Banner Component (Google Hero Quote Card Style)
    ========================================================================== */
-.app-header {
+.hero-banner {
   background: var(--color-primary);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
@@ -238,7 +134,7 @@ body {
   transition: box-shadow var(--transition-base);
 }
 
-.app-header:hover {
+.hero-banner:hover {
   box-shadow: var(--shadow-lg);
 }
 
@@ -267,6 +163,41 @@ body {
   font-size: 0.85rem;
   color: var(--color-text-secondary);
   font-weight: 500;
+}
+
+.sync-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-header-refresh {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0.45rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-base), transform var(--transition-base);
+  outline: none;
+}
+
+.btn-header-refresh:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.btn-header-refresh svg {
+  width: 16px;
+  height: 16px;
+  stroke: #ffffff;
+}
+
+.btn-header-refresh:active svg {
+  transform: rotate(180deg);
 }
 
 .status-dot {
@@ -304,56 +235,150 @@ body {
 }
 
 /* ==========================================================================
-   Navigation Menu Tabs
+   Navigation Menu Tabs (Topbar Design)
    ========================================================================== */
-.app-nav {
+.topbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 100;
   display: flex;
-  background: var(--color-surface);
-  border-radius: 100px;
-  padding: 0.4rem;
-  box-shadow: var(--shadow-md);
-  align-self: center;
-  /* Center horizontally in app-container flex-column */
-  gap: 0.25rem;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  align-items: center;
+  justify-content: center;
 }
 
-.nav-btn {
+.topbar-inner {
+  width: 100%;
+  max-width: 1000px;
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar-brand {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1a73e8;
+  text-decoration: none;
+  transition: opacity var(--transition-base);
+}
+
+.topbar-brand:hover {
+  opacity: 0.85;
+}
+
+.topbar-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.topbar-nav-btn {
   background: transparent;
   border: none;
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--color-text-secondary);
-  padding: 0.65rem 1.75rem;
-  border-radius: 100px;
+  padding: 1.25rem 0;
   cursor: pointer;
+  position: relative;
+  transition: color var(--transition-base);
+  outline: none;
+}
+
+.topbar-nav-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.topbar-nav-btn.active {
+  color: var(--color-primary);
+}
+
+.topbar-nav-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-primary);
+  transform: scaleX(0);
+  transition: transform var(--transition-base);
+  border-radius: 3px 3px 0 0;
+}
+
+.topbar-nav-btn.active::after {
+  transform: scaleX(1);
+}
+
+/* ==========================================================================
+   Footer Component
+   ========================================================================== */
+.site-footer {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: 2.5rem 1.5rem;
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.site-footer-inner {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-footer-brand h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.site-footer-brand p {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Floating Action Button (FAB)
+   ========================================================================== */
+.fab-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 2rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(26, 115, 232, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  z-index: 80;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: all var(--transition-base);
+  justify-content: center;
+  outline: none;
 }
 
-.nav-btn svg {
-  width: 18px;
-  height: 18px;
-  transition: transform var(--transition-base);
-  pointer-events: none;
+.fab-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 14px rgba(26, 115, 232, 0.4), 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.nav-btn:hover {
-  color: var(--color-text-primary);
-  background-color: #f1f3f4;
-}
-
-.nav-btn:hover svg {
-  transform: scale(1.05);
-}
-
-.nav-btn.active {
-  background-color: var(--color-primary);
-  color: #ffffff;
-  box-shadow: 0 4px 10px rgba(26, 115, 232, 0.25);
+.fab-btn:active {
+  transform: scale(0.95);
 }
 
 /* ==========================================================================
@@ -388,8 +413,8 @@ body {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
 }
 
 .stat-card {
@@ -398,9 +423,9 @@ body {
   border: 1px solid rgba(26, 115, 232, 0.08);
   /* Extremely subtle primary tint border */
   border-radius: var(--radius-lg);
-  padding: 1.15rem 1.25rem;
+  padding: 1.25rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   box-shadow: var(--shadow-md);
   transition: box-shadow var(--transition-base), transform var(--transition-base);
@@ -414,7 +439,7 @@ body {
 }
 
 .stat-icon {
-  padding: 0.65rem;
+  padding: 0.5rem;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -422,11 +447,12 @@ body {
   background: #ffffff;
   /* Pure white icon background so it pops */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
 }
 
 .stat-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .stat-icon.companies svg {
@@ -446,24 +472,24 @@ body {
 }
 
 .stat-data h3 {
-  font-size: 1.45rem;
+  font-size: 1.4rem;
   font-weight: 500;
   line-height: 1.1;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.25rem;
   color: var(--color-text-primary);
 }
 
 .stat-data p {
   color: var(--color-text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 500;
 }
 
 .stat-subtitle {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--color-text-secondary);
-  margin-top: 0.15rem;
+  margin-top: 0.2rem;
   opacity: 0.8;
   font-weight: 400;
 }
@@ -815,57 +841,6 @@ body {
   color: var(--color-primary);
 }
 
-/* Refresh icon button in the registry header */
-.btn-icon-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  padding: 0;
-  transition: background-color var(--transition-base), color var(--transition-base), transform var(--transition-base);
-  flex-shrink: 0;
-}
-
-.btn-icon-ghost svg {
-  width: 18px;
-  height: 18px;
-  transition: transform var(--transition-base);
-}
-
-.btn-icon-ghost:hover {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-}
-
-.btn-icon-ghost:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-.btn-icon-ghost:active {
-  transform: scale(0.92);
-}
-
-.btn-icon-ghost.is-refreshing {
-  color: var(--color-primary);
-  pointer-events: none;
-}
-
-.btn-icon-ghost.is-refreshing svg {
-  animation: spin 0.75s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
 .badge {
   background: var(--color-primary-light);
   padding: 0.2rem 0.8rem;
@@ -895,12 +870,55 @@ body {
 /* ==========================================================================
    Tabular Registry Component
    ========================================================================== */
-.registry-table-container {
+.registry-card {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  overflow-x: auto;
   border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: box-shadow var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.registry-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+
+
+.btn-refresh {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-base), color var(--transition-base);
+  outline: none;
+}
+
+.btn-refresh:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--color-primary);
+}
+
+.btn-refresh svg {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--transition-base);
+}
+
+.btn-refresh:active svg {
+  transform: rotate(180deg);
+}
+
+.registry-table-container {
+  overflow-x: auto;
+  background: transparent;
 }
 
 .registry-table {
@@ -1134,11 +1152,6 @@ body {
 }
 
 .status-badge.ready {
-  color: var(--color-text-secondary);
-  background: #f1f3f4;
-}
-
-.status-badge.accepted {
   color: var(--color-success);
   background: var(--bg-success-light);
 }
@@ -1236,6 +1249,16 @@ body {
   font-size: 0.95rem;
   max-width: 320px;
   line-height: 1.5;
+}
+
+/* Empty state for the Active Interview Pipeline when filters yield no results */
+.no-results-pipeline {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  width: 100%;
+  grid-column: 1 / -1;
+  font-size: 0.95rem;
 }
 
 /* ==========================================================================
@@ -1842,9 +1865,63 @@ body {
   }
 }
 
+/* Notes actions and textarea styling */
+.action-buttons-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-action-icon:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-primary);
+}
+
+.textarea-notes {
+  width: 100%;
+  min-height: 200px;
+  resize: vertical;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  background-color: #f8f9fa;
+  transition: border-color var(--transition-base);
+}
+
+.textarea-notes:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+}
+
+#drawerInterviewCompany,
+#drawerInterviewPreparation {
+  max-height: none;
+  overflow-y: auto;
+}
+
 .interview-matrix-grid {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
   gap: 0 !important;
   /* Prevent grid blowout */
   min-width: 0;
@@ -1911,51 +1988,6 @@ body {
   }
 }
 
-.action-buttons-group {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.btn-action-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
-  border: none;
-  background: transparent;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: all var(--transition-base);
-}
-
-.btn-action-icon:hover {
-  background-color: var(--color-surface-hover);
-  color: var(--color-primary);
-}
-
-.textarea-notes {
-  width: 100%;
-  min-height: 560px;
-  resize: vertical;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  padding: 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-text-primary);
-  background-color: #f8f9fa;
-  transition: border-color var(--transition-base);
-}
-
-.textarea-notes:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
-}
-
 #drawerInterviewCompany,
 #drawerInterviewPreparation {
   max-height: 560px;
@@ -1980,6 +2012,18 @@ body {
   gap: 0.5rem;
   min-width: 0;
   overflow: hidden;
+}
+
+/* Inside interview grid: cells fill their allocated row height */
+.interview-matrix-grid > .info-row-block {
+  height: 100%;
+}
+
+/* Textarea and read-only text block grow to fill remaining cell space */
+.interview-matrix-grid > .info-row-block > .textarea-notes,
+.interview-matrix-grid > .info-row-block > .text-block {
+  flex: 1;
+  min-height: 0;
 }
 
 .info-label {
@@ -2216,6 +2260,41 @@ body {
   flex-wrap: wrap;
 }
 
+.btn-group {
+  display: flex;
+  background: #f1f3f4;
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.btn-toggle {
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-toggle:hover {
+  color: var(--color-text-primary);
+}
+
+.btn-toggle.active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.analytics-info {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
 .analytics-chart-card {
   background: var(--color-surface);
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -2394,7 +2473,7 @@ body {
 
 /* === New Application Tab === */
 .new-application-section {
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
   width: 100%;
 }
@@ -2478,24 +2557,6 @@ body {
   background-color: var(--color-surface);
   border-color: var(--color-primary);
   box-shadow: 0 0 0 1px var(--color-primary);
-}
-
-/* When a floating-label field is filled or focused, push the value text down
-   so it doesn't overlap with the small label that moves to the top */
-.new-application-section form .form-floating > .form-control:focus,
-.new-application-section form .form-floating > .form-control:not(:placeholder-shown),
-.new-application-section form .form-floating > textarea.form-control:focus,
-.new-application-section form .form-floating > textarea.form-control:not(:placeholder-shown) {
-  padding-top: 1.625rem;
-  padding-bottom: 0.375rem;
-}
-
-/* Hide native placeholder — the floating label acts as the visible placeholder.
-   Without this, the browser placeholder and the label both render at the same
-   position, creating the doubled / strikethrough text effect. */
-.new-application-section form .form-floating > .form-control::placeholder,
-.new-application-section form .form-floating > textarea.form-control::placeholder {
-  color: transparent;
 }
 
 .new-application-section .form-floating>label {
@@ -2740,6 +2801,33 @@ body {
   color: #00bfa5;
 }
 
+/* Dashboard Visuals Grid inside the analytics card */
+.dashboard-visuals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding-top: 1.5rem;
+}
+
+.visual-card-inner {
+  background: #f8f9fa;
+  /* Clean light grey nested card background */
+  border: 1px solid #dadce0;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color var(--transition-base), background-color var(--transition-base);
+}
+
+.visual-card-inner:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
 .chart-title {
   font-size: 1.1rem;
   font-weight: 500;
@@ -2784,6 +2872,7 @@ body {
   padding: 2rem;
   box-shadow: var(--shadow-md);
   transition: box-shadow var(--transition-base);
+  margin-bottom: 2rem;
 }
 
 .active-interviews-card:hover {
@@ -2918,43 +3007,25 @@ body {
 }
 
 /* Grids for side-by-side dashboard analytics widgets */
-.analytics-grid {
+.analytics-main-grid,
+.analytics-secondary-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
 @media (min-width: 992px) {
-  .analytics-grid {
-    grid-template-columns: repeat(10, 1fr);
+  .analytics-main-grid {
+    grid-template-columns: 3fr 2fr;
+    /* 60/40 ratio */
   }
 
-  .cumulative-card {
-    grid-column: span 6;
+  .analytics-secondary-grid {
+    grid-template-columns: 1fr 1fr;
+    /* 50/50 ratio */
   }
-
-  .status-card {
-    grid-column: span 4;
-  }
-
-  .suitability-card {
-    grid-column: span 5;
-  }
-
-  .companies-card {
-    grid-column: span 5;
-  }
-}
-
-/* Footer Section */
-.app-footer {
-  margin-top: 0;
-  padding: 1.5rem 0;
-  text-align: center;
-}
-
-.app-footer p {
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
 }
