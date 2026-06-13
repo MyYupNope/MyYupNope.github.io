@@ -58,8 +58,7 @@
 
 body {
   font-family: 'Roboto', 'Google Sans', -apple-system, sans-serif;
-  background: url('hero-bg.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background-color: var(--color-bg);
   color: var(--color-text-primary);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
