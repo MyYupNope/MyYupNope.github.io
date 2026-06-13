@@ -2904,7 +2904,6 @@ body {
   padding: 2rem;
   box-shadow: var(--shadow-md);
   transition: box-shadow var(--transition-base);
-  margin-bottom: 2rem;
 }
 
 .active-interviews-card:hover {
