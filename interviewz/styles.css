@@ -118,7 +118,7 @@ body {
    Hero Banner Component (Google Hero Quote Card Style)
    ========================================================================== */
 .hero-banner {
-  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('hero-bg.png') no-repeat center center;
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('hero-bg-wide.png') no-repeat center center;
   background-size: cover;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
