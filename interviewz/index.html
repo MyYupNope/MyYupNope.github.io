@@ -16,11 +16,24 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=31">
+  <link rel="stylesheet" href="css/styles.css?v=36">
   <!-- Favicon -->
-  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <!-- Inline theme detection script to prevent flashing -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+      if (isDark) {
+        document.documentElement.classList.add('theme-dark');
+      } else {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
 </head>
 <body>
   <!-- SVG Sprite Sheet — icons referenced via <use href="#icon-*"> -->
@@ -40,11 +53,32 @@
     <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="20 6 9 17 4 12"/>
     </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2"/>
+      <path d="M12 20v2"/>
+      <path d="M4.93 4.93l1.41 1.41"/>
+      <path d="M17.66 17.66l1.41 1.41"/>
+      <path d="M2 12h2"/>
+      <path d="M20 12h2"/>
+      <path d="M6.34 17.66l-1.41 1.41"/>
+      <path d="M19.07 4.93l-1.41 1.41"/>
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+    </symbol>
   </svg>
 
   <header class="navbar navbar-expand-lg topbar">
     <div class="container topbar-inner">
-      <a class="topbar-brand" href="#" onclick="event.preventDefault(); switchTab('home')">TalentTracker</a>
+      <div class="topbar-brand-group">
+        <a class="topbar-brand" id="topbarBrandLink" href="#">TalentTracker</a>
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle theme">
+          <svg class="theme-toggle-icon" width="16" height="16">
+            <use id="themeToggleIconRef" href="#icon-moon"></use>
+          </svg>
+        </button>
+      </div>
       
       <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#topbarNavbar" aria-controls="topbarNavbar" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -365,7 +399,6 @@
 
             <!-- Filter Action (Reset) -->
             <div class="filter-group action-group">
-              <label class="action-label">&nbsp;</label>
               <button class="btn-reset" id="btnResetFilters" disabled>
                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -442,7 +475,8 @@
               <div class="rows-per-page">
                 <label for="rowsPerPageSelect">Rows per page:</label>
                 <select id="rowsPerPageSelect">
-                  <option value="10" selected>10</option>
+                  <option value="5" selected>5</option>
+                  <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                 </select>
@@ -549,7 +583,6 @@
           </div>
         </div>
       </section>
-    </main>
 
     <!-- New Application Form Section -->
     <section class="new-application-section tab-hidden">
@@ -658,6 +691,7 @@
         </div>
       </div>
     </section>
+  </main>
   </div>
 
   <footer class="site-footer">
@@ -877,7 +911,7 @@
     crossorigin="anonymous"></script>
 
   <!-- Application Logic -->
-  <script src="app.js?v=31"></script>
+  <script type="module" src="js/app.js?v=36"></script>
 </body>
 
 </html>
