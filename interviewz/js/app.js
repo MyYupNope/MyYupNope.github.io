@@ -105,9 +105,6 @@ function initDomCache() {
 // Global drop-down components
 let companySelect, jobSelect, statusSelect;
 
-let lastFetchTime = null;
-const REFRESH_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes
-
 function initializeApp() {
   initDomCache();
 
@@ -495,8 +492,6 @@ function fetchData() {
 
       parseAndInitializeData(csvText);
       
-      lastFetchTime = Date.now();
-      
       const lastUpdated = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
       setSyncState('success', `Synced ${lastUpdated}`);
     })
@@ -525,19 +520,6 @@ function fetchData() {
 
 function CACHE_KEY_CSV() {
   return CSV_CACHE_KEY;
-}
-
-function getLastFetchTime() {
-  try {
-    const cachedVal = localStorage.getItem(CACHE_KEY_CSV());
-    if (cachedVal) {
-      const cachedObj = JSON.parse(cachedVal);
-      if (cachedObj && cachedObj.timestamp) {
-        return cachedObj.timestamp;
-      }
-    }
-  } catch (e) {}
-  return null;
 }
 
 function setSyncState(status, message) {
@@ -1199,7 +1181,7 @@ function initScrollReveal() {
 }
 
 function initTabNavigation() {
-  function switchTab(targetTab, isInitial = false) {
+  function switchTab(targetTab) {
     // Scroll to top on tab switch
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -1244,18 +1226,6 @@ function initTabNavigation() {
       hideEl(dom.analyticsSection);
       hideEl(dom.newApplicationSection);
       hideEl(dom.resumeSection);
-      if (!isInitial) {
-        const now = Date.now();
-        const effectiveLastFetchTime = lastFetchTime || getLastFetchTime();
-        const timePassed = effectiveLastFetchTime ? now - effectiveLastFetchTime : null;
-        console.log(`[OpportunityTracker] switchTab('home'): isInitial=${isInitial}, lastFetchTime=${lastFetchTime}, effectiveLastFetchTime=${effectiveLastFetchTime}, timePassed=${timePassed}ms`);
-        if (!effectiveLastFetchTime || timePassed >= REFRESH_COOLDOWN_MS) {
-          console.log('[OpportunityTracker] Cooldown elapsed or no prior sync. Fetching data...');
-          fetchData();
-        } else {
-          console.log(`[OpportunityTracker] Skipping fetch. Cooldown remaining: ${Math.round((REFRESH_COOLDOWN_MS - timePassed) / 1000)}s`);
-        }
-      }
     } else if (targetTab === 'dashboard') {
       hideEl(dom.landingTabContent);
       hideEl(dom.heroBanner);
@@ -1273,18 +1243,6 @@ function initTabNavigation() {
           renderAllDashboardWidgets(state.rawApplications);
         } catch (error) {
           console.error("Failed to render dashboard widgets on tab switch:", error);
-        }
-      }
-      if (!isInitial) {
-        const now = Date.now();
-        const effectiveLastFetchTime = lastFetchTime || getLastFetchTime();
-        const timePassed = effectiveLastFetchTime ? now - effectiveLastFetchTime : null;
-        console.log(`[OpportunityTracker] switchTab('dashboard'): isInitial=${isInitial}, lastFetchTime=${lastFetchTime}, effectiveLastFetchTime=${effectiveLastFetchTime}, timePassed=${timePassed}ms`);
-        if (!effectiveLastFetchTime || timePassed >= REFRESH_COOLDOWN_MS) {
-          console.log('[OpportunityTracker] Cooldown elapsed or no prior sync. Fetching data...');
-          fetchData();
-        } else {
-          console.log(`[OpportunityTracker] Skipping fetch. Cooldown remaining: ${Math.round((REFRESH_COOLDOWN_MS - timePassed) / 1000)}s`);
         }
       }
     } else if (targetTab === 'new-application') {
@@ -1340,9 +1298,9 @@ function initTabNavigation() {
   const urlParams = new URLSearchParams(window.location.search);
   const startTab = urlParams.get('tab');
   if (startTab) {
-    switchTab(startTab, true);
+    switchTab(startTab);
   } else {
-    switchTab('landing', true);
+    switchTab('landing');
   }
 }
 
