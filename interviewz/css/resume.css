@@ -1598,7 +1598,7 @@
 
 /* Center core hub */
 :root:not(.theme-dark) .resume-skills-center {
-  background: #f2effa;
+  background: #e2dde9;
   border-color: rgba(0, 0, 0, 0.15);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
