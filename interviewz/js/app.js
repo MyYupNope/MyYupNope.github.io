@@ -201,11 +201,11 @@ function setupEventListeners() {
   }
 
 
-  // Refresh Button
+  // Refresh Button (Forces a manual reload and re-parse of the data)
   const btnHeaderRefresh = document.getElementById('btnHeaderRefresh');
   if (btnHeaderRefresh) {
     btnHeaderRefresh.addEventListener('click', () => {
-      fetchData();
+      fetchData(false, true);
     });
   }
 
@@ -412,24 +412,30 @@ function setupEventListeners() {
 /**
  * Fetch and Parse Data with offline Local Storage support
  */
-function fetchData() {
+function fetchData(isTabSwitch = false, isForceRefresh = false) {
   const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
   const cachedVal = localStorage.getItem(CACHE_KEY_CSV());
   let cachedCsvText = null;
   let hasLoadedFromCache = false;
+  let lastSyncTimeMs = null;
 
   if (cachedVal) {
     try {
       const cachedObj = JSON.parse(cachedVal);
       if (cachedObj && typeof cachedObj === 'object' && cachedObj.csv && cachedObj.timestamp) {
+        lastSyncTimeMs = parseCacheTimestamp(cachedObj.timestamp);
         if (Date.now() - cachedObj.timestamp < CACHE_TTL_MS) {
           cachedCsvText = cachedObj.csv;
         } else {
           console.log('[OpportunityTracker] Cache expired');
         }
+      } else if (typeof cachedVal === 'string' && !cachedVal.startsWith('{')) {
+        cachedCsvText = cachedVal;
       }
     } catch (e) {
-      cachedCsvText = cachedVal;
+      if (typeof cachedVal === 'string' && !cachedVal.startsWith('{')) {
+        cachedCsvText = cachedVal;
+      }
     }
   }
 
@@ -441,6 +447,17 @@ function fetchData() {
     } catch (e) {
       console.error('[OpportunityTracker] Failed parsing cached CSV:', e);
       localStorage.removeItem(CACHE_KEY_CSV());
+    }
+  }
+
+  if (isTabSwitch && hasLoadedFromCache && lastSyncTimeMs) {
+    const timeDiffMs = Date.now() - lastSyncTimeMs;
+    const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
+    if (timeDiffMs < FIFTEEN_MINUTES_MS) {
+      console.log('[OpportunityTracker] Skipping fetch request on tab switch (last sync was < 15 min ago)');
+      const lastUpdated = new Date(lastSyncTimeMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      setSyncState('success', `Synced ${lastUpdated}`);
+      return; // Skip fetch since cache is fresh
     }
   }
 
@@ -466,10 +483,19 @@ function fetchData() {
         } catch (e) {}
       }
 
-      if (parsedCached && parsedCached.csv === csvText) {
+      if (!isForceRefresh && parsedCached && parsedCached.csv === csvText) {
         console.log('[OpportunityTracker] Remote CSV is identical to cache. Skipping parse.');
+        // Update cache timestamp to mark it fresh
+        try {
+          const newCache = { csv: csvText, timestamp: Date.now() };
+          localStorage.setItem(CACHE_KEY_CSV(), JSON.stringify(newCache));
+        } catch (e) {}
         const lastUpdated = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
         setSyncState('success', `Synced ${lastUpdated}`);
+        // If we haven't loaded the data yet (e.g. cache expired or disabled but string identical), render once
+        if (!hasLoadedFromCache || !state.rawApplications || state.rawApplications.length === 0) {
+          parseAndInitializeData(csvText);
+        }
         return;
       }
 
@@ -609,7 +635,7 @@ function parseAndInitializeData(csvText) {
   calculateStatistics();
 
   // Render all dashboard widgets
-  renderAllDashboardWidgets(state.rawApplications);
+  renderAllDashboardWidgets(state.rawApplications, true);
 }
 
 /**
@@ -1149,8 +1175,32 @@ function closeDetailsDrawer() {
   document.body.style.overflow = '';
 }
 
-function showEl(el) { if (el) el.classList.remove('tab-hidden'); }
-function hideEl(el) { if (el) el.classList.add('tab-hidden'); }
+function showEl(el) {
+  if (!el) return;
+  el.classList.remove('tab-hidden');
+  el.classList.remove('tab-exit');
+  el.classList.add('tab-enter');
+  
+  // Force browser layout reflow to register style changes
+  void el.offsetWidth;
+  
+  el.classList.add('tab-fade-in');
+}
+
+function hideEl(el) {
+  if (!el) return;
+  el.classList.remove('tab-fade-in');
+  el.classList.remove('tab-enter');
+  el.classList.add('tab-exit');
+  
+  // Wait for the exit transition duration (150ms) before hiding element
+  setTimeout(() => {
+    if (el.classList.contains('tab-exit')) {
+      el.classList.add('tab-hidden');
+      el.classList.remove('tab-exit');
+    }
+  }, 150);
+}
 
 function initScrollReveal() {
   const revealElements = document.querySelectorAll('.reveal');
@@ -1172,31 +1222,9 @@ function initScrollReveal() {
 
 function initTabNavigation() {
   function switchTab(targetTab) {
-    // Check if we need to auto-refresh data (if 15 min passed since last sync)
+    // Check if we need to auto-refresh data (delegated to fetchData(true) for TTL validation)
     if (targetTab === 'home' || targetTab === 'dashboard') {
-      try {
-        const cachedVal = localStorage.getItem(CSV_CACHE_KEY);
-        if (cachedVal) {
-          const cachedObj = JSON.parse(cachedVal);
-          if (cachedObj) {
-            const lastSyncMs = parseCacheTimestamp(cachedObj.timestamp);
-            if (lastSyncMs) {
-              const timeDiffMs = Date.now() - lastSyncMs;
-              const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-              if (timeDiffMs >= FIFTEEN_MINUTES_MS) {
-                console.log('[OpportunityTracker] Auto-refreshing data on tab switch (15+ min passed)');
-                fetchData();
-              }
-            } else {
-              // Trigger refresh if timestamp is missing or invalid to guarantee fresh data
-              console.log('[OpportunityTracker] Cache timestamp missing/invalid, auto-refreshing...');
-              fetchData();
-            }
-          }
-        }
-      } catch (e) {
-        console.error('[OpportunityTracker] Failed to check cache for auto-refresh:', e);
-      }
+      fetchData(true);
     }
 
     // Scroll to top on tab switch
@@ -1295,6 +1323,7 @@ function initTabNavigation() {
         link.href = 'css/resume.css?v=15';
         document.head.appendChild(link);
       }
+      showEl(dom.resumeSection);
 
       // Trigger Resume animations
       if (window._resumeApp && window._resumeApp.onTabActivated) {
