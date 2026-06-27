@@ -458,8 +458,27 @@ function fetchData() {
     .then(csvText => {
       if (!csvText || csvText.trim() === '') throw new Error('Received empty CSV data.');
       
-      const newCache = { csv: csvText, timestamp: Date.now() };
-      localStorage.setItem(CACHE_KEY_CSV(), JSON.stringify(newCache));
+      const cachedVal = localStorage.getItem(CACHE_KEY_CSV());
+      let parsedCached = null;
+      if (cachedVal) {
+        try {
+          parsedCached = JSON.parse(cachedVal);
+        } catch (e) {}
+      }
+
+      if (parsedCached && parsedCached.csv === csvText) {
+        console.log('[OpportunityTracker] Remote CSV is identical to cache. Skipping parse.');
+        const lastUpdated = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        setSyncState('success', `Synced ${lastUpdated}`);
+        return;
+      }
+
+      try {
+        const newCache = { csv: csvText, timestamp: Date.now() };
+        localStorage.setItem(CACHE_KEY_CSV(), JSON.stringify(newCache));
+      } catch (e) {
+        console.warn('[OpportunityTracker] Failed to write cache to localStorage:', e);
+      }
 
       parseAndInitializeData(csvText);
       
@@ -469,7 +488,10 @@ function fetchData() {
     .catch(error => {
       console.error('[OpportunityTracker] Fetch error:', error);
       if (hasLoadedFromCache) {
-        const cachedObj = JSON.parse(localStorage.getItem(CACHE_KEY_CSV()) || '{}');
+        let cachedObj = {};
+        try {
+          cachedObj = JSON.parse(localStorage.getItem(CACHE_KEY_CSV()) || '{}');
+        } catch (e) {}
         const syncTime = cachedObj.timestamp
           ? new Date(cachedObj.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
           : 'Cached';
@@ -1265,7 +1287,14 @@ function initTabNavigation() {
       hideEl(dom.statsSection);
       hideEl(dom.analyticsSection);
       hideEl(dom.newApplicationSection);
-      showEl(dom.resumeSection);
+      // Lazy-load resume.css if not already loaded
+      if (!document.getElementById('lazy-resume-css')) {
+        const link = document.createElement('link');
+        link.id = 'lazy-resume-css';
+        link.rel = 'stylesheet';
+        link.href = 'css/resume.css?v=15';
+        document.head.appendChild(link);
+      }
 
       // Trigger Resume animations
       if (window._resumeApp && window._resumeApp.onTabActivated) {
@@ -1387,7 +1416,16 @@ function renderActiveInterviewsPanel(applications) {
   if (dom.activeInterviewsCount) {
     dom.activeInterviewsCount.textContent = activeApps.length;
   }
+
+  // Create hash/signature of data to prevent redundant DOM painting
+  const currentRenderHash = activeApps.map(a => `${a['Company Name']}-${a['Job Title']}-${a['Application Status']}`).join('|');
+  if (dom.activeInterviewsGrid.getAttribute('data-render-hash') === currentRenderHash) {
+    return; // Skip re-rendering if data is identical
+  }
+  dom.activeInterviewsGrid.setAttribute('data-render-hash', currentRenderHash);
   dom.activeInterviewsGrid.innerHTML = '';
+  
+  const frag = document.createDocumentFragment();
   
   activeApps.forEach(app => {
     const company = (app['Company Name'] || '').trim();
@@ -1441,6 +1479,7 @@ function renderActiveInterviewsPanel(applications) {
       </div>
     `;
     
-    dom.activeInterviewsGrid.appendChild(card);
+    frag.appendChild(card);
   });
+  dom.activeInterviewsGrid.appendChild(frag);
 }

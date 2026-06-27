@@ -359,6 +359,11 @@ body {
   align-items: center;
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  min-height: 44px; /* A5: Touch Target Height */
+}
+
+.theme-toggle-switch:focus-visible .theme-toggle-track {
+  box-shadow: 0 0 0 2px var(--color-primary); /* A4: Focus Style */
 }
 
 .theme-toggle-track {
@@ -646,6 +651,12 @@ body {
   gap: 1rem;
   box-shadow: var(--shadow-md);
   transition: box-shadow var(--transition-base), transform var(--transition-base);
+  outline: none;
+}
+
+.stat-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .stat-card:hover {
@@ -873,6 +884,11 @@ body {
   background-color: var(--color-surface);
   border-color: var(--color-primary);
   box-shadow: 0 0 0 1px var(--color-primary) !important;
+}
+
+.select-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .trigger-text {
@@ -1277,7 +1293,8 @@ body {
   background: transparent;
   border: none;
   color: var(--color-text-secondary);
-  padding: 0.5rem;
+  width: 44px; /* A5: Touch Target width */
+  height: 44px; /* A5: Touch Target height */
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -1550,6 +1567,11 @@ body {
   align-items: center;
   justify-content: center;
   transition: background var(--transition-base), color var(--transition-base);
+  outline: none;
+}
+
+.btn-close-drawer:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-primary);
 }
 
 .btn-close-drawer:hover {
@@ -3373,6 +3395,12 @@ body {
               box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
               border-color 0.3s, 
               background-color 0.3s;
+  outline: none;
+}
+
+.bento-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .bento-card:hover {
