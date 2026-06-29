@@ -9,7 +9,7 @@
   --color-surface: #ffffff;
   --color-primary: #1a73e8;
   --color-primary-light: #e8f0fe;
-  --font-body: 'Roboto', 'Google Sans', -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Outfit', -apple-system, sans-serif;
 
   --color-success: #1e8e3e;
   --color-error: #d93025;
@@ -135,6 +135,14 @@
 .theme-dark select option {
   background-color: var(--color-surface);
   color: var(--color-text-primary);
+}
+
+/* Fix Bootstrap 5 floating label white background pseudo-element in dark mode */
+.theme-dark .form-floating > .form-control:focus ~ label::after,
+.theme-dark .form-floating > .form-control:not(:placeholder-shown) ~ label::after,
+.theme-dark .form-floating > .form-control-plaintext ~ label::after,
+.theme-dark .form-floating > .form-select ~ label::after {
+  background-color: var(--color-surface) !important;
 }
 
 /* ==========================================================================
