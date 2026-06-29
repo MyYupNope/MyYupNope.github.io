@@ -131,6 +131,12 @@
   --bg-invalid: #301c1c;
 }
 
+/* Ensure select dropdown options have dark background in dark mode */
+.theme-dark select option {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
 /* ==========================================================================
    Base Styles
    ========================================================================== */
@@ -174,8 +180,8 @@ body {
 
 /* Placeholder styling to ensure readability on custom backgrounds */
 ::placeholder {
-  color: inherit;
-  opacity: 0.55;
+  color: var(--color-text-secondary) !important;
+  opacity: 0.65 !important;
 }
 
 /* ==========================================================================
