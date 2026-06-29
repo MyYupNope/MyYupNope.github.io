@@ -907,7 +907,7 @@ body {
 }
 
 .select-trigger:hover {
-  background-color: #e8eaed;
+  background-color: var(--bg-surface-variant-hover);
 }
 
 .select-trigger:focus,
