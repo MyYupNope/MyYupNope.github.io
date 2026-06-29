@@ -1244,7 +1244,7 @@ body {
 }
 
 .sortable-header:hover {
-  background-color: #e8eaed !important;
+  background-color: var(--bg-surface-variant-hover) !important;
   color: var(--color-text-primary) !important;
 }
 
