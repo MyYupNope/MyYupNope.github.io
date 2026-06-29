@@ -1342,7 +1342,7 @@ function initTabNavigation() {
         const link = document.createElement('link');
         link.id = 'lazy-resume-css';
         link.rel = 'stylesheet';
-        link.href = 'css/resume.css?v=15';
+        link.href = 'css/resume.css?v=16';
         document.head.appendChild(link);
       }
       showEl(dom.resumeSection);
