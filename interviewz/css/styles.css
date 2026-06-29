@@ -2080,6 +2080,11 @@ body {
   font-weight: 500;
 }
 
+.textarea-comments::placeholder {
+  color: var(--color-status-interviews) !important;
+  opacity: 0.55 !important;
+}
+
 .textarea-comments:focus {
   outline: none;
   border-color: var(--color-status-interviews);
