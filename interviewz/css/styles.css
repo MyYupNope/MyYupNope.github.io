@@ -145,6 +145,24 @@
   background-color: var(--color-surface) !important;
 }
 
+/* Fix placeholder text rendering overlap with floating labels */
+.form-floating > .form-control::placeholder {
+  color: transparent !important;
+}
+
+/* Ensure floated label text color has proper visibility and color in dark mode */
+.theme-dark .form-floating > .form-control:focus ~ label,
+.theme-dark .form-floating > .form-control:not(:placeholder-shown) ~ label,
+.theme-dark .form-floating > .form-control-plaintext ~ label,
+.theme-dark .form-floating > .form-select ~ label {
+  color: var(--color-text-secondary) !important;
+  opacity: 0.9 !important;
+}
+
+.theme-dark .form-floating > .form-control:focus ~ label {
+  color: var(--color-primary) !important;
+}
+
 /* ==========================================================================
    Base Styles
    ========================================================================== */
