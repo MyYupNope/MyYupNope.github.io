@@ -2929,6 +2929,7 @@ body {
 .new-application-section .form-floating>label {
   padding: 1rem 1.25rem;
   color: var(--color-text-secondary);
+  transition: none !important;
 }
 
 .new-application-section .form-floating>textarea.form-control ~ label {
