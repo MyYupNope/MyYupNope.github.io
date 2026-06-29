@@ -2929,10 +2929,6 @@ body {
 .new-application-section .form-floating>label {
   padding: 1rem 1.25rem;
   color: var(--color-text-secondary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
 }
 
 .new-application-section .form-floating>textarea.form-control ~ label {
@@ -2951,7 +2947,7 @@ body {
 
 .new-application-section .char-counter {
   font-size: 0.8rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary) !important;
   font-weight: 400;
   user-select: none;
 }
