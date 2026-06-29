@@ -174,8 +174,8 @@ body {
 
 /* Placeholder styling to ensure readability on custom backgrounds */
 ::placeholder {
-  color: inherit !important;
-  opacity: 0.55 !important;
+  color: inherit;
+  opacity: 0.55;
 }
 
 /* ==========================================================================
@@ -2891,6 +2891,14 @@ body {
 .new-application-section .form-floating>label {
   padding: 1rem 1.25rem;
   color: var(--color-text-secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.new-application-section .form-floating>textarea.form-control ~ label {
+  height: auto;
 }
 
 .new-application-section .form-floating>.form-control.textarea-md {
