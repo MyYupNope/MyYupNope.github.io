@@ -1465,7 +1465,11 @@ async function submitJobInterviewForm(submitterId) {
           state.currentApp['Interview_Notes'] = notesEl ? notesEl.value.trim() : '';
         }
       }
-      setTimeout(fetchData, 3000);
+      if (submitterId === 'btnSubmitOverviewUpdates') {
+        fetchData(false, true);
+      } else {
+        setTimeout(fetchData, 3000);
+      }
     },
     onError: (e) => {
       showToast(e.name === 'AbortError'
