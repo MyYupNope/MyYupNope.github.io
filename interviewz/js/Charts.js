@@ -137,13 +137,13 @@ export function initStatusSplitChart(applications, tokens) {
   });
 
   const statusColors = {
-    'Ready': '#70757a',
-    'Applied': tokens.primary,
-    'Interviewed': tokens.warning,
-    'Offered': '#12b5cb',
-    'Accepted': '#1e8e3e',
-    'Withdrawn': '#9aa0a6',
-    'Rejected': tokens.error
+    'Ready': '#b5bab5',
+    'Applied': '#7ebced',
+    'Interviewed': '#ecc054',
+    'Offered': '#87cdda',
+    'Accepted': '#7ecb93',
+    'Withdrawn': '#cca0f1',
+    'Rejected': '#e5918a'
   };
 
   const activeStatuses = Object.keys(statusCounts).sort((a, b) => a.localeCompare(b));
