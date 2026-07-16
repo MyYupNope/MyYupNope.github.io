@@ -1,7 +1,6 @@
 import { FacetedSelect } from './FacetedSelect.js';
 import { FormApp } from './FormApp.js';
 import { state } from './State.js?v=4';
-import { resumeApp } from './Resume.js';
 import { renderAllDashboardWidgets } from './Charts.js?v=3';
 import { parseMarkdown } from './Markdown.js';
 import { showToast } from './Toast.js';
@@ -1546,7 +1545,7 @@ function initTabNavigation() {
     });
 
     if (dom.fabBtn) {
-      if (targetTab === 'landing' || targetTab === 'new-application' || targetTab === 'resume') {
+      if (targetTab === 'landing' || targetTab === 'new-application') {
         dom.fabBtn.style.display = 'none';
         if (dom.refreshBtn) dom.refreshBtn.style.display = 'none';
       } else {
@@ -1628,35 +1627,6 @@ function initTabNavigation() {
 
       if (!window._formApp) {
         window._formApp = new FormApp();
-      }
-    } else if (targetTab === 'resume') {
-      hideEl(dom.landingTabContent);
-      hideEl(dom.heroBanner);
-      hideEl(dom.filtersSection);
-      hideEl(dom.resultsSection);
-      hideEl(dom.activeInterviewsSection);
-      hideEl(dom.syncContainer);
-      hideEl(dom.statsSection);
-      hideEl(dom.analyticsSection);
-      hideEl(dom.newApplicationSection);
-      hideEl(dom.globalDashboardRangeContainer);
-      // Lazy-load resume.css if not already loaded
-      const initResumeTab = () => {
-        showEl(dom.resumeSection);
-        if (window._resumeApp && window._resumeApp.onTabActivated) {
-          window._resumeApp.onTabActivated();
-        }
-      };
-
-      if (!document.getElementById('lazy-resume-css')) {
-        const link = document.createElement('link');
-        link.id = 'lazy-resume-css';
-        link.rel = 'stylesheet';
-        link.href = 'css/resume.css?v=16';
-        link.onload = initResumeTab;
-        document.head.appendChild(link);
-      } else {
-        initResumeTab();
       }
     }
   }
