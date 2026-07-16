@@ -259,6 +259,7 @@ function initDomCache() {
   dom.btnResetInterviewNotes = document.getElementById('btnResetInterviewNotes');
   dom.btnSubmitOverviewUpdates = document.getElementById('btnSubmitOverviewUpdates');
   dom.themeToggleBtn = document.getElementById('themeToggleBtn');
+  dom.fabThemeToggle = document.getElementById('fabThemeToggle');
   dom.dashboardRangeToggle = document.getElementById('dashboardRangeToggle');
   dom.statCardThisMonth = document.getElementById('statCardThisMonth');
   dom.globalDashboardRangeContainer = document.getElementById('globalDashboardRangeContainer');
@@ -344,19 +345,24 @@ function setupEventListeners() {
   }
 
   // Theme Toggle Button
+  const toggleTheme = () => {
+    const isDark = document.documentElement.classList.contains('theme-dark');
+    if (isDark) {
+      document.documentElement.classList.remove('theme-dark');
+      document.documentElement.classList.add('theme-light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.classList.remove('theme-light');
+      document.documentElement.classList.add('theme-dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  };
+
   if (dom.themeToggleBtn) {
-    dom.themeToggleBtn.addEventListener('click', () => {
-      const isDark = document.documentElement.classList.contains('theme-dark');
-      if (isDark) {
-        document.documentElement.classList.remove('theme-dark');
-        document.documentElement.classList.add('theme-light');
-        localStorage.setItem('theme', 'light');
-      } else {
-        document.documentElement.classList.remove('theme-light');
-        document.documentElement.classList.add('theme-dark');
-        localStorage.setItem('theme', 'dark');
-      }
-    });
+    dom.themeToggleBtn.addEventListener('click', toggleTheme);
+  }
+  if (dom.fabThemeToggle) {
+    dom.fabThemeToggle.addEventListener('click', toggleTheme);
   }
 
   // Dashboard Range Switch Toggle Button

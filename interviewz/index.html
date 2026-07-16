@@ -84,17 +84,15 @@
     <div class="container topbar-inner">
       <div class="topbar-brand-group">
         <a class="topbar-brand" id="topbarBrandLink" href="#">OpportunityTracker</a>
-        <button type="button" class="theme-toggle-switch" id="themeToggleBtn" aria-label="Toggle theme">
-          <span class="theme-toggle-track">
-            <svg class="theme-icon theme-icon-sun" width="14" height="14">
-              <use href="#icon-sun"/>
-            </svg>
-            <svg class="theme-icon theme-icon-moon" width="14" height="14">
-              <use href="#icon-moon"/>
-            </svg>
-            <span class="theme-toggle-thumb"></span>
-          </span>
-        </button>
+        <div class="dashboard-range-switch-container tab-hidden" id="globalDashboardRangeContainer">
+          <span class="range-switch-label">Weekly</span>
+          <button type="button" class="range-toggle-switch active" id="dashboardRangeToggle" aria-label="Toggle dashboard range">
+            <span class="range-toggle-track">
+              <span class="range-toggle-thumb"></span>
+            </span>
+          </button>
+          <span class="range-switch-label">Yearly</span>
+        </div>
       </div>
       
       <!-- Sleek global sync indicator in topbar -->
@@ -128,16 +126,6 @@
   </header>
 
   <div class="container app-container">
-    <!-- Global Dashboard Range Toggle placed above all tabs, centered -->
-    <div class="dashboard-range-switch-container tab-hidden" id="globalDashboardRangeContainer">
-      <span class="range-switch-label">Weekly</span>
-      <button type="button" class="range-toggle-switch active" id="dashboardRangeToggle" aria-label="Toggle dashboard range">
-        <span class="range-toggle-track">
-          <span class="range-toggle-thumb"></span>
-        </span>
-      </button>
-      <span class="range-switch-label">Yearly</span>
-    </div>
 
     <!-- New Landing/Home Tab Content -->
     <div class="landing-tab-content" id="landingTabContent">
@@ -805,13 +793,10 @@
           <div class="analytics-chart-card">
             <div class="chart-header-row">
               <h3 class="chart-title">Top Companies</h3>
-              <label class="chart-filter-toggle" for="hideInactiveCompanies">
-                <span class="chart-filter-label">Active only</span>
-                <span class="toggle-switch-track">
-                  <input type="checkbox" id="hideInactiveCompanies" checked>
-                  <span class="toggle-switch-thumb"></span>
-                </span>
-              </label>
+              <div class="company-segment-toggle" id="companySegmentToggle" data-mode="top">
+                <button type="button" class="segment-btn active" data-value="top">Top</button>
+                <button type="button" class="segment-btn" data-value="worst">Worst</button>
+              </div>
             </div>
             <div class="chart-container-small">
               <canvas id="topCompaniesChart"></canvas>
@@ -1764,6 +1749,16 @@
   </footer>
 
   <!-- Floating Action Buttons -->
+  <button class="fab-btn-secondary fab-theme-toggle" id="fabThemeToggle" aria-label="Toggle theme" title="Toggle theme">
+    <!-- SVG for Sun -->
+    <svg class="fab-theme-icon-sun" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <use href="#icon-sun"/>
+    </svg>
+    <!-- SVG for Moon -->
+    <svg class="fab-theme-icon-moon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <use href="#icon-moon"/>
+    </svg>
+  </button>
   <button class="fab-btn-secondary" id="btnHeaderRefresh" aria-label="Refresh database" title="Refresh database">
     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
