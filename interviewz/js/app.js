@@ -1635,9 +1635,11 @@ function initTabNavigation() {
 
   const navButtons = document.querySelectorAll('.topbar-nav-btn');
   navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
       const target = btn.getAttribute('data-tab');
-      switchTab(target);
+      if (target) {
+        switchTab(target);
+      }
     });
   });
 

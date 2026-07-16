@@ -35,26 +35,73 @@ a {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--rm-bg-card);
-  border: 1px solid var(--rm-border);
-  color: var(--rm-text-primary);
+  background-color: #f9ab00; /* Sunlight yellow in light mode */
+  box-shadow: 0 4px 10px rgba(249, 171, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+  border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: var(--rm-transition);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
-.theme-toggle-btn:hover {
-  background: var(--rm-bg-card-hover);
-  transform: translateY(-2px);
-  border-color: var(--rm-border-glow);
-}
+
 .theme-toggle-btn svg {
   width: 20px;
   height: 20px;
-  fill: currentColor;
+  stroke: #ffffff; /* White stroke for contrast */
+}
+
+.theme-toggle-btn:hover {
+  background-color: #e09900; /* Slightly darker yellow on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(249, 171, 0, 0.45), 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-btn .icon-sun,
+.theme-toggle-btn .icon-moon {
+  position: absolute;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* Light mode: show sun, hide moon */
+.theme-toggle-btn .icon-sun {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+.theme-toggle-btn .icon-moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+/* Dark mode overrides */
+:root.theme-dark .theme-toggle-btn {
+  background: #5f6368; /* Neutral gray in dark mode */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+:root.theme-dark .theme-toggle-btn svg {
+  stroke: #ffffff; /* White stroke */
+}
+
+:root.theme-dark .theme-toggle-btn:hover {
+  background-color: #757b80; /* Slightly lighter gray */
+  box-shadow: 0 6px 14px rgba(95, 99, 104, 0.45), 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+:root.theme-dark .theme-toggle-btn .icon-sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+:root.theme-dark .theme-toggle-btn .icon-moon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+.theme-toggle-btn:hover svg {
+  transform: none;
 }
 
 /* Google Fonts Imports are handled in index.html, but variables use them here */
