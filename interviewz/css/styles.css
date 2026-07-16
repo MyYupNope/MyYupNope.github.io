@@ -487,18 +487,18 @@ body {
   color: var(--color-primary);
   text-decoration: none;
   transition: opacity var(--transition-base);
+  line-height: 1.1;
+  display: flex;
+  flex-direction: column;
 }
 
 .brand-split {
   display: inline;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 991px) {
   .topbar-brand {
     font-size: 1.15rem;
-    line-height: 1.1;
-    display: flex;
-    flex-direction: column;
   }
 }
 
@@ -676,7 +676,7 @@ a.topbar-nav-btn:hover svg {
    ========================================================================== */
 .fab-btn {
   position: fixed;
-  bottom: 2rem;
+  bottom: 11rem;
   right: 2rem;
   width: 56px;
   height: 56px;
@@ -4437,26 +4437,7 @@ a.topbar-nav-btn:hover svg {
   }
 }
 
-/* Topbar Sync Status Layout */
-@media (min-width: 992px) {
-  .topbar-sync {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    margin: 0;
-    z-index: 10;
-  }
-}
-
-@media (max-width: 991px) {
-  .topbar-sync {
-    position: relative;
-    margin-left: auto;
-    margin-right: 0.75rem;
-    z-index: 10;
-  }
-}
+/* Topbar Sync Status Layout is now handled by flexbox in topbar-brand-group */
 
 .topbar-sync .sync-status {
   padding: 0.35rem 0.85rem;
@@ -4521,7 +4502,7 @@ a.topbar-nav-btn:hover svg {
 
 /* Theme Toggle FAB-specific styling */
 .fab-theme-toggle {
-  bottom: 11rem; /* Stacked above the refresh button */
+  bottom: 2rem; /* Stacked at the very bottom */
   background-color: #f9ab00; /* Sunlight yellow in light mode */
   box-shadow: 0 4px 10px rgba(249, 171, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
 }
@@ -4640,23 +4621,7 @@ a.topbar-nav-btn:hover svg {
   transform: translateY(-6px) !important;
 }
 
-/* Specific Tab Transition Overrides for centered topbar-sync element (Desktop Only) */
-@media (min-width: 992px) {
-  .topbar-sync.tab-enter {
-    opacity: 0;
-    transform: translate(-50%, calc(-50% + 6px));
-  }
-
-  .topbar-sync.tab-fade-in {
-    opacity: 1 !important;
-    transform: translate(-50%, -50%) !important;
-  }
-
-  .topbar-sync.tab-exit {
-    opacity: 0 !important;
-    transform: translate(-50%, calc(-50% - 6px)) !important;
-  }
-}
+/* Topbar-sync now uses standard tab transitions */
 
 /* Dashboard Range Switch Responsive Styles */
 @media (max-width: 576px) {
