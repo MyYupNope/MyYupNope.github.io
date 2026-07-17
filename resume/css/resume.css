@@ -2398,7 +2398,8 @@ a {
   mix-blend-mode: screen;
 }
 
-.bento-card:hover .bento-card-bg-gradient {
+.bento-card:hover .bento-card-bg-gradient,
+.bento-card.selected .bento-card-bg-gradient {
   opacity: 0.12;
 }
 
@@ -2455,7 +2456,8 @@ a {
   border-color: rgba(255, 255, 255, 0.04);
 }
 
-.bento-card:hover .bento-tag {
+.bento-card:hover .bento-tag,
+.bento-card.selected .bento-tag {
   background: rgba(0, 113, 227, 0.06);
   color: var(--card-accent);
   border-color: rgba(0, 113, 227, 0.03);
@@ -2734,7 +2736,8 @@ a {
 }
 
 /* On hover, change Deploy tip dot to a green checkmark badge when 100% is reached */
-.bento-card:hover .gantt-bar-fill.fill-deploy::after {
+.bento-card:hover .gantt-bar-fill.fill-deploy::after,
+.bento-card.selected .gantt-bar-fill.fill-deploy::after {
   content: '✓' !important;
   right: -5px !important;
   width: 10px !important;
@@ -2757,11 +2760,13 @@ a {
 }
 
 /* Hover state triggers gantt timeline expansion / progress */
-.bento-card:hover .gantt-bar-fill.fill-build {
+.bento-card:hover .gantt-bar-fill.fill-build,
+.bento-card.selected .gantt-bar-fill.fill-build {
   width: 90%;
 }
 
-.bento-card:hover .gantt-bar-fill.fill-deploy {
+.bento-card:hover .gantt-bar-fill.fill-deploy,
+.bento-card.selected .gantt-bar-fill.fill-deploy {
   width: 60%;
 }
 
@@ -2791,33 +2796,101 @@ a {
 .chart-bar.bar-3 { height: 45px; }
 .chart-bar.bar-4 { height: 80px; }
 
-.bento-card:hover .chart-bar.bar-1 { height: 50px; }
-.bento-card:hover .chart-bar.bar-2 { height: 85px; }
-.bento-card:hover .chart-bar.bar-3 { height: 35px; }
-.bento-card:hover .chart-bar.bar-4 { height: 95px; }
+.bento-card:hover .chart-bar.bar-1,
+.bento-card.selected .chart-bar.bar-1 { height: 50px; }
+.bento-card:hover .chart-bar.bar-2,
+.bento-card.selected .chart-bar.bar-2 { height: 85px; }
+.bento-card:hover .chart-bar.bar-3,
+.bento-card.selected .chart-bar.bar-3 { height: 35px; }
+.bento-card:hover .chart-bar.bar-4,
+.bento-card.selected .chart-bar.bar-4 { height: 95px; }
 
 
 /* Responsive Bento Grid */
 @media (max-width: 900px) {
   .bento-skills-grid {
     grid-template-columns: 1fr;
-    grid-auto-rows: minmax(180px, auto);
+    grid-auto-rows: auto;
   }
-  
+
+  .bento-card {
+    min-height: 200px;
+    height: auto;
+  }
+
   .bento-card.card-ai {
     grid-column: span 1;
     grid-row: span 1;
     flex-direction: column;
-    gap: 20px;
+    gap: 0;
   }
-  
-  .bento-card-content, .bento-card.card-ai .bento-card-content {
+
+  .bento-card-content,
+  .bento-card.card-ai .bento-card-content {
     max-width: 100%;
+    width: 100%;
+    height: auto;
+    position: relative;
+    z-index: 3;
   }
-  
+
+  /* Tag pills always sit above widgets and are concentrated on the left */
+  .bento-tag-list {
+    position: relative;
+    z-index: 4;
+    margin-top: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 58% !important;
+  }
+
+  .bento-tag {
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    white-space: normal;
+  }
+
+  /* Shrink widgets and pin to bottom-right corner so they don't block pills */
+  .bento-widget-radar {
+    width: 100px !important;
+    height: 100px !important;
+    bottom: -20px !important;
+    right: -20px !important;
+    opacity: 0.6;
+    z-index: 2;
+  }
+
+  .bento-widget-gantt {
+    width: 110px !important;
+    height: 75px !important;
+    bottom: 16px !important;
+    right: 16px !important;
+    z-index: 2;
+  }
+
+  .bento-widget-chart {
+    bottom: 12px !important;
+    right: 12px !important;
+    width: 100px !important;
+    z-index: 2;
+  }
+
+  .bento-widget-chatbot {
+    width: 110px !important;
+    height: 75px !important;
+    bottom: 14px !important;
+    right: 14px !important;
+    z-index: 2;
+    overflow: hidden;
+  }
+
   .bento-widget-ai {
     width: 100%;
     height: 140px;
+  }
+
+  .milestone-text {
+    font-size: 0.55rem !important;
   }
 }
 
@@ -3135,19 +3208,21 @@ a {
 }
 
 /* Prevent first and last timeline nodes from being cut off */
-.resume-timeline-inner {
-  padding-left: 50px !important;
-  padding-right: 50px !important;
-}
+@media (min-width: 769px) {
+  .resume-timeline-inner {
+    padding-left: 50px !important;
+    padding-right: 50px !important;
+  }
 
-.resume-timeline-line-track {
-  left: 50px !important;
-  right: 50px !important;
-  background: #8e8e93 !important; /* Darker neutral grey line */
-}
+  .resume-timeline-line-track {
+    left: 50px !important;
+    right: 50px !important;
+    background: #8e8e93 !important; /* Darker neutral grey line */
+  }
 
-:root.theme-dark .resume-timeline-line-track {
-  background: #636366 !important; /* Darker grey line in dark mode */
+  :root.theme-dark .resume-timeline-line-track {
+    background: #636366 !important; /* Darker grey line in dark mode */
+  }
 }
 
 /* Highlights for Active and Inactive Timeline Nodes */
@@ -3199,12 +3274,14 @@ a {
 }
 
 /* 2x2 Bento grid configuration */
-.bento-skills-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  grid-auto-rows: minmax(250px, auto) !important;
-  gap: 24px !important;
-  width: 100% !important;
+@media (min-width: 769px) {
+  .bento-skills-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: minmax(250px, auto) !important;
+    gap: 24px !important;
+    width: 100% !important;
+  }
 }
 
 /* Standardize Card 1 (AI & Low-Code) to match the other cards in the 2x2 layout */
@@ -3218,10 +3295,6 @@ a {
 /* Style the new interactive Chatbot Widget */
 .bento-widget-chatbot {
   position: absolute !important;
-  bottom: 20px !important;
-  right: 20px !important;
-  width: 160px !important;
-  height: 125px !important;
   background: var(--rm-bg-card) !important;
   border: 1px solid var(--rm-border) !important;
   border-radius: 16px !important;
@@ -3232,6 +3305,15 @@ a {
   box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important;
   z-index: 2 !important;
   pointer-events: none !important;
+}
+
+@media (min-width: 769px) {
+  .bento-widget-chatbot {
+    bottom: 20px !important;
+    right: 20px !important;
+    width: 160px !important;
+    height: 125px !important;
+  }
 }
 
 :root.theme-dark .bento-widget-chatbot {
@@ -3335,11 +3417,13 @@ a {
 }
 
 /* Hover interactions to animate chatbot processing */
-.bento-card:hover .chat-msg.bot-loader {
+.bento-card:hover .chat-msg.bot-loader,
+.bento-card.selected .chat-msg.bot-loader {
   display: none !important;
 }
 
-.bento-card:hover .chat-msg.bot-response {
+.bento-card:hover .chat-msg.bot-response,
+.bento-card.selected .chat-msg.bot-response {
   display: block !important;
   animation: messageFadeIn 0.3s ease forwards !important;
 }
@@ -3355,6 +3439,12 @@ a {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 6px !important;
+}
+
+@media (max-width: 900px) {
+  .bento-tag-list {
+    max-width: 100% !important;
+  }
 }
 
 /* Hide tags from the 4th onwards by default to keep the card compact */
@@ -3455,11 +3545,13 @@ a {
 }
 
 /* Hover State - Animate Deploy to 100% and Fade in Milestone Badge */
-.bento-card:hover .gantt-bar-fill.fill-deploy {
+.bento-card:hover .gantt-bar-fill.fill-deploy,
+.bento-card.selected .gantt-bar-fill.fill-deploy {
   width: 100% !important;
 }
 
-.bento-card:hover .gantt-milestone {
+.bento-card:hover .gantt-milestone,
+.bento-card.selected .gantt-milestone {
   opacity: 1 !important;
   transform: translateY(0) !important;
   transition-delay: 0.4s !important; /* Delay showing milestone until progress completes */
